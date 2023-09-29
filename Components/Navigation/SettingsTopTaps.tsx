@@ -21,24 +21,24 @@ const SettingsTopTaps = () => {
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
-          name="Home" // Name des Tabs
+          name="Standard" // Name des Tabs
           component={BeispielScreen} // Komponente, die im Tab angezeigt wird
-          options={{ tabBarLabel: "Home" }}
+          options={{ tabBarLabel: "Standard" }}
         />
 
         {/* Weitere Tabs ... */}
         <Tab.Screen
-          name="Settings"
+          name="Einkommenssteuer"
           component={BeispielScreen}
           options={{ tabBarLabel: "Einkommens-\nsteuer" }}
         />
         <Tab.Screen
-          name="Camera"
+          name="Datev"
           component={BeispielScreen}
           options={{ tabBarLabel: "DATEV" }}
         />
         <Tab.Screen
-          name="Documents"
+          name="Belegzentrale"
           component={BeispielScreen}
           options={{ tabBarLabel: "Beleg-\nzentrale" }}
         />
