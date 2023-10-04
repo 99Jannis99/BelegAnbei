@@ -13,32 +13,32 @@ const DocumentsTopTaps = () => {
   // Render-Methode der Komponente
   return (
     // Haupt-View-Komponente
-    <View style={styles.ExampleView}>
+    <View style={styles.Container}>
       {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
         tabBarPosition="top" // Position der Tab-Leiste
-        screenOptions={styles.ExampleNavigatorScreenOptions} // Styling-Optionen für den Navigator
+        screenOptions={styles.NavigatorScreenOptions} // Styling-Optionen für den Navigator
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
-          name="Home" // Name des Tabs
+          name="StandardDocuments" // Name des Tabs
           component={BeispielScreen} // Komponente, die im Tab angezeigt wird
           options={{ tabBarLabel: "Home" }}
         />
 
         {/* Weitere Tabs ... */}
         <Tab.Screen
-          name="Settings"
+          name="EinkommenssteuerDocuments"
           component={BeispielScreen}
           options={{ tabBarLabel: "Einkommens-\nsteuer" }}
         />
         <Tab.Screen
-          name="Camera"
+          name="DatevDocuments"
           component={BeispielScreen}
           options={{ tabBarLabel: "DATEV" }}
         />
         <Tab.Screen
-          name="Documents"
+          name="BelegzentraleDocuments"
           component={BeispielScreen}
           options={{ tabBarLabel: "Beleg-\nzentrale" }}
         />
@@ -48,7 +48,7 @@ const DocumentsTopTaps = () => {
 };
 
 const styles = StyleSheet.create({
-  ExampleNavigatorScreenOptions: {
+  NavigatorScreenOptions: {
     tabBarShowLabel: true,
     headerShown: false,
     swipeEnabled: true,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
   },
 
-  ExampleView: {
+  Container: {
     height: "100%",
   },
 });

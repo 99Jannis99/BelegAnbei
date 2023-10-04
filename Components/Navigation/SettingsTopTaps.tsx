@@ -13,32 +13,32 @@ const SettingsTopTaps = () => {
   // Render-Methode der Komponente
   return (
     // Haupt-View-Komponente
-    <View style={styles.ExampleView}>
+    <View style={styles.Container}>
       {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
         tabBarPosition="top" // Position der Tab-Leiste
-        screenOptions={styles.ExampleNavigatorScreenOptions} // Styling-Optionen für den Navigator
+        screenOptions={styles.NavigatorScreenOptions} // Styling-Optionen für den Navigator
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
-          name="Standard" // Name des Tabs
+          name="StandardSettings" // Name des Tabs
           component={BeispielScreen} // Komponente, die im Tab angezeigt wird
           options={{ tabBarLabel: "Standard" }}
         />
 
         {/* Weitere Tabs ... */}
         <Tab.Screen
-          name="Einkommenssteuer"
+          name="EinkommenssteuerSettings"
           component={BeispielScreen}
           options={{ tabBarLabel: "Einkommens-\nsteuer" }}
         />
         <Tab.Screen
-          name="Datev"
+          name="DatevSettings"
           component={BeispielScreen}
           options={{ tabBarLabel: "DATEV" }}
         />
         <Tab.Screen
-          name="Belegzentrale"
+          name="BelegzentraleSettings"
           component={BeispielScreen}
           options={{ tabBarLabel: "Beleg-\nzentrale" }}
         />
@@ -48,7 +48,7 @@ const SettingsTopTaps = () => {
 };
 
 const styles = StyleSheet.create({
-  ExampleNavigatorScreenOptions: {
+  NavigatorScreenOptions: {
     tabBarShowLabel: true,
     headerShown: false,
     swipeEnabled: true,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
   },
 
-  ExampleView: {
+  Container: {
     height: "100%",
   },
 });

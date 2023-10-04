@@ -20,7 +20,7 @@ const BottomTaps = () => {
   // Render-Methode der Komponente
   return (
     // Haupt-View-Komponente
-    <View style={styles.ExampleView}>
+    <View style={styles.Container}>
       
       {/* Header Komponente mit Logo etc... */}
       <Header />
@@ -28,7 +28,7 @@ const BottomTaps = () => {
       {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
         tabBarPosition="bottom" // Position der Tab-Leiste
-        screenOptions={styles.ExampleNavigatorScreenOptions} // Styling-Optionen für den Navigator
+        screenOptions={styles.NavigatorScreenOptions} // Styling-Optionen für den Navigator
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
@@ -89,7 +89,7 @@ const BottomTaps = () => {
 };
 
 const styles = StyleSheet.create({
-  ExampleNavigatorScreenOptions: {
+  NavigatorScreenOptions: {
     tabBarShowLabel: false,
     headerShown: false,
     swipeEnabled: false,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     },
   },
 
-  ExampleView: {
+  Container: {
     height: "100%",
   },
 });
