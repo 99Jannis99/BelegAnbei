@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet } from "react-native";
-import { Entypo, SimpleLineIcons} from "../../helpers/icons";
+import { Entypo, SimpleLineIcons } from "../../helpers/icons";
+import { useSelector } from "react-redux";
 
 import BottomTaps from "./BottomTaps";
 
@@ -9,9 +10,19 @@ import BeispielScreen from "../Screens/BeispielScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 const DrawerComponent = () => {
+  const { background, primary } = useSelector((state) => state.colorReducer);
   const Drawer = createDrawerNavigator();
   return (
-    <Drawer.Navigator screenOptions={styles.screenOptions}>
+    <Drawer.Navigator
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: background,
+        },
+        drawerActiveBackgroundColor: primary,
+        drawerInactiveTintColor: "grey",
+        drawerActiveTintColor: "white",
+      }}
+    >
       <Drawer.Screen
         name="Home"
         options={{

@@ -2,12 +2,14 @@
 import React from "react";
 import { View, StyleSheet } from "react-native"; // Grundlegende Komponenten für die UI
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"; // Navigation-Komponente für Tabs
+import { useSelector } from "react-redux";
 
 // Importieren zusätzlicher Bildschirmkomponenten
 import BeispielScreen from "../Screens/BeispielScreen";
 
 // Komponente für die unteren Tabs
 const DocumentsTopTaps = () => {
+  const { background, primary } = useSelector((state) => state.colorReducer);
   const Tab = createMaterialTopTabNavigator(); // Erstellen eines Tab-Navigators
 
   // Render-Methode der Komponente
@@ -17,7 +19,30 @@ const DocumentsTopTaps = () => {
       {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
         tabBarPosition="top" // Position der Tab-Leiste
-        screenOptions={styles.NavigatorScreenOptions} // Styling-Optionen für den Navigator
+        screenOptions={{
+          tabBarShowLabel: true,
+          headerShown: false,
+          swipeEnabled: true,
+          tabBarStyle: {
+            backgroundColor: background,
+            elevation: 0,
+            height: 60,
+            borderTopWidth: 0,
+            borderTopColor: background,
+          },
+          tabBarIndicatorStyle: {
+            position: "absolute",
+            bottom: 0,
+            height: 2,
+            backgroundColor: primary,
+          },
+          tabBarActiveTintColor: primary, // Farbe des aktiven Tab-Labels
+          tabBarInactiveTintColor: "grey", // Farbe des inaktiven Tab-Labels
+          tabBarLabelStyle: {
+            textTransform: "none", // Verhindert die Umwandlung des Texts in Großbuchstaben
+            fontSize: 12, // Setzen Sie die gewünschte Schriftgröße
+          },
+        }} // Styling-Optionen für den Navigator
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen

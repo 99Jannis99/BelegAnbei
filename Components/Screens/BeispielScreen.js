@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import { Text, View, SafeAreaView, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 
-export class BeispielScreen extends Component {
-  render() {
-    return (
-      <SafeAreaView style={styles.ExampleSafeAreaView}>
-        <View style={styles.ExampleView}>
-          <Text style={styles.ExampleText}>Beispiel</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+function BeispielScreen() {
+  const { background, primary } = useSelector((state) => state.colorReducer);
+  return (
+    <SafeAreaView
+      style={[styles.ExampleSafeAreaView, { backgroundColor: background }]}
+    >
+      <View style={[styles.ExampleView, { backgroundColor: background }]}>
+        <Text style={[styles.ExampleText, { color: primary }]}>Beispiel</Text>
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({

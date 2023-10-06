@@ -11,9 +11,12 @@ import {
 } from "react-native";
 import { SimpleLineIcons } from "../helpers/icons";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 // Definition der Header-Komponente
 const Header = () => {
+  const { background, primary } = useSelector((state) => state.colorReducer);
+
   // Wir definieren einen Zustand namens iconContainerWidth mit einem Anfangswert von 0.
   // Dieser Zustand wird dazu verwendet, die Breite des MenuIcon-Containers zu kontrollieren.
   const [iconContainerWidth, setIconContainerWidth] = useState(0);
@@ -47,14 +50,14 @@ const Header = () => {
 
   // Rendering der Header-Komponente
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
       {/* Wir verwenden eine View-Komponente, um das MenuIcon zu umschließen. */}
       <View style={{ width: iconContainerWidth }}>
         {/* Das eigentliche Icon, welches beim Drücken das Drawer-Menü öffnet. */}
         <SimpleLineIcons
           name="layers"
           size={26}
-          color="#48ac98"
+          color={primary}
           onPress={() => navigation.openDrawer()} // Beim Drücken wird die Drawer-Navigation geöffnet.
         />
       </View>
@@ -80,12 +83,12 @@ const Header = () => {
       >
         {/* Icon für Informationen */}
         <TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
-          <SimpleLineIcons color="#48ac98" name="info" size={24} />
+          <SimpleLineIcons color={primary} name="info" size={24} />
         </TouchableOpacity>
 
         {/* Icon für Telefon, führt openfunc aus beim Drücken */}
         <TouchableOpacity onPress={() => openfunc()}>
-          <SimpleLineIcons color="#48ac98" name="phone" size={24} />
+          <SimpleLineIcons color={primary} name="phone" size={24} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

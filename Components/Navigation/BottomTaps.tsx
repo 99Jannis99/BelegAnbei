@@ -3,6 +3,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native"; // Grundlegende Komponenten für die UI
 import { SimpleLineIcons } from "../../helpers/icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"; // Navigation-Komponente für Tabs
+import { useSelector } from "react-redux";
 
 // Importieren zusätzlicher Bildschirmkomponenten
 import Welcome from "../Screens/Welcome";
@@ -16,6 +17,8 @@ import Header from "../Header";
 
 // Komponente für die unteren Tabs
 const BottomTaps = () => {
+  const { background, primary } = useSelector((state) => state.colorReducer);
+
   const Tab = createMaterialTopTabNavigator(); // Erstellen eines Tab-Navigators
 
   // Render-Methode der Komponente
@@ -28,7 +31,24 @@ const BottomTaps = () => {
       {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
         tabBarPosition="bottom" // Position der Tab-Leiste
-        screenOptions={styles.NavigatorScreenOptions} // Styling-Optionen für den Navigator
+        screenOptions={{
+          tabBarShowLabel: false,
+          headerShown: false,
+          swipeEnabled: false,
+          tabBarStyle: {
+            backgroundColor: background,
+            elevation: 0,
+            height: 60,
+            borderTopWidth: 1,
+            borderTopColor: background,
+          },
+          tabBarIndicatorStyle: {
+            position: "absolute",
+            top: 0,
+            height: 2,
+            backgroundColor: primary,
+          },
+        }} // Styling-Optionen für den Navigator
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
@@ -39,7 +59,7 @@ const BottomTaps = () => {
               { focused } // Icon für den Tab
             ) =>
               focused ? (
-                <SimpleLineIcons name="home" size={22.5} color="#48ac98" />
+                <SimpleLineIcons name="home" size={22.5} color={primary} />
               ) : (
                 <SimpleLineIcons name="home" size={22.5} color="grey" />
               ),
@@ -53,7 +73,7 @@ const BottomTaps = () => {
           options={{
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <SimpleLineIcons name="settings" size={22.5} color="#48ac98" />
+                <SimpleLineIcons name="settings" size={22.5} color={primary} />
               ) : (
                 <SimpleLineIcons name="settings" size={22.5} color="grey" />
               ),
@@ -65,7 +85,7 @@ const BottomTaps = () => {
           options={{
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <SimpleLineIcons name="camera" size={22.5} color="#48ac98" />
+                <SimpleLineIcons name="camera" size={22.5} color={primary} />
               ) : (
                 <SimpleLineIcons name="camera" size={22.5} color="grey" />
               ),
@@ -77,7 +97,7 @@ const BottomTaps = () => {
           options={{
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <SimpleLineIcons name="docs" size={22.5} color="#48ac98" />
+                <SimpleLineIcons name="docs" size={22.5} color={primary} />
               ) : (
                 <SimpleLineIcons name="docs" size={22.5} color="grey" />
               ),

@@ -1,7 +1,9 @@
 import React from "react";
 import { Text, View, ScrollView, Image, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const { background, primary } = useSelector((state) => state.colorReducer);
   return (
     <ScrollView style={styles.container}>
       {/* Bildkomponente */}
@@ -12,7 +14,7 @@ const Home = () => {
 
       {/* Textkomponenten */}
 
-      <Text style={styles.headline}>Willkommen !!</Text>
+      <Text style={[styles.headline, { color: primary }]}>Willkommen !!</Text>
       <Text style={styles.text}>
         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
         eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
