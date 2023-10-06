@@ -23,7 +23,7 @@ const DocumentsTopTaps = () => {
         <Tab.Screen
           name="StandardDocuments" // Name des Tabs
           component={BeispielScreen} // Komponente, die im Tab angezeigt wird
-          options={{ tabBarLabel: "Home" }}
+          options={{ tabBarLabel: "Standard" }}
         />
 
         {/* Weitere Tabs ... */}

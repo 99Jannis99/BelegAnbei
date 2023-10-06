@@ -5,11 +5,12 @@ import { SimpleLineIcons } from "../../helpers/icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"; // Navigation-Komponente für Tabs
 
 // Importieren zusätzlicher Bildschirmkomponenten
-import Home from "../Screens/Home";
-import SettingsTopTaps from '../Navigation/SettingsTopTaps'
+import Welcome from "../Screens/Welcome";
+import SettingsTopTaps from "../Navigation/SettingsTopTaps";
 import DocumentsTopTaps from "../Navigation/DocumentsTopTaps";
 
 import BeispielScreen from "../Screens/BeispielScreen";
+import ChangeColor from "../Screens/ChangeColor";
 
 import Header from "../Header";
 
@@ -21,7 +22,6 @@ const BottomTaps = () => {
   return (
     // Haupt-View-Komponente
     <View style={styles.Container}>
-      
       {/* Header Komponente mit Logo etc... */}
       <Header />
 
@@ -32,8 +32,8 @@ const BottomTaps = () => {
       >
         {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
-          name="Home" // Name des Tabs
-          component={Home} // Komponente, die im Tab angezeigt wird
+          name="Welcome" // Name des Tabs
+          component={Welcome} // Komponente, die im Tab angezeigt wird
           options={{
             tabBarIcon: (
               { focused } // Icon für den Tab
@@ -61,7 +61,7 @@ const BottomTaps = () => {
         />
         <Tab.Screen
           name="Camera"
-          component={BeispielScreen}
+          component={ChangeColor}
           options={{
             tabBarIcon: ({ focused }) =>
               focused ? (

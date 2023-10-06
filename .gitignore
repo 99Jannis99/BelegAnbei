@@ -67,3 +67,5 @@ yarn-error.log
 
 # VSCode
 .vscode/.react/
+yarn.lock
+package-lock.json
