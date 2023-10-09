@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 
-import { useColors } from "../../Functions/getColors";
+import { useColors } from "../../Functions/getApiColors";
 
 function ChangeColor() {
   const { background, primary } = useSelector((state) => state.colorReducer);

@@ -8,7 +8,7 @@ const Home = () => {
     <ScrollView style={styles.container}>
       {/* Bildkomponente */}
       <Image
-        source={require("../../assets/images/background.png")}
+        source={require("../../../assets/images/background.png")}
         style={styles.image}
       />
 

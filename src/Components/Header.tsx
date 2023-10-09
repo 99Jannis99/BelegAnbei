@@ -64,7 +64,7 @@ const Header = () => {
 
       {/* Logo in der Mitte des Headers */}
       <Image
-        source={require("../assets/images/logo.png")} // Pfad zum Logo-Bild
+        source={require("../../assets/images/logo.png")} // Pfad zum Logo-Bild
         style={styles.logo}
       />
 
