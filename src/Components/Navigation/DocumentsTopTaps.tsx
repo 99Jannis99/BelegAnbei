@@ -6,13 +6,11 @@ import { RouteProp, ParamListBase } from "@react-navigation/native";
 
 import BeispielScreen from "../Screens/BeispielScreen";
 import DatevTopTaps from "./DatevTopTaps";
-import useShouldShowDatevAsMain from "../../helpers/moduleCalculations"; //helpers Funktion
+import useShouldShowDatevAsMain from "../../helpers/moduleCalculations";
 
 const DocumentsTopTaps = () => {
-  // Zugreifen auf den colorReducer State aus Redux Store
   const { background, primary } = useSelector((state) => state.colorReducer);
 
-  // Lokaler State, um die Anzeige der Module zu steuern
   const [modules, setModules] = useState({
     standard: true,
     einkommenssteuer: true,
@@ -23,7 +21,6 @@ const DocumentsTopTaps = () => {
     },
   });
 
-  // Bedingung, um festzustellen, ob DATEV als Hauptelement im Navigator angezeigt werden soll
   const shouldShowDatevAsMain = useShouldShowDatevAsMain(modules);
 
   return (
@@ -32,7 +29,6 @@ const DocumentsTopTaps = () => {
         tabBarPosition="top"
         screenOptions={getScreenOptions(background, primary)}
       >
-        {/* Rendern der Tabs basierend auf den Bedingungen im 'modules'-State */}
         {modules.standard &&
           renderTab("StandardDocuments", BeispielScreen, "Standard")}
         {modules.einkommenssteuer &&
@@ -70,7 +66,6 @@ const DocumentsTopTaps = () => {
   );
 };
 
-// Erstellen eines neuen Top Tab Navigators
 const Tab = createMaterialTopTabNavigator();
 const renderTab = (
   name: string,
@@ -89,7 +84,6 @@ const renderTab = (
   />
 );
 
-// zusammenstellen der Tab.Navigator screenoptions
 const getScreenOptions = (background: any, primary: any) => ({
   ...styles.Navigator,
   tabBarStyle: {
@@ -104,7 +98,6 @@ const getScreenOptions = (background: any, primary: any) => ({
   tabBarActiveTintColor: primary,
 });
 
-// Definieren der Styles für die Komponente
 const styles = StyleSheet.create({
   Container: {
     height: "100%",
