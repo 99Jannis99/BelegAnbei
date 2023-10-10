@@ -34,7 +34,6 @@ const DrawerComponent = () => {
 
   if (!areColorsLoaded) {
     return (
-      // <Text>Loading</Text>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <LottieView
           style={{ width: 200, height: 200 }}
@@ -44,7 +43,7 @@ const DrawerComponent = () => {
           speed={2}
         />
       </View>
-    ); // Oder eine Ladeanzeige hier rendern, während auf Farbdaten gewartet wird
+    ); 
   }
 
   return (

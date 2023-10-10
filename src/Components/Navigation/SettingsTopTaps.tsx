@@ -1,107 +1,134 @@
-// Importieren der notwendigen Module und Komponenten aus React, React Native und anderen Bibliotheken
-import React from "react";
-import { View, StyleSheet } from "react-native"; // Grundlegende Komponenten für die UI
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"; // Navigation-Komponente für Tabs
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
+import { RouteProp, ParamListBase } from "@react-navigation/native";
 
-// Importieren zusätzlicher Bildschirmkomponenten
 import BeispielScreen from "../Screens/BeispielScreen";
+import DatevTopTaps from "./DatevTopTaps";
+import useShouldShowDatevAsMain from "../../helpers/moduleCalculations"; //helpers Funktion
 
-// Komponente für die unteren Tabs
 const SettingsTopTaps = () => {
+  // Zugreifen auf den colorReducer State aus Redux Store
   const { background, primary } = useSelector((state) => state.colorReducer);
-  const Tab = createMaterialTopTabNavigator(); // Erstellen eines Tab-Navigators
 
-  // Render-Methode der Komponente
+  // Lokaler State, um die Anzeige der Module zu steuern
+  const [modules, setModules] = useState({
+    standard: true,
+    einkommenssteuer: true,
+    belegzentrale: true,
+    datev: {
+      unternehmenonline: true,
+      meinesteuern: true,
+    },
+  });
+
+  // Bedingung, um festzustellen, ob DATEV als Hauptelement im Navigator angezeigt werden soll
+  const shouldShowDatevAsMain = useShouldShowDatevAsMain(modules);
+
   return (
-    // Haupt-View-Komponente
     <View style={styles.Container}>
-      {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
-        tabBarPosition="top" // Position der Tab-Leiste
-        screenOptions={{
-          tabBarShowLabel: true,
-          headerShown: false,
-          swipeEnabled: true,
-          tabBarStyle: {
-            backgroundColor: background,
-            elevation: 0,
-            height: 60,
-            borderTopWidth: 0,
-            borderTopColor: background,
-          },
-          tabBarIndicatorStyle: {
-            position: "absolute",
-            bottom: 0,
-            height: 2,
-            backgroundColor: primary,
-          },
-          tabBarActiveTintColor: primary, // Farbe des aktiven Tab-Labels
-          tabBarInactiveTintColor: "grey", // Farbe des inaktiven Tab-Labels
-          tabBarLabelStyle: {
-            textTransform: "none", // Verhindert die Umwandlung des Texts in Großbuchstaben
-            fontSize: 12, // Setzen Sie die gewünschte Schriftgröße
-          },
-        }} // Styling-Optionen für den Navigator
+        tabBarPosition="top"
+        screenOptions={getScreenOptions(background, primary)}
       >
-        {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
-        <Tab.Screen
-          name="StandardSettings" // Name des Tabs
-          component={BeispielScreen} // Komponente, die im Tab angezeigt wird
-          options={{ tabBarLabel: "Standard" }}
-        />
-
-        {/* Weitere Tabs ... */}
-        <Tab.Screen
-          name="EinkommenssteuerSettings"
-          component={BeispielScreen}
-          options={{ tabBarLabel: "Einkommens-\nsteuer" }}
-        />
-        <Tab.Screen
-          name="DatevSettings"
-          component={BeispielScreen}
-          options={{ tabBarLabel: "DATEV" }}
-        />
-        <Tab.Screen
-          name="BelegzentraleSettings"
-          component={BeispielScreen}
-          options={{ tabBarLabel: "Beleg-\nzentrale" }}
-        />
+        {/* Rendern der Tabs basierend auf den Bedingungen im 'modules'-State */}
+        {modules.standard &&
+          renderTab("StandardSettings", BeispielScreen, "Standard")}
+        {modules.einkommenssteuer &&
+          renderTab(
+            "EinkommenssteuerSettings",
+            BeispielScreen,
+            "Einkommens-\nsteuer"
+          )}
+        {shouldShowDatevAsMain ? (
+          renderTab("DatevSettings", DatevTopTaps, "DATEV")
+        ) : (
+          <>
+            {modules.datev.unternehmenonline &&
+              renderTab(
+                "UnternehmenOnlineSettings",
+                BeispielScreen,
+                "Unternehmen Online"
+              )}
+            {modules.datev.meinesteuern &&
+              renderTab(
+                "MeineSteuernSettings",
+                BeispielScreen,
+                "Meine Steuern"
+              )}
+          </>
+        )}
+        {modules.belegzentrale &&
+          renderTab(
+            "BelegzentraleSettings",
+            BeispielScreen,
+            "Beleg-\nzentrale"
+          )}
       </Tab.Navigator>
     </View>
   );
 };
 
+// Erstellen eines neuen Top Tab Navigators
+const Tab = createMaterialTopTabNavigator();
+const renderTab = (
+  name: string,
+  component:
+    | React.ComponentType<{}>
+    | React.ComponentType<{
+        route: RouteProp<ParamListBase, any>;
+        navigation: any;
+      }>,
+  label: string
+) => (
+  <Tab.Screen
+    name={name}
+    component={component}
+    options={{ tabBarLabel: label }}
+  />
+);
+
+// zusammenstellen der Tab.Navigator screenoptions
+const getScreenOptions = (background: any, primary: any) => ({
+  ...styles.Navigator,
+  tabBarStyle: {
+    ...styles.Navigator.tabBarStyle,
+    backgroundColor: background,
+    borderTopColor: background,
+  },
+  tabBarIndicatorStyle: {
+    ...styles.Navigator.tabBarIndicatorStyle,
+    backgroundColor: primary,
+  },
+  tabBarActiveTintColor: primary,
+});
+
+// Definieren der Styles für die Komponente
 const styles = StyleSheet.create({
-  NavigatorScreenOptions: {
+  Container: {
+    height: "100%",
+  },
+  Navigator: {
     tabBarShowLabel: true,
     headerShown: false,
     swipeEnabled: true,
     tabBarStyle: {
-      backgroundColor: "#121212",
       elevation: 0,
       height: 60,
       borderTopWidth: 0,
-      borderTopColor: "#1b1b1b",
     },
     tabBarIndicatorStyle: {
       position: "absolute",
       bottom: 0,
       height: 2,
-      backgroundColor: "#48ac98",
     },
-    tabBarActiveTintColor: "#48ac98", // Farbe des aktiven Tab-Labels
-    tabBarInactiveTintColor: "grey", // Farbe des inaktiven Tab-Labels
+    tabBarInactiveTintColor: "grey",
     tabBarLabelStyle: {
-      textTransform: "none", // Verhindert die Umwandlung des Texts in Großbuchstaben
-      fontSize: 12, // Setzen Sie die gewünschte Schriftgröße
+      textTransform: "none",
+      fontSize: 12,
     },
-  },
-
-  Container: {
-    height: "100%",
   },
 });
 
-// Exportieren der Komponente für die Verwendung in anderen Dateien
 export default SettingsTopTaps;
