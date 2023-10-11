@@ -18,7 +18,6 @@ export const useColors = () => {
         },
         data: { model: "default" },
       });
-      console.log(response.data);
       if (response.data.result && response.data.result.length >= 2) {
         // Konvertiere die ersten beiden Farbarrays in RGB-Strings
         const color1 = `rgb(${response.data.result[0].join(",")})`;

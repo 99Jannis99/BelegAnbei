@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RouteProp, ParamListBase } from "@react-navigation/native";
 
 import BeispielScreen from "../Screens/BeispielScreen";
+import ChangeImage from "../Screens/ChangeImage";
 import DatevTopTaps from "./DatevTopTaps";
 import useShouldShowDatevAsMain from "../../helpers/moduleCalculations"; //helpers Funktion
 
@@ -34,7 +35,7 @@ const SettingsTopTaps = () => {
       >
         {/* Rendern der Tabs basierend auf den Bedingungen im 'modules'-State */}
         {modules.standard &&
-          renderTab("StandardSettings", BeispielScreen, "Standard")}
+          renderTab("StandardSettings", ChangeImage, "Standard")}
         {modules.einkommenssteuer &&
           renderTab(
             "EinkommenssteuerSettings",

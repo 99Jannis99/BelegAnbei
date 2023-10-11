@@ -1,23 +1,39 @@
-import { useReducer } from "react";
-import { SET_COLOR_BACKGROUND, SET_COLOR_PRIMARY } from "./actions";
+// reducers.js
+import {
+  SET_COLOR_BACKGROUND,
+  SET_COLOR_PRIMARY,
+  SET_WELCOME_IMAGE,
+  SET_LOGO_IMAGE
+} from "./actions";
 
-const initialState = {
-  background: "red",
-  primary: "yellow",
+const colorInitialState = {
+  background: "white",
+  primary: "black",
 };
 
-function colorReducer(state = initialState, action) {
+export function colorReducer(state = colorInitialState, action) {
   switch (action.type) {
     case SET_COLOR_BACKGROUND:
       return { ...state, background: action.payload };
-      break;
     case SET_COLOR_PRIMARY:
       return { ...state, primary: action.payload };
-      break;
     default:
       return state;
-      break;
   }
 }
 
-export default colorReducer;
+const imageInitialState = {
+  welcomeImage: '',
+  logoImage:"",
+};
+
+export function imageReducer(state = imageInitialState, action) {
+  switch (action.type) {
+    case SET_WELCOME_IMAGE:
+      return { ...state, welcomeImage: action.payload };
+      case SET_LOGO_IMAGE:
+        return { ...state, logoImage: action.payload };
+    default:
+      return state;
+  }
+}

@@ -3,8 +3,13 @@ import { View } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useDispatch, useSelector } from "react-redux";
 import { SimpleLineIcons, Entypo } from "../../helpers/icons";
-import { setBackground, setPrimary } from "../../redux/actions";
-import { loadColors } from "../../Functions/manageColors";
+import {
+  setBackground,
+  setPrimary,
+  setWelcomeImage,
+  setLogoImage,
+} from "../../redux/actions";
+import { loadColors, loadImages } from "../../Functions/AsyncManager";
 import LottieView from "lottie-react-native";
 
 import BottomTaps from "./BottomTaps";
@@ -18,11 +23,14 @@ const DrawerComponent = () => {
     const setColorsFromStorage = async () => {
       try {
         const colors = await loadColors();
+        const images = await loadImages();
         dispatch(setBackground(colors.background));
         dispatch(setPrimary(colors.primary));
+        dispatch(setWelcomeImage(images.welcomeImage));
+        dispatch(setLogoImage(images.logoImage));
         setAreColorsLoaded(true); // Setzen des Zustands nachdem die Farben geladen wurden
       } catch (error) {
-        console.error("Failed to load colors:", error);
+        console.error("Failed to load colors ore images in Drawer.tsx:", error);
       }
     };
 
@@ -43,7 +51,7 @@ const DrawerComponent = () => {
           speed={2}
         />
       </View>
-    ); 
+    );
   }
 
   return (

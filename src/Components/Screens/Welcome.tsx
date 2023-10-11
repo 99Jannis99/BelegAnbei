@@ -4,11 +4,13 @@ import { useSelector } from "react-redux";
 
 const Home = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
+  const { welcomeImage } = useSelector((state) => state.imageReducer);
   return (
     <ScrollView style={styles.container}>
       {/* Bildkomponente */}
       <Image
-        source={require("../../../assets/images/background.png")}
+         source={welcomeImage ?{uri: `data:image/png;base64,${welcomeImage}`}: require("../../../assets/images/background.png")}
+        // source={{uri: `data:image/png;base64,${welcomeImage}`}}
         style={styles.image}
       />
 
