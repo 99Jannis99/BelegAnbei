@@ -5,11 +5,26 @@ import { useSelector } from "react-redux";
 const Home = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
   const { welcomeImage } = useSelector((state) => state.imageReducer);
+
+  const isBackgroundDark = () => {
+    const rgbPattern = /^rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)$/;
+    if (rgbPattern.test(background)) {
+      const [r, g, b] = background.match(/\d+/g).map(Number); // Extrahiere die RGB-Werte
+      const avg = (r + g + b) / 3;
+      return avg < 128; // Schwellenwert kann je nach Bedarf angepasst werden
+    } else {
+      return false;
+    }
+  };
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: background }]}>
       {/* Bildkomponente */}
       <Image
-         source={welcomeImage ?{uri: `data:image/png;base64,${welcomeImage}`}: require("../../../assets/images/background.png")}
+        source={
+          welcomeImage
+            ? { uri: `data:image/png;base64,${welcomeImage}` }
+            : require("../../../assets/images/background.png")
+        }
         // source={{uri: `data:image/png;base64,${welcomeImage}`}}
         style={styles.image}
       />
@@ -17,7 +32,9 @@ const Home = () => {
       {/* Textkomponenten */}
 
       <Text style={[styles.headline, { color: primary }]}>Willkommen !!</Text>
-      <Text style={styles.text}>
+      <Text
+        style={[styles.text, { color: isBackgroundDark() ? "white" : "black" }]}
+      >
         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
         eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
         voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
@@ -32,7 +49,9 @@ const Home = () => {
         dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
         est Lorem ipsum dolor sit amet. ersetzen.
       </Text>
-      <Text style={styles.text}>
+      <Text
+        style={[styles.text, { color: isBackgroundDark() ? "white" : "black" }]}
+      >
         Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
         molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero
         eros et accumsan et iusto odio dignissim qui blandit praesent luptatum
@@ -40,7 +59,9 @@ const Home = () => {
         dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
         euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
       </Text>
-      <Text style={styles.text}>
+      <Text
+        style={[styles.text, { color: isBackgroundDark() ? "white" : "black" }]}
+      >
         Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
         suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem
         vel eum iriure dolor in hendrerit in vulputate velit esse molestie
@@ -48,7 +69,9 @@ const Home = () => {
         accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
         delenit augue duis dolore te feugait nulla facilisi.
       </Text>
-      <Text style={styles.text}>
+      <Text
+        style={[styles.text, { color: isBackgroundDark() ? "white" : "black" }]}
+      >
         Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet
         doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit
         amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod

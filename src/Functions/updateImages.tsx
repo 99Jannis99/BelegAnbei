@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
-import { Alert, PermissionsAndroid, Platform } from "react-native";
+import { Alert, PermissionsAndroid, Platform, Linking } from "react-native";
 
 import { setWelcomeImage, setLogoImage } from "../redux/actions";
 
@@ -8,39 +8,79 @@ export const useDownloadFile = () => {
   const dispatch = useDispatch();
 
   const checkPermission = async () => {
+    // Für iOS zurückkehren
     if (Platform.OS === "ios") {
-      // Auf iOS sind normalerweise keine Berechtigungen für Dateidownloads erforderlich.
-    } else {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: "Storage Permission Required",
-            message: "This app needs access to your storage to download photos",
-          }
+      return true;
+    }
+
+    // Überprüfen, ob die Berechtigung bereits erteilt wurde
+    const currentPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+    );
+
+    console.log("currentPermission: ", currentPermission);
+    if (currentPermission) {
+      return true;
+    }
+
+    // Wenn nicht, dann die Berechtigung anfordern
+    try {
+      // const granted = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      //   {
+      //     title: "Storage Permission Required",
+      //     message: "This a pp needs access to your storage to download photos",
+      //   }
+      // );
+
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ]);
+      console.log(granted);
+      if (
+        granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] ===
+        "never_ask_again"
+      ) {
+        Alert.alert(
+          "Permission required!",
+          "To download photos, please grant storage permission from app settings.",
+          [
+            {
+              text: "Open Settings",
+              onPress: () => {
+                // Dies öffnet die App-Einstellungen, so dass der Benutzer die Berechtigung manuell aktivieren kann
+                Linking.openSettings();
+              },
+            },
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+          ]
         );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("Storage permission granted.");
-          return true;
-        } else {
-          Alert.alert("Permission Denied!", "Storage permission not granted");
-          return false;
-        }
-      } catch (error) {
-        console.error(error);
+        return false;
+      } else if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Storage permission granted.");
+        return true;
+      } else {
+        Alert.alert("Permission Denied!", "Storage permission not granted");
         return false;
       }
+    } catch (error) {
+      console.error(error);
+      return false;
     }
-    return true;
   };
 
   const downloadFile = async (url, image) => {
     // filename-Parameter entfernt
-    const isPermissionGranted = await checkPermission();
+    // const isPermissionGranted = await checkPermission();
 
-    if (!isPermissionGranted) {
-      return;
-    }
+    // if (!isPermissionGranted) {
+    //   return;
+    // }
 
     return RNFetchBlob.fetch("GET", url)
       .then((res) => {

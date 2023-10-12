@@ -23,8 +23,8 @@ export const loadColors = async () => {
 
   // Rückgabe eines Standard-Farbschemas, falls beim Laden ein Fehler auftritt oder keine Werte gefunden wurden
   return {
-    background: "whtie",
-    primary: "black",
+    background: "rgb(255, 255, 255)",
+    primary: "rgb(0, 0, 0)",
   };
 };
 

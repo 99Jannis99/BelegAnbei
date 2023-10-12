@@ -7,8 +7,8 @@ import {
 } from "./actions";
 
 const colorInitialState = {
-  background: "white",
-  primary: "black",
+  background: "rgb(255, 255, 255)",
+  primary: "rgb(0, 0, 0)",
 };
 
 export function colorReducer(state = colorInitialState, action) {
