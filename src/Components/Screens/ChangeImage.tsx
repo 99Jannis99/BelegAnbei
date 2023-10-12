@@ -21,16 +21,27 @@ function ChangeColor() {
 
   const logoImageArray = [
     "https://assets.stickpng.com/images/580b57fcd9996e24bc43c51f.png",
-    "https://i.pinimg.com/originals/2a/ff/5d/2aff5d3ae14a89142c768228c5c2d4ec.png",
-    "https://about.gitlab.com/images/press/logo/preview/gitlab-logo-200-preview.png",
     "https://purepng.com/public/uploads/large/purepng.com-disney-logologobrand-logoiconslogos-251519939495wtv86.png",
-    "https://banner2.cleanpng.com/20171220/aqe/eagle-logo-png-image-free-download-5a3af73e8b5be3.41008882151381382257088571.jpg",
+    "https://upload.wikimedia.org/wikipedia/de/thumb/7/70/Porsche_Logo.svg/2560px-Porsche_Logo.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.png/1200px-Kia-logo.png",
+    "https://static.vecteezy.com/system/resources/thumbnails/011/653/653/small/eco-friendly-smart-city-logo-design-blue-fullcolor-png.png",
+    "https://www.ilgfood.de/app/uploads/2017/02/Coca-Cola-Logo-PNG.png",
+    "https://danielkalman.ch/wp-content/uploads/2018/01/PNGPIX-COM-FedEx-Logo-PNG-Transparent.png",
+    "https://upload.wikimedia.org/wikipedia/commons/1/14/FRONT3X-Logo.png",
+    "https://about.gitlab.com/images/press/logo/png/gitlab-logo-100.png",
   ];
 
+  let lastRandomIndex = null;
+
   const downloadRandomImage = async (array, image) => {
-    // Zufälligen Index generieren
-    const randomIndex = Math.floor(Math.random() * array.length);
-    // Zufällige URL aus dem Array auswählen
+    let randomIndex;
+
+    do {
+      randomIndex = Math.floor(Math.random() * array.length);
+    } while (randomIndex === lastRandomIndex);
+
+    lastRandomIndex = randomIndex; // Speichern Sie den aktuellen Index, um ihn beim nächsten Aufruf zu überprüfen
+
     const randomImageUrl = array[randomIndex];
     try {
       await downloadFile(randomImageUrl, image);
