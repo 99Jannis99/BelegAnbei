@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
@@ -12,15 +12,28 @@ const DocumentsTopTaps = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
 
   const [modules, setModules] = useState({
-    standard: true,
-    einkommenssteuer: true,
-    belegzentrale: true,
+    standard: false,
+    einkommenssteuer: false,
+    belegzentrale: false,
     datev: {
       unternehmenonline: true,
-      meinesteuern: true,
+      meinesteuern: false,
     },
   });
-
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const response = await fetch("http://192.168.178.98:5000/api/modules");
+        const data = await response.json();
+        setModules(data);
+      } catch (error) {
+        console.log("Server is not running:", error);
+      }
+    };
+    fetchModules();
+    const interval = setInterval(fetchModules, 10000);
+    return () => clearInterval(interval);
+  }, []);
   const shouldShowDatevAsMain = useShouldShowDatevAsMain(modules);
 
   return (

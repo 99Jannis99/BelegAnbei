@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
@@ -23,6 +23,27 @@ const SettingsTopTaps = () => {
       meinesteuern: true,
     },
   });
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const response = await fetch("http://192.168.178.98:5000/api/modules");
+        const data = await response.json();
+        setModules(data);
+      } catch (error) {
+        console.log("Server is not running:", error);
+      }
+    };
+
+    // Initialer Abruf beim Mounten
+    fetchModules();
+
+    // Polling: Alle 10 Sekunden abrufen
+    const interval = setInterval(fetchModules, 10000);
+
+    // Bei Unmounting: Interval löschen
+    return () => clearInterval(interval);
+  }, []);
 
   // Bedingung, um festzustellen, ob DATEV als Hauptelement im Navigator angezeigt werden soll
   const shouldShowDatevAsMain = useShouldShowDatevAsMain(modules);
