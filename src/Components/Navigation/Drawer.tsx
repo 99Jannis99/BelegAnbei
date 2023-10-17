@@ -16,11 +16,11 @@ import BottomTaps from "./BottomTaps";
 import BeispielScreen from "../Screens/BeispielScreen";
 
 const DrawerComponent = () => {
-  const [areColorsLoaded, setAreColorsLoaded] = useState(false);
+  const [areDataLoaded, setDataLoaded] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const setColorsFromStorage = async () => {
+    const setDataFromStorage = async () => {
       try {
         const colors = await loadColors();
         const images = await loadImages();
@@ -28,19 +28,19 @@ const DrawerComponent = () => {
         dispatch(setPrimary(colors.primary));
         dispatch(setWelcomeImage(images.welcomeImage));
         dispatch(setLogoImage(images.logoImage));
-        setAreColorsLoaded(true); // Setzen des Zustands nachdem die Farben geladen wurden
+        setDataLoaded(true); // Setzen des Zustands nachdem die Farben geladen wurden
       } catch (error) {
         console.error("Failed to load colors ore images in Drawer.tsx:", error);
       }
     };
 
-    setColorsFromStorage();
+    setDataFromStorage();
   }, [dispatch]);
 
   const { background, primary } = useSelector((state) => state.colorReducer);
   const Drawer = createDrawerNavigator();
 
-  if (!areColorsLoaded) {
+  if (!areDataLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <LottieView

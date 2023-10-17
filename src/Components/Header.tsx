@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 // Definition der Header-Komponente
 const Header = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
-  const { logoImage } = useSelector((state) => state.imageReducer);
+  const { logoImage, lastUpdated } = useSelector((state) => state.imageReducer);
 
   // Wir definieren einen Zustand namens iconContainerWidth mit einem Anfangswert von 0.
   // Dieser Zustand wird dazu verwendet, die Breite des MenuIcon-Containers zu kontrollieren.
@@ -65,11 +65,7 @@ const Header = () => {
 
       {/* Logo in der Mitte des Headers */}
       <Image
-        source={
-          logoImage
-            ? { uri: `data:image/png;base64,${logoImage}` }
-            : require("../../assets/images/logo.png")
-        }
+        source={{ uri: `${logoImage}?t=${lastUpdated}` }}
         style={styles.logo}
       />
 

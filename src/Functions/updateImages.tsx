@@ -4,111 +4,60 @@ import { Alert, PermissionsAndroid, Platform, Linking } from "react-native";
 
 import { setWelcomeImage, setLogoImage } from "../redux/actions";
 
+var RNFileSystem = require("react-native-fs");
+
 export const useDownloadFile = () => {
   const dispatch = useDispatch();
 
-  const checkPermission = async () => {
-    // Für iOS zurückkehren
-    if (Platform.OS === "ios") {
-      return true;
-    }
-
-    // Überprüfen, ob die Berechtigung bereits erteilt wurde
-    const currentPermission = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-    );
-
-    console.log("currentPermission: ", currentPermission);
-    if (currentPermission) {
-      return true;
-    }
-
-    // Wenn nicht, dann die Berechtigung anfordern
+  const downloadFile = async (url, image) => {
     try {
-      // const granted = await PermissionsAndroid.request(
-      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      //   {
-      //     title: "Storage Permission Required",
-      //     message: "This a pp needs access to your storage to download photos",
-      //   }
-      // );
+      const res = await RNFetchBlob.fetch("GET", url);
+      let status = res.info().status;
 
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      ]);
-      console.log(granted);
-      if (
-        granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] ===
-        "never_ask_again"
-      ) {
-        Alert.alert(
-          "Permission required!",
-          "To download photos, please grant storage permission from app settings.",
-          [
-            {
-              text: "Open Settings",
-              onPress: () => {
-                // Dies öffnet die App-Einstellungen, so dass der Benutzer die Berechtigung manuell aktivieren kann
-                Linking.openSettings();
-              },
-            },
-            {
-              text: "Cancel",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-          ]
-        );
-        return false;
-      } else if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Storage permission granted.");
-        return true;
+      if (status === 200) {
+        const directoryPath = RNFileSystem.DocumentDirectoryPath ;
+
+        // const directoryPath = "/Android/data/com.meinprojekt/cache";
+
+        console.log("directoryPath: ", directoryPath);
+
+        const path = `${directoryPath}/${image}.jpg`;
+        await RNFileSystem.writeFile(path, res.data, "base64");
+
+        // console.log("res.data:", res.data);
+
+        const fileExists = await RNFileSystem.exists(path);
+        console.log("File exists:", fileExists);
+
+        const fileContent = await RNFileSystem.readFile(path, "base64");
+        // console.log(`File content von ${path}:`, fileContent);
+
+        switch (image) {
+          case "welcomeImage":
+            dispatch(
+              setWelcomeImage(
+                `file://${RNFileSystem.DocumentDirectoryPath}/${image}.jpg`
+              )
+            );
+            break;
+          case "logoImage":
+            dispatch(
+              setLogoImage(
+                `file://${RNFileSystem.DocumentDirectoryPath}/${image}.jpg`
+              )
+            );
+            break;
+          default:
+            break;
+        }
       } else {
-        Alert.alert("Permission Denied!", "Storage permission not granted");
-        return false;
+        console.log(`Failed to download file: ${res.text()}`);
+        throw new Error("Failed to download file");
       }
     } catch (error) {
-      console.error(error);
-      return false;
+      console.error("Download failed:", error);
+      throw error;
     }
-  };
-
-  const downloadFile = async (url, image) => {
-    // filename-Parameter entfernt
-    // const isPermissionGranted = await checkPermission();
-
-    // if (!isPermissionGranted) {
-    //   return;
-    // }
-
-    return RNFetchBlob.fetch("GET", url)
-      .then((res) => {
-        let status = res.info().status;
-
-        if (status === 200) {
-          // the conversion is done in native code
-          let base64Str = res.base64();
-
-          switch (image) {
-            case "welcomeImage":
-              dispatch(setWelcomeImage(base64Str)); // Dispatch Base64-String statt Pfad
-              break;
-            case "logoImage":
-              dispatch(setLogoImage(base64Str)); // Dispatch Base64-String statt Pfad
-              break;
-            default:
-              break;
-          }
-        } else {
-          console.log(`Failed to download file: ${res.text()}`);
-          throw new Error("Failed to download file");
-        }
-      })
-      .catch((error) => {
-        console.error("Download failed:", error);
-        throw error;
-      });
   };
 
   return downloadFile;
