@@ -5,7 +5,7 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import { colorReducer, imageReducer } from "./reducers";
-import { storeColors, storeImages } from "../Functions/AsyncManager";
+import { storeColors, storeImages } from "./AsyncManager";
 
 const rootReducer = combineReducers({ colorReducer, imageReducer });
 

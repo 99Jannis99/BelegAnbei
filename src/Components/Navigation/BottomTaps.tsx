@@ -13,7 +13,7 @@ import DocumentsTopTaps from "../Navigation/DocumentsTopTaps";
 import BeispielScreen from "../Screens/BeispielScreen";
 import ChangeColor from "../Screens/ChangeColor";
 
-import Header from "../Header";
+import Header from "../shared/Header";
 
 // Komponente für die unteren Tabs
 const BottomTaps = () => {

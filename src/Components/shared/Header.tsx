@@ -9,7 +9,7 @@ import {
   NativeModules,
   DeviceEventEmitter,
 } from "react-native";
-import { SimpleLineIcons } from "../helpers/icons";
+import { SimpleLineIcons } from "../../helpers/icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 

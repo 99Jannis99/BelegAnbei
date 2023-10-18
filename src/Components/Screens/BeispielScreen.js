@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, SafeAreaView, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import Header from "../Header";
+import Header from "../shared/Header";
 
 function BeispielScreen() {
   const { background, primary } = useSelector((state) => state.colorReducer);

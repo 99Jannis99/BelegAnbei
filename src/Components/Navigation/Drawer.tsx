@@ -9,7 +9,7 @@ import {
   setWelcomeImage,
   setLogoImage,
 } from "../../redux/actions";
-import { loadColors, loadImages } from "../../Functions/AsyncManager";
+import { loadColors, loadImages } from "../../redux/AsyncManager";
 import LottieView from "lottie-react-native";
 
 import BottomTaps from "./BottomTaps";
