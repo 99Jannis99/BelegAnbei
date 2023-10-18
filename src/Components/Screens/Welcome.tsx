@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, ScrollView, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
+import { readCustomerJson } from "../../Functions/readJsonData";
 
-
-const Home = () => {
+const Welcome = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
-  const { welcomeImage,lastUpdated } = useSelector((state) => state.imageReducer);
+  const { welcomeImage, lastUpdated } = useSelector(
+    (state) => state.imageReducer
+  );
+
+  const [customerData, setCustomerData] = useState({});
 
   const isBackgroundDark = () => {
     const rgbPattern = /^rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)$/;
@@ -18,15 +22,29 @@ const Home = () => {
     }
   };
 
+  const fetchCustomerData = async () => {
+    try {
+      const customerData = await readCustomerJson();
+      setCustomerData(customerData) ;
+    } catch (error) {
+      console.error("Fehler beim Abrufen der Kundendaten:", error);
+    }
+  };
+
+  fetchCustomerData();
+
   return (
     <ScrollView style={[styles.container, { backgroundColor: background }]}>
-      <Image source={{ uri: `${welcomeImage}?t=${lastUpdated}` }} style={styles.image} />
-
-
+      <Image
+        source={{ uri: `${welcomeImage}?t=${lastUpdated}` }}
+        style={styles.image}
+      />
 
       {/* Textkomponenten */}
 
-      <Text style={[styles.headline, { color: primary }]}>Willkommen !!</Text>
+      <Text style={[styles.headline, { color: primary }]}>
+        {customerData.customer_name} !!
+      </Text>
       <Text
         style={[styles.text, { color: isBackgroundDark() ? "white" : "black" }]}
       >
@@ -101,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default Welcome;

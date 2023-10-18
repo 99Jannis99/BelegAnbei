@@ -27,7 +27,7 @@ const DocumentsTopTaps = () => {
         const data = await response.json();
         setModules(data);
       } catch (error) {
-        console.log("Server is not running:", error);
+        // console.log("Server is not running:", error);
       }
     };
     fetchModules();

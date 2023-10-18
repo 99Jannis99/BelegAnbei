@@ -9,6 +9,7 @@ import {
   setWelcomeImage,
   setLogoImage,
 } from "../../redux/actions";
+import { useDownloadJSON } from "../../Functions/dataUpdater";
 import { loadColors, loadImages } from "../../redux/AsyncManager";
 import LottieView from "lottie-react-native";
 
@@ -18,6 +19,33 @@ import BeispielScreen from "../Screens/BeispielScreen";
 const DrawerComponent = () => {
   const [areDataLoaded, setDataLoaded] = useState(false);
   const dispatch = useDispatch();
+
+  const downloadJSONFile = useDownloadJSON();
+
+  const fetchData = async () => {
+    const customerData = require("../../../data/customer.json");
+    const filenames = [
+      "update.json",
+      "customer.json",
+      "settings.json",
+      "locations.json",
+      "persons.json",
+      "more.index.json",
+      "more.pages.json",
+      "more.faqs.json",
+      "textsnippets.json",
+      "appointments.json",
+      "more.downloads.json",
+      "more.videos.json",
+      "news.json",
+      "mandates.json",
+      "belegcategories.json",
+    ];
+
+    for (let filename of filenames) {
+      await downloadJSONFile(customerData.customer_api_token, filename);
+    }
+  };
 
   useEffect(() => {
     const setDataFromStorage = async () => {
@@ -35,6 +63,7 @@ const DrawerComponent = () => {
     };
 
     setDataFromStorage();
+    fetchData();
   }, [dispatch]);
 
   const { background, primary } = useSelector((state) => state.colorReducer);
