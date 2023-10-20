@@ -51,3 +51,66 @@ export const loadImages = async () => {
     logoImage: "",
   };
 };
+
+export const storeData = async (data) => {
+  try {
+    for (const [key, value] of Object.entries(data)) {
+      await AsyncStorage.setItem(`@${key}`, JSON.stringify(value));
+    }
+  } catch (e) {
+    console.error("Error in storeData", e);
+  }
+};
+
+export const loadData = async () => {
+  const defaultData = {
+    dataUpdate: {},
+    dataCustomer: {},
+    dataSettings: {},
+    dataLocations: {},
+    dataPersons: {},
+    dataMoreIndex: {},
+    dataMorePages: {},
+    dataMoreFAQs: {},
+    dataTextsnippets: {},
+    dataAppointments: {},
+    dataMoreDownloads: {},
+    dataMoreVideos: {},
+    dataNews: {},
+    dataMandates: {},
+    dataBelegcategories: {},
+  };
+  try {
+    for (const key in defaultData) {
+      const value = await AsyncStorage.getItem(`@${key}`);
+      if (value !== null) {
+        defaultData[key] = JSON.parse(value);
+      }
+    }
+    return defaultData;
+  } catch (e) {
+    console.error("Error in loadData", e);
+    return defaultData; // Wenn es einen Fehler gibt, geben Sie die Standardwerte zurück
+  }
+};
+
+export const storeDate = async (timestamp) => {
+  try {
+    await AsyncStorage.setItem("@timestamp", JSON.stringify(timestamp));
+  } catch (e) {
+    console.error("Error in storeDate", e);
+  }
+};
+
+export const loadDate = async () => {
+  try {
+    const value = await AsyncStorage.getItem("@timestamp");
+    if (value !== null) {
+      return JSON.parse(value); // Gibt den gespeicherten Timestamp zurück
+    }
+  } catch (e) {
+    console.error("Error in loadDate", e);
+  }
+
+  return "refresh"; // Rückgabe von "refresh" als Standardwert
+};

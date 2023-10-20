@@ -15,8 +15,15 @@ import { useSelector } from "react-redux";
 
 // Definition der Header-Komponente
 const Header = () => {
-  const { background, primary } = useSelector((state) => state.colorReducer);
+  
+  const [localDataSettings, setlocalDataSettings] = useState({});
+
+  const { dataSettings } = useSelector((state) => state.dataReducer);
   const { logoImage, lastUpdated } = useSelector((state) => state.imageReducer);
+
+  useEffect(() => {
+    setlocalDataSettings(JSON.parse(dataSettings));
+  }, [dataSettings]);
 
   // Wir definieren einen Zustand namens iconContainerWidth mit einem Anfangswert von 0.
   // Dieser Zustand wird dazu verwendet, die Breite des MenuIcon-Containers zu kontrollieren.
@@ -51,14 +58,14 @@ const Header = () => {
 
   // Rendering der Header-Komponente
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: localDataSettings.background_hex }]}>
       {/* Wir verwenden eine View-Komponente, um das MenuIcon zu umschließen. */}
       <View style={{ width: iconContainerWidth }}>
         {/* Das eigentliche Icon, welches beim Drücken das Drawer-Menü öffnet. */}
         <SimpleLineIcons
           name="layers"
           size={26}
-          color={primary}
+          color={localDataSettings.textcolor_hex}
           onPress={() => navigation.openDrawer()} // Beim Drücken wird die Drawer-Navigation geöffnet.
         />
       </View>
@@ -84,12 +91,12 @@ const Header = () => {
       >
         {/* Icon für Informationen */}
         <TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
-          <SimpleLineIcons color={primary} name="info" size={24} />
+          <SimpleLineIcons color={localDataSettings.textcolor_hex} name="info" size={24} />
         </TouchableOpacity>
 
         {/* Icon für Telefon, führt openfunc aus beim Drücken */}
         <TouchableOpacity onPress={() => openfunc()}>
-          <SimpleLineIcons color={primary} name="phone" size={24} />
+          <SimpleLineIcons color={localDataSettings.textcolor_hex} name="phone" size={24} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

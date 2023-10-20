@@ -36,14 +36,14 @@ export const useDownloadFile = () => {
           case "welcomeImage":
             dispatch(
               setWelcomeImage(
-                `file://${RNFileSystem.DocumentDirectoryPath}/${image}.jpg`
+                `file://${RNFileSystem.DocumentDirectoryPath}/welcomeImage.jpg`
               )
             );
             break;
           case "logoImage":
             dispatch(
               setLogoImage(
-                `file://${RNFileSystem.DocumentDirectoryPath}/${image}.jpg`
+                `file://${RNFileSystem.DocumentDirectoryPath}/logoImage.jpg`
               )
             );
             break;
