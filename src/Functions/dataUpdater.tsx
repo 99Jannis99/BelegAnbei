@@ -18,6 +18,7 @@ import {
   setDataNews,
   setDataMandates,
   setDataBelegcategories,
+  setDataDocuments,
   setWelcomeImage,
   setLogoImage,
 } from "../redux/actions";
@@ -219,15 +220,18 @@ export const useLoadAndStoreData = () => {
           case "dataBelegcategories":
             dispatch(setDataBelegcategories(value));
             break;
+          case "dataDocuments":
+            dispatch(setDataDocuments(value));
+            break;
           default:
             console.warn(`Unbekannter Schlüssel beim Laden der Daten: ${key}`);
             break;
         }
       }
-      return true;  // Erfolgreiche Ausführung
+      return true; // Erfolgreiche Ausführung
     } catch (error) {
       console.error("Error in loadAndStoreData", error);
-      return false;  // Fehler bei der Ausführung
+      return false; // Fehler bei der Ausführung
     }
   };
 

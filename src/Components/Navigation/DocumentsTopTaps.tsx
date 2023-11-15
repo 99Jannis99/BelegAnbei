@@ -6,6 +6,7 @@ import { RouteProp, ParamListBase } from "@react-navigation/native";
 
 import BeispielScreen from "../Screens/BeispielScreen";
 import DatevTopTaps from "./DatevTopTaps";
+import Standard from './StandardDocumentsStack'
 import useShouldShowDatevAsMain from "../../helpers/moduleCalculations";
 
 const DocumentsTopTaps = () => {
@@ -43,11 +44,11 @@ const DocumentsTopTaps = () => {
         screenOptions={getScreenOptions(background, primary)}
       >
         {modules.standard &&
-          renderTab("StandardDocuments", BeispielScreen, "Standard")}
+          renderTab("StandardDocuments", Standard, "Standard")}
         {modules.einkommenssteuer &&
           renderTab(
             "EinkommenssteuerDocuments",
-            BeispielScreen,
+            Standard,
             "Einkommens-\nsteuer"
           )}
         {shouldShowDatevAsMain ? (

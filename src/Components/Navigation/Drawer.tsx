@@ -1,26 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { SimpleLineIcons, Entypo } from "../../helpers/icons";
-import {
-  setBackground,
-  setPrimary,
-  setWelcomeImage,
-  setLogoImage,
-} from "../../redux/actions";
 import {
   useDownloadJSON,
   useLoadAndStoreData,
   useDownloadImage,
 } from "../../Functions/dataUpdater";
-import {
-  loadColors,
-  loadImages,
-  loadData,
-  loadDate,
-  storeDate,
-} from "../../redux/AsyncManager";
+import { loadDate, storeDate } from "../../redux/AsyncManager";
 import LottieView from "lottie-react-native";
 
 import originalCustomer from "../../../data/customer.json";
@@ -32,10 +20,7 @@ const DrawerComponent = () => {
   const [areDataLoaded, setDataLoaded] = useState(false);
   const [localDataSettings, setlocalDataSettings] = useState({});
 
-  const { background, primary } = useSelector((state) => state.colorReducer);
   const { dataSettings } = useSelector((state) => state.dataReducer);
-
-  const dispatch = useDispatch();
 
   const downloadJSONFile = useDownloadJSON();
   const loadAndStoreData = useLoadAndStoreData();
@@ -86,7 +71,7 @@ const DrawerComponent = () => {
   useEffect(() => {
     const setDataFromStorage = async () => {
       try {
-        const lastUpdateDate = await loadDate(); // Schritt 1: Laden Sie das gespeicherte Datum
+        const lastUpdateDate = await loadDate();
 
         // POST-Anfrage
         const response = await fetch(
@@ -98,7 +83,7 @@ const DrawerComponent = () => {
             },
             body: JSON.stringify({
               token: originalCustomer.customer_api_token,
-              last: lastUpdateDate, // Schritt 2: Verwenden Sie den geladenen Wert
+              last: lastUpdateDate,
             }),
           }
         );
@@ -111,11 +96,6 @@ const DrawerComponent = () => {
         } else {
           const loadAndStoreSuccess = await loadAndStoreData();
           if (loadAndStoreSuccess) {
-            console.log(
-              "dataSettings: ",
-              JSON.parse(dataSettings).background_hex
-            );
-            console.log("Type:", typeof dataSettings);
             setDataLoaded(true);
           }
         }

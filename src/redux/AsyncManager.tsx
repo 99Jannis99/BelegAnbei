@@ -79,6 +79,7 @@ export const loadData = async () => {
     dataNews: {},
     dataMandates: {},
     dataBelegcategories: {},
+    dataDocuments: {},
   };
   try {
     for (const key in defaultData) {

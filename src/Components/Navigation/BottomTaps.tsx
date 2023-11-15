@@ -1,36 +1,35 @@
-// Importieren der notwendigen Module und Komponenten aus React, React Native und anderen Bibliotheken
-import React from "react";
-import { View, StyleSheet } from "react-native"; // Grundlegende Komponenten für die UI
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
 import { SimpleLineIcons } from "../../helpers/icons";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"; // Navigation-Komponente für Tabs
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
 
-// Importieren zusätzlicher Bildschirmkomponenten
 import Welcome from "../Screens/Welcome";
 import SettingsTopTaps from "../Navigation/SettingsTopTaps";
 import DocumentsTopTaps from "../Navigation/DocumentsTopTaps";
-
-import BeispielScreen from "../Screens/BeispielScreen";
-import ChangeColor from "../Screens/ChangeColor";
-
+import Camera from "../Screens/Camera/Camera";
 import Header from "../shared/Header";
+import CameraStackNavigation from "./CameraStack";
 
-// Komponente für die unteren Tabs
 const BottomTaps = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
+  const [currentTab, setCurrentTab] = useState("Welcome");
+  const Tab = createMaterialTopTabNavigator();
 
-  const Tab = createMaterialTopTabNavigator(); // Erstellen eines Tab-Navigators
+  const getIcon = (name, focused) => (
+    <SimpleLineIcons
+      name={name}
+      size={22.5}
+      color={focused ? primary : "grey"}
+    />
+  );
 
-  // Render-Methode der Komponente
   return (
-    // Haupt-View-Komponente
     <View style={styles.Container}>
-      {/* Header Komponente mit Logo etc... */}
-      <Header />
+      {currentTab !== "Camera" && <Header />}
 
-      {/* Tab-Navigator-Komponente, die mehrere Bildschirme als Tabs anzeigt */}
       <Tab.Navigator
-        tabBarPosition="bottom" // Position der Tab-Leiste
+        tabBarPosition="bottom"
         screenOptions={{
           tabBarShowLabel: false,
           headerShown: false,
@@ -48,60 +47,53 @@ const BottomTaps = () => {
             height: 2,
             backgroundColor: primary,
           },
-        }} // Styling-Optionen für den Navigator
+        }}
       >
-        {/* Definieren der einzelnen Tabs mit zugehörigen Bildschirmkomponenten und Icons */}
         <Tab.Screen
-          name="Welcome" // Name des Tabs
-          component={Welcome} // Komponente, die im Tab angezeigt wird
-          options={{
-            tabBarIcon: (
-              { focused } // Icon für den Tab
-            ) =>
-              focused ? (
-                <SimpleLineIcons name="home" size={22.5} color={primary} />
-              ) : (
-                <SimpleLineIcons name="home" size={22.5} color="grey" />
-              ),
-          }}
+          name="Welcome"
+          component={Welcome}
+          options={{ tabBarIcon: ({ focused }) => getIcon("home", focused) }}
         />
-
-        {/* Weitere Tabs ... */}
         <Tab.Screen
           name="Settings"
           component={SettingsTopTaps}
           options={{
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <SimpleLineIcons name="settings" size={22.5} color={primary} />
-              ) : (
-                <SimpleLineIcons name="settings" size={22.5} color="grey" />
-              ),
+            tabBarIcon: ({ focused }) => getIcon("settings", focused),
           }}
         />
-        <Tab.Screen
+          <Tab.Screen
           name="Camera"
-          component={ChangeColor}
-          options={{
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <SimpleLineIcons name="camera" size={22.5} color={primary} />
-              ) : (
-                <SimpleLineIcons name="camera" size={22.5} color="grey" />
-              ),
+          component={CameraStackNavigation}
+          options={({ route, navigation }) => {
+            const focused = navigation.isFocused();
+            return {
+              tabBarIcon: ({ focused }) => getIcon("camera", focused),
+              tabBarStyle: focused
+                ? { height: 0, overflow: "hidden" }
+                : {
+                    backgroundColor: background,
+                    elevation: 0,
+                    height: 60,
+                    borderTopWidth: 1,
+                    borderTopColor: background,
+                  },
+            };
           }}
+          listeners={({ navigation }) => ({
+            focus: () => {
+              setCurrentTab("Camera");
+              navigation.setOptions({ tabBarVisible: false });
+            },
+            blur: () => {
+              setCurrentTab("Welcome");
+              navigation.setOptions({ tabBarVisible: true });
+            },
+          })}
         />
         <Tab.Screen
           name="Documents"
           component={DocumentsTopTaps}
-          options={{
-            tabBarIcon: ({ focused }) =>
-              focused ? (
-                <SimpleLineIcons name="docs" size={22.5} color={primary} />
-              ) : (
-                <SimpleLineIcons name="docs" size={22.5} color="grey" />
-              ),
-          }}
+          options={{ tabBarIcon: ({ focused }) => getIcon("docs", focused) }}
         />
       </Tab.Navigator>
     </View>
@@ -109,29 +101,9 @@ const BottomTaps = () => {
 };
 
 const styles = StyleSheet.create({
-  NavigatorScreenOptions: {
-    tabBarShowLabel: false,
-    headerShown: false,
-    swipeEnabled: false,
-    tabBarStyle: {
-      backgroundColor: "#121212",
-      elevation: 0,
-      height: 60,
-      borderTopWidth: 1,
-      borderTopColor: "#1b1b1b",
-    },
-    tabBarIndicatorStyle: {
-      position: "absolute",
-      top: 0,
-      height: 2,
-      backgroundColor: "#48ac98",
-    },
-  },
-
   Container: {
-    height: "100%",
+    flex: 1,
   },
 });
 
-// Exportieren der Komponente für die Verwendung in anderen Dateien
 export default BottomTaps;
