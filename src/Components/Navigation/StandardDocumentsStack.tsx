@@ -9,10 +9,18 @@ const Stack = createStackNavigator();
 const StandardDocumentsStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Standard" component={Standard} />
+      <Stack.Screen
+        name="Standard"
+        component={Standard}
+        options={{ headerShown: false }} // Header für Standard ausblenden
+      />
       <Stack.Screen
         name="StandardGroupeImages"
         component={StandardGroupeImages}
+        options={{
+          title: "Belegunterseite", // Titel für StandardGroupImages
+          headerBackTitleVisible: false, // Text des Zurück-Buttons ausblenden
+        }}
       />
     </Stack.Navigator>
   );

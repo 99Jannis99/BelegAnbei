@@ -28,12 +28,21 @@ const DocumentsTopTaps = () => {
         const data = await response.json();
         setModules(data);
       } catch (error) {
-        // console.log("Server is not running:", error);
+        console.log("Server is not running:", error);
       }
     };
-    fetchModules();
-    const interval = setInterval(fetchModules, 10000);
-    return () => clearInterval(interval);
+    // fetchModules();
+    // const interval = setInterval(fetchModules, 10000);
+    // return () => clearInterval(interval);
+    setModules({
+      standard: true,
+      einkommenssteuer: true,
+      belegzentrale: true,
+      datev: {
+        unternehmenonline: true,
+        meinesteuern: true,
+      },
+    });
   }, []);
   const shouldShowDatevAsMain = useShouldShowDatevAsMain(modules);
 

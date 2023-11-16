@@ -36,13 +36,22 @@ const SettingsTopTaps = () => {
     };
 
     // Initialer Abruf beim Mounten
-    fetchModules();
+    // fetchModules();
 
     // Polling: Alle 10 Sekunden abrufen
-    const interval = setInterval(fetchModules, 10000);
+    // const interval = setInterval(fetchModules, 10000);
 
     // Bei Unmounting: Interval löschen
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
+    setModules({
+      standard: true,
+      einkommenssteuer: true,
+      belegzentrale: true,
+      datev: {
+        unternehmenonline: true,
+        meinesteuern: true,
+      },
+    });
   }, []);
 
   // Bedingung, um festzustellen, ob DATEV als Hauptelement im Navigator angezeigt werden soll

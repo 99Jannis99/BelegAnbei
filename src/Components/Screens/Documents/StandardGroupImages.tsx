@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     marginVertical: margin / 2,
     alignItems: "center", // Zentrieren der Kinder horizontal
     justifyContent: "center", // Zentrieren der Kinder vertikal
-    backgroundColor: "white",
     position: "relative", // Damit die Buttons absolut positioniert werden können
   },
   image: {
