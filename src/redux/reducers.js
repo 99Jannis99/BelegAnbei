@@ -18,6 +18,7 @@ import {
   SET_DATA_NEWS,
   SET_DATA_MANDATES,
   SET_DATA_BELEGCATEGORIES,
+  SET_DATA_STYLE,
   SET_DATA_DOCUMENTS,
   ADD_DATA_DOCUMENTS,
 } from "./actions.js";
@@ -81,6 +82,7 @@ const dataInitialState = {
   dataNews: "{}",
   dataMandates: "{}",
   dataBelegcategories: "{}",
+  dataStyles: "{}",
   dataDocuments: {},
 };
 
@@ -116,6 +118,8 @@ export function dataReducer(state = dataInitialState, action) {
       return { ...state, dataMandates: action.payload };
     case SET_DATA_BELEGCATEGORIES:
       return { ...state, dataBelegcategories: action.payload };
+    case SET_DATA_STYLE:
+      return { ...state, dataStyle: action.payload };
     case SET_DATA_DOCUMENTS:
       return {
         ...state,

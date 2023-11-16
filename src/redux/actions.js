@@ -17,6 +17,7 @@ export const SET_DATA_MORE_VIDEOS = "SET_DATA_MORE_VIDEOS";
 export const SET_DATA_NEWS = "SET_DATA_NEWS";
 export const SET_DATA_MANDATES = "SET_DATA_MANDATES";
 export const SET_DATA_BELEGCATEGORIES = "SET_DATA_BELEGCATEGORIES";
+export const SET_DATA_STYLE = "SET_DATA_STYLE";
 export const SET_DATA_DOCUMENTS = "SET_DATA_DOCUMENTS";
 export const ADD_DATA_DOCUMENTS = "ADD_DATA_DOCUMENTS";
 
@@ -153,10 +154,16 @@ export const setDataBelegcategories = (data) => (dispatch) => {
   });
 };
 
-export const setDataDocuments = (dataDocuments) => (dispatch) => {
+export const setDataStyle = (data) => (dispatch) => {
   dispatch({
-    type: SET_DATA_DOCUMENTS,
-    payload: dataDocuments,
+    type: SET_DATA_STYLE,
+    payload: data,
+  });
+};
+export const setDataDocuments = (dataStyles) => (dispatch) => {
+  dispatch({
+    type: SET_DATA_STYLES,
+    payload: dataStyles,
   });
 };
 

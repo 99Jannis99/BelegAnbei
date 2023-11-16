@@ -46,6 +46,7 @@ const DrawerComponent = () => {
         "news.json",
         "mandates.json",
         "belegcategories.json",
+        "style.json",
       ];
       const imageNames = ["homeImg.jpg", "header.png"];
 

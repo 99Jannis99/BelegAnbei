@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 
 const CameraStackNavigation = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
-  const { dataMorePages } = useSelector((state) => state.dataReducer);
+  // const { dataStyle } = useSelector((state) => state.dataReducer);
 
   useEffect(() => {
     const checkCameraPermission = async () => {
@@ -22,9 +22,9 @@ const CameraStackNavigation = () => {
     checkCameraPermission();
   }, []);
 
-  useEffect(() => {
-    console.log(dataMorePages);
-  }, [dataMorePages]);
+  // useEffect(() => {
+  //   console.log(dataStyle);
+  // }, [dataStyle]);
 
   return (
     <Stack.Navigator>

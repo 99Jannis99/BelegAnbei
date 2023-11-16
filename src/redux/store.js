@@ -46,6 +46,7 @@ Store.subscribe(() => {
     dataNews: dataReducer.dataNews,
     dataMandates: dataReducer.dataMandates,
     dataBelegcategories: dataReducer.dataBelegcategories,
+    dataStyles: dataReducer.dataStyles,
     dataDocuments: dataReducer.dataDocuments,
   });
 });

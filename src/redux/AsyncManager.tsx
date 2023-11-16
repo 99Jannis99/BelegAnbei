@@ -79,6 +79,7 @@ export const loadData = async () => {
     dataNews: {},
     dataMandates: {},
     dataBelegcategories: {},
+    dataStyle: {},
     dataDocuments: {},
   };
   try {

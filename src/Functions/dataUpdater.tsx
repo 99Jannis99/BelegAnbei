@@ -18,6 +18,7 @@ import {
   setDataNews,
   setDataMandates,
   setDataBelegcategories,
+  setDataStyle,
   setDataDocuments,
   setWelcomeImage,
   setLogoImage,
@@ -94,6 +95,10 @@ export const useDownloadJSON = () => {
             dispatch(setDataBelegcategories(res.data));
             // console.log("belegcategories"," :",res.data);
             break;
+            case "style.json":
+              dispatch(setDataStyle(res.data));
+              // console.log("belegcategories"," :",res.data);
+              break;
           default:
             break;
         }
@@ -219,6 +224,9 @@ export const useLoadAndStoreData = () => {
             break;
           case "dataBelegcategories":
             dispatch(setDataBelegcategories(value));
+            break;
+          case "dataStyle":
+            dispatch(setDataStyle(value));
             break;
           case "dataDocuments":
             dispatch(setDataDocuments(value));
