@@ -160,10 +160,10 @@ export const setDataStyle = (data) => (dispatch) => {
     payload: data,
   });
 };
-export const setDataDocuments = (dataStyles) => (dispatch) => {
+export const setDataDocuments = (dataDocuments) => (dispatch) => {
   dispatch({
-    type: SET_DATA_STYLES,
-    payload: dataStyles,
+    type: SET_DATA_DOCUMENTS,
+    payload: dataDocuments,
   });
 };
 
