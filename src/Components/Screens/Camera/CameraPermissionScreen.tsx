@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,43 +6,22 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { request, PERMISSIONS, RESULTS } from "react-native-permissions";
+import RenderHtml from "react-native-render-html";
+import { useSelector } from "react-redux";
 
 const CameraPermissionScreen = ({ navigation }) => {
+  const { dataMorePages } = useSelector((state) => state.dataReducer);
+  const [data, setData] = useState(null);
   const dispatch = useDispatch();
-  const data = {
-    sections: [
-      {
-        header: "Willkommen bei der App für den digitalen Belegtransfer",
-        content:
-          "Die App ermöglicht es Mandanten, fehlende Belege bequem zu übermitteln, die direkt von unserem Onlinebuchungssystem digital weiterverarbeitet werden. Dies gilt für Dokumente, vorhandene Fotos und PDFs. Beachten Sie bitte, dass die über diese App eingesendeten Belege/Fotos zu dimento.com gesendet werden.",
-      },
-      {
-        header: "Impressum",
-        content:
-          "dimento.com GmbH\nHammer Straße 89, 48153 Münster\nTel.: +49 251 / 3 22 65 44 - 0\nFax: +49 251 / 3 22 65 44 - 99\nInternet: dimento.com\nE-Mail: info@dimento.com\nGeschäftsführer: Dieter Stratmann\nKontakt: d.stratmann@dimento.com\nUmsatzsteuer-ID-Nr. DE275065739\nHRB 13011",
-      },
-      {
-        header: "Nutzungsbedingungen",
-        content:
-          "Bitte beachten Sie, dass dimento.com und Kanzlei Mustermann (fiktiv) keine Steuerberatungskanzleien sind. Die Nutzung der App erfolgt unter Ausschluss jeglicher Haftung. Die übermittelten Daten sind sicher, jedoch wird keine Haftung für Ausspionieren, Sabotage, Veränderung und Vernichtung übernommen. Die Inhalte der App unterliegen dem Urheberrecht und anderen Schutzgesetzen. Die App speichert Daten, die nicht in unserem Verantwortungsbereich fallen. Erst mit Eingang der übermittelten Daten in unserer Kanzlei übernehmen wir die Verantwortung.",
-      },
-      {
-        header: "Datenschutzerklärung",
-        content:
-          "Unsere App erfordert Zugriff auf bestimmte Schnittstellen Ihres Geräts wie Kamera, Speicher, Internet und Konten. Die Datenübertragung erfolgt verschlüsselt zum Schutz vor unbefugtem Zugriff. Wir sammeln personenbezogene Daten wie Name, Mandantennummer, E-Mail-Adresse und Telefonnummer nur zu dem Zweck, Ihre eingesendeten Belege zuzuordnen und Push-Nachrichten zu adressieren. Die Datenerhebung erfolgt nur mit Ihrer ausdrücklichen Zustimmung. Sie haben jederzeit das Recht auf Auskunft, Berichtigung, Sperrung oder Löschung Ihrer Daten.",
-      },
-      {
-        header: "Leistung + Nutzen",
-      },
-      {
-        header: "Zusatzmodule",
-      },
-    ],
-  };
+
+  useEffect(() => {
+    setData(JSON.parse(dataMorePages));
+  }, [dataMorePages]);
 
   const handleAccept = async () => {
     request(PERMISSIONS.ANDROID.CAMERA)
@@ -77,12 +56,15 @@ const CameraPermissionScreen = ({ navigation }) => {
       });
   };
   const renderSections = () => {
-    return data.sections.map((section, index) => (
-      <View key={index}>
-        {section.header && <Text style={styles.header}>{section.header}</Text>}
-        <Text style={styles.paragraph}>{section.content}</Text>
-      </View>
-    ));
+    const { width } = useWindowDimensions();
+    if (Array.isArray(data)) {
+      return data.map((item, index) => (
+        <View key={index}>
+          {item.headline && <Text style={styles.header}>{item.headline}</Text>}
+          <RenderHtml contentWidth={width} source={{ html: item.content }} />
+        </View>
+      ));
+    }
   };
 
   return (
