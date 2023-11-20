@@ -82,7 +82,7 @@ const dataInitialState = {
   dataNews: "{}",
   dataMandates: "{}",
   dataBelegcategories: "{}",
-  dataStyles: "{}",
+  dataStyle: "{}",
   dataDocuments: {},
 };
 
