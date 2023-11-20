@@ -15,15 +15,19 @@ import { useSelector } from "react-redux";
 
 // Definition der Header-Komponente
 const Header = () => {
-  
   const [localDataSettings, setlocalDataSettings] = useState({});
+  const [localDataStyle, setLocalDataStyle] = useState({});
 
-  const { dataSettings } = useSelector((state) => state.dataReducer);
+  const { dataSettings, dataStyle } = useSelector((state) => state.dataReducer);
   const { logoImage, lastUpdated } = useSelector((state) => state.imageReducer);
 
   useEffect(() => {
     setlocalDataSettings(JSON.parse(dataSettings));
   }, [dataSettings]);
+
+  useEffect(() => {
+    setLocalDataStyle(JSON.parse(dataStyle));
+  }, [dataStyle]);
 
   // Wir definieren einen Zustand namens iconContainerWidth mit einem Anfangswert von 0.
   // Dieser Zustand wird dazu verwendet, die Breite des MenuIcon-Containers zu kontrollieren.
@@ -58,14 +62,19 @@ const Header = () => {
 
   // Rendering der Header-Komponente
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: localDataSettings.background_hex }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: localDataStyle.top_toolbar_background_color},
+      ]}
+    >
       {/* Wir verwenden eine View-Komponente, um das MenuIcon zu umschließen. */}
       <View style={{ width: iconContainerWidth }}>
         {/* Das eigentliche Icon, welches beim Drücken das Drawer-Menü öffnet. */}
         <SimpleLineIcons
-          name="layers"
+          name="menu"
           size={26}
-          color={localDataSettings.textcolor_hex}
+          color={localDataStyle.top_toolbar_icon_color}
           onPress={() => navigation.openDrawer()} // Beim Drücken wird die Drawer-Navigation geöffnet.
         />
       </View>
@@ -91,12 +100,20 @@ const Header = () => {
       >
         {/* Icon für Informationen */}
         <TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
-          <SimpleLineIcons color={localDataSettings.textcolor_hex} name="info" size={24} />
+          <SimpleLineIcons
+            color={localDataStyle.top_toolbar_icon_color}
+            name="info"
+            size={24}
+          />
         </TouchableOpacity>
 
         {/* Icon für Telefon, führt openfunc aus beim Drücken */}
         <TouchableOpacity onPress={() => openfunc()}>
-          <SimpleLineIcons color={localDataSettings.textcolor_hex} name="phone" size={24} />
+          <SimpleLineIcons
+            color={localDataStyle.top_toolbar_icon_color}
+            name="phone"
+            size={24}
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

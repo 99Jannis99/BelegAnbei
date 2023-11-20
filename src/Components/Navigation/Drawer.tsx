@@ -19,12 +19,17 @@ import BeispielScreen from "../Screens/BeispielScreen";
 const DrawerComponent = () => {
   const [areDataLoaded, setDataLoaded] = useState(false);
   const [localDataSettings, setlocalDataSettings] = useState({});
+  const [localDataStyle, setLocalDataStyle] = useState({});
 
-  const { dataSettings } = useSelector((state) => state.dataReducer);
+  const { dataSettings, dataStyle } = useSelector((state) => state.dataReducer);
 
   const downloadJSONFile = useDownloadJSON();
   const loadAndStoreData = useLoadAndStoreData();
   const downloadImage = useDownloadImage();
+
+  useEffect(() => {
+    setLocalDataStyle(JSON.parse(dataStyle));
+  }, [dataStyle]);
 
   const fetchData = async () => {
     try {
@@ -131,7 +136,7 @@ const DrawerComponent = () => {
     <Drawer.Navigator
       screenOptions={{
         drawerStyle: {
-          backgroundColor: localDataSettings.background_hex,
+          backgroundColor: localDataStyle.,
         },
         drawerActiveBackgroundColor: localDataSettings.statusbar_hex,
         drawerInactiveTintColor: "grey",

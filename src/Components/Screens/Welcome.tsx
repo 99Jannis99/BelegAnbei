@@ -17,6 +17,8 @@ const Welcome = () => {
   );
   const [localDataSettings, setlocalDataSettings] = useState({});
   const [localDataMorePages, setLocalDataMorePages] = useState(null);
+  const [localDataStyle, setLocalDataStyle] = useState({});
+
   const { width } = useWindowDimensions();
 
   // console.log("dataSettings: ", JSON.parse(dataSettings).statusbar_hex);
@@ -33,14 +35,14 @@ const Welcome = () => {
   }, [dataMorePages]);
 
   useEffect(() => {
-    console.log(dataStyle)
+    setLocalDataStyle(JSON.parse(dataStyle));
   }, [dataStyle]);
 
   return (
     <ScrollView
       style={[
         styles.container,
-        { backgroundColor: localDataSettings.background_hex },
+        { backgroundColor: localDataStyle.body_background_color },
       ]}
     >
       <Image
@@ -51,7 +53,15 @@ const Welcome = () => {
       {/* Textkomponenten */}
       {localDataMorePages && (
         <View style={styles.content}>
-          <Text style={styles.header}>
+          <Text
+            style={[
+              styles.header,
+              {
+                color: localDataStyle.body_headline_color,
+                fontFamily: localDataStyle.body_font_family,
+              },
+            ]}
+          >
             {localDataMorePages.find((item) => item.callname === "home")
               ?.headline || ""}
           </Text>

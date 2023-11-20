@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, TouchableHighlight } from "react-native";
 import { SimpleLineIcons } from "../../helpers/icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
@@ -7,94 +7,106 @@ import { useSelector } from "react-redux";
 import Welcome from "../Screens/Welcome";
 import SettingsTopTaps from "../Navigation/SettingsTopTaps";
 import DocumentsTopTaps from "../Navigation/DocumentsTopTaps";
-import Camera from "../Screens/Camera/Camera";
-import Header from "../shared/Header";
 import CameraStackNavigation from "./CameraStack";
+import Header from "../shared/Header";
 
 const BottomTaps = () => {
-  const { background, primary } = useSelector((state) => state.colorReducer);
-  const [currentTab, setCurrentTab] = useState("Welcome");
+  const { background } = useSelector((state) => state.colorReducer);
+  const { dataStyle } = useSelector((state) => state.dataReducer);
+
+  const [localDataStyle, setLocalDataStyle] = useState({});
+  const [pressedIndex, setPressedIndex] = useState(null);
+
   const Tab = createMaterialTopTabNavigator();
 
-  const getIcon = (name, focused) => (
-    <SimpleLineIcons
-      name={name}
-      size={22.5}
-      color={focused ? primary : "grey"}
-    />
-  );
+  useEffect(() => {
+    setLocalDataStyle(JSON.parse(dataStyle));
+  }, [dataStyle]);
+
+  const getIcon = (routeName, focused) => {
+    let iconName;
+
+    // Zuordnung der Routennamen zu den Icon-Namen
+    switch (routeName) {
+      case "welcome":
+        iconName = "home"; // Ersetzen Sie 'home' mit dem tatsächlichen Icon-Namen für 'Welcome'
+        break;
+      case "settings":
+        iconName = "settings"; // Ersetzen Sie 'settings' mit dem tatsächlichen Icon-Namen für 'Settings'
+        break;
+      case "camera":
+        iconName = "camera"; // Ersetzen Sie 'camera' mit dem tatsächlichen Icon-Namen für 'Camera'
+        break;
+      case "documents":
+        iconName = "docs"; // Ersetzen Sie 'docs' mit dem tatsächlichen Icon-Namen für 'Documents'
+        break;
+      default:
+        iconName = "question"; // Ein Standard-Icon, falls kein passendes gefunden wird
+    }
+    return (
+      <SimpleLineIcons
+        name={iconName}
+        size={22.5}
+        color={
+          focused
+            ? localDataStyle.bottom_toolbar_icon_active_color
+            : localDataStyle.bottom_toolbar_icon_color
+        }
+      />
+    );
+  };
+
+  const CustomTabBar = ({ state, descriptors, navigation }) => {
+    return (
+      <View style={{ flexDirection: "row", height: 60 }}>
+        {state.routes.map((route, index) => {
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            navigation.navigate(route.name);
+          };
+
+          return (
+            <TouchableHighlight
+              key={route.key}
+              underlayColor={
+                localDataStyle.bottom_toolbar_background_active_color
+              }
+              onPress={onPress}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: isFocused
+                  ? localDataStyle.bottom_toolbar_background_active_color
+                  : localDataStyle.bottom_toolbar_background_color,
+              }}
+            >
+              {getIcon(route.name.toLowerCase(), isFocused)}
+            </TouchableHighlight>
+          );
+        })}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.Container}>
-      {currentTab !== "Camera" && <Header />}
+      <Header />
 
       <Tab.Navigator
         tabBarPosition="bottom"
+        tabBar={(props) => <CustomTabBar {...props} />}
         screenOptions={{
           tabBarShowLabel: false,
           headerShown: false,
           swipeEnabled: false,
-          tabBarStyle: {
-            backgroundColor: background,
-            elevation: 0,
-            height: 60,
-            borderTopWidth: 1,
-            borderTopColor: background,
-          },
-          tabBarIndicatorStyle: {
-            position: "absolute",
-            top: 0,
-            height: 2,
-            backgroundColor: primary,
-          },
         }}
       >
-        <Tab.Screen
-          name="Welcome"
-          component={Welcome}
-          options={{ tabBarIcon: ({ focused }) => getIcon("home", focused) }}
-        />
-        <Tab.Screen
-          name="Settings"
-          component={SettingsTopTaps}
-          options={{
-            tabBarIcon: ({ focused }) => getIcon("settings", focused),
-          }}
-        />
-          <Tab.Screen
-          name="Camera"
-          component={CameraStackNavigation}
-          options={({ route, navigation }) => {
-            const focused = navigation.isFocused();
-            return {
-              tabBarIcon: ({ focused }) => getIcon("camera", focused),
-              tabBarStyle: focused
-                ? { height: 0, overflow: "hidden" }
-                : {
-                    backgroundColor: background,
-                    elevation: 0,
-                    height: 60,
-                    borderTopWidth: 1,
-                    borderTopColor: background,
-                  },
-            };
-          }}
-          listeners={({ navigation }) => ({
-            focus: () => {
-              setCurrentTab("Camera");
-              navigation.setOptions({ tabBarVisible: false });
-            },
-            blur: () => {
-              setCurrentTab("Welcome");
-              navigation.setOptions({ tabBarVisible: true });
-            },
-          })}
-        />
-        <Tab.Screen
-          name="Documents"
-          component={DocumentsTopTaps}
-          options={{ tabBarIcon: ({ focused }) => getIcon("docs", focused) }}
-        />
+        <Tab.Screen name="Welcome" component={Welcome} />
+        <Tab.Screen name="Settings" component={SettingsTopTaps} />
+        <Tab.Screen name="Camera" component={CameraStackNavigation} />
+        <Tab.Screen name="Documents" component={DocumentsTopTaps} />
       </Tab.Navigator>
     </View>
   );
