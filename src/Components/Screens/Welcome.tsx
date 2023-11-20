@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, ScrollView, Image, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 import { useSelector } from "react-redux";
+import RenderHtml from "react-native-render-html";
+import { use } from "i18next";
 
 const Welcome = () => {
-  const { dataCustomer, dataSettings } = useSelector(
+  const { dataCustomer, dataSettings, dataMorePages, dataStyle } = useSelector(
     (state) => state.dataReducer
   );
   const [localDataSettings, setlocalDataSettings] = useState({});
+  const [localDataMorePages, setLocalDataMorePages] = useState(null);
+  const { width } = useWindowDimensions();
 
   // console.log("dataSettings: ", JSON.parse(dataSettings).statusbar_hex);
   const { welcomeImage, lastUpdated } = useSelector(
@@ -16,6 +27,14 @@ const Welcome = () => {
   useEffect(() => {
     setlocalDataSettings(JSON.parse(dataSettings));
   }, [dataSettings]);
+
+  useEffect(() => {
+    setLocalDataMorePages(JSON.parse(dataMorePages));
+  }, [dataMorePages]);
+
+  useEffect(() => {
+    console.log(dataStyle)
+  }, [dataStyle]);
 
   return (
     <ScrollView
@@ -30,8 +49,24 @@ const Welcome = () => {
       />
 
       {/* Textkomponenten */}
+      {localDataMorePages && (
+        <View style={styles.content}>
+          <Text style={styles.header}>
+            {localDataMorePages.find((item) => item.callname === "home")
+              ?.headline || ""}
+          </Text>
+          <RenderHtml
+            contentWidth={width}
+            source={{
+              html:
+                localDataMorePages.find((item) => item.callname === "home")
+                  ?.content || "",
+            }}
+          />
+        </View>
+      )}
 
-      <Text
+      {/* <Text
         style={[styles.headline, { color: localDataSettings.textcolor_hex }]}
       >
         {JSON.parse(dataCustomer).customer_name} !!
@@ -74,7 +109,7 @@ const Welcome = () => {
         tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
         minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
         nisl ut aliquip ex ea commodo consequat.
-      </Text>
+      </Text> */}
     </ScrollView>
   );
 };
@@ -83,6 +118,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  content: {
+    padding: 20,
   },
   image: {
     width: "100%", // Bildbreite nimmt den gesamten verfügbaren Platz ein
@@ -99,6 +137,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10, // Innenabstand um den Text
     paddingHorizontal: 20,
     fontSize: 16, // Schriftgröße des Textes
+  },
+  header: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginTop: 10,
+    marginBottom: 5,
+    color: "black",
   },
 });
 
