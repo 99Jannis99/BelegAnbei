@@ -136,7 +136,7 @@ const DrawerComponent = () => {
     <Drawer.Navigator
       screenOptions={{
         drawerStyle: {
-          backgroundColor: localDataStyle.,
+          backgroundColor: localDataStyle,
         },
         drawerActiveBackgroundColor: localDataSettings.statusbar_hex,
         drawerInactiveTintColor: "grey",

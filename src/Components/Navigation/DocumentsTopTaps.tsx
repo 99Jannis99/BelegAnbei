@@ -1,149 +1,174 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableHighlight, Text } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
-import { RouteProp, ParamListBase } from "@react-navigation/native";
 
 import BeispielScreen from "../Screens/BeispielScreen";
 import DatevTopTaps from "./DatevTopTaps";
-import Standard from './StandardDocumentsStack'
+import Standard from "./StandardDocumentsStack";
 import useShouldShowDatevAsMain from "../../helpers/moduleCalculations";
+
+const Tab = createMaterialTopTabNavigator();
+
+const CustomTabBar = ({ state, descriptors, navigation }) => {
+  const { dataStyle } = useSelector((state) => state.dataReducer);
+  const [localDataStyle, setLocalDataStyle] = useState({});
+
+  useEffect(() => {
+    setLocalDataStyle(JSON.parse(dataStyle));
+  }, [dataStyle]);
+
+  return (
+    <View style={styles.tabContainer}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label = options.tabBarLabel || options.title || route.name;
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableHighlight
+            key={route.key}
+            underlayColor={localDataStyle.section_switcher_active_background}
+            onPress={onPress}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: isFocused
+                ? localDataStyle.section_switcher_active_background
+                : localDataStyle.section_switcher_background,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                color: isFocused
+                  ? localDataStyle.section_switcher_active_color
+                  : localDataStyle.section_switcher_color,
+              }}
+            >
+              {label}
+            </Text>
+          </TouchableHighlight>
+        );
+      })}
+    </View>
+  );
+};
 
 const DocumentsTopTaps = () => {
   const { background, primary } = useSelector((state) => state.colorReducer);
-
   const [modules, setModules] = useState({
-    standard: false,
-    einkommenssteuer: false,
-    belegzentrale: false,
+    standard: true,
+    einkommenssteuer: true,
+    belegzentrale: true,
     datev: {
       unternehmenonline: true,
-      meinesteuern: false,
+      meinesteuern: true,
     },
   });
-  useEffect(() => {
-    const fetchModules = async () => {
-      try {
-        const response = await fetch("http://192.168.178.98:5000/api/modules");
-        const data = await response.json();
-        setModules(data);
-      } catch (error) {
-        console.log("Server is not running:", error);
-      }
-    };
-    // fetchModules();
-    // const interval = setInterval(fetchModules, 10000);
-    // return () => clearInterval(interval);
-    setModules({
-      standard: true,
-      einkommenssteuer: true,
-      belegzentrale: true,
-      datev: {
-        unternehmenonline: true,
-        meinesteuern: true,
-      },
-    });
-  }, []);
+
   const shouldShowDatevAsMain = useShouldShowDatevAsMain(modules);
 
   return (
     <View style={styles.Container}>
       <Tab.Navigator
+        tabBar={(props) => <CustomTabBar {...props} />}
         tabBarPosition="top"
-        screenOptions={getScreenOptions(background, primary)}
+        screenOptions={{
+          tabBarShowLabel: true,
+          headerShown: false,
+          swipeEnabled: true,
+          tabBarStyle: {
+            backgroundColor: background,
+            elevation: 0,
+            height: 60,
+            borderTopWidth: 0,
+            borderTopColor: background,
+          },
+          tabBarIndicatorStyle: {
+            position: "absolute",
+            bottom: 0,
+            height: 2,
+            backgroundColor: primary,
+          },
+          tabBarActiveTintColor: primary,
+          tabBarInactiveTintColor: "grey",
+          tabBarLabelStyle: {
+            textTransform: "none",
+            fontSize: 12,
+          },
+        }}
       >
-        {modules.standard &&
-          renderTab("StandardDocuments", Standard, "Standard")}
-        {modules.einkommenssteuer &&
-          renderTab(
-            "EinkommenssteuerDocuments",
-            Standard,
-            "Einkommens-\nsteuer"
-          )}
+        {modules.standard && (
+          <Tab.Screen
+            name="StandardDocuments"
+            component={Standard}
+            options={{ tabBarLabel: "Standard" }}
+          />
+        )}
+        {modules.einkommenssteuer && (
+          <Tab.Screen
+            name="EinkommenssteuerDocuments"
+            component={Standard}
+            options={{ tabBarLabel: "Einkom-\nmenssteuer" }}
+          />
+        )}
         {shouldShowDatevAsMain ? (
-          renderTab("DatevDocuments", DatevTopTaps, "DATEV")
+          <Tab.Screen
+            name="DatevDocuments"
+            component={DatevTopTaps}
+            options={{ tabBarLabel: "DATEV" }}
+          />
         ) : (
           <>
-            {modules.datev.unternehmenonline &&
-              renderTab(
-                "UnternehmenOnlineDocuments",
-                BeispielScreen,
-                "Unternehmen Online"
-              )}
-            {modules.datev.meinesteuern &&
-              renderTab(
-                "MeineSteuernDocuments",
-                BeispielScreen,
-                "Meine Steuern"
-              )}
+            {modules.datev.unternehmenonline && (
+              <Tab.Screen
+                name="UnternehmenOnlineDocuments"
+                component={BeispielScreen}
+                options={{ tabBarLabel: "Unternehmen Online" }}
+              />
+            )}
+            {modules.datev.meinesteuern && (
+              <Tab.Screen
+                name="MeineSteuernDocuments"
+                component={BeispielScreen}
+                options={{ tabBarLabel: "Meine Steuern" }}
+              />
+            )}
           </>
         )}
-        {modules.belegzentrale &&
-          renderTab(
-            "BelegzentraleDocuments",
-            BeispielScreen,
-            "Beleg-\nzentrale"
-          )}
+        {modules.belegzentrale && (
+          <Tab.Screen
+            name="BelegzentraleDocuments"
+            component={BeispielScreen}
+            options={{ tabBarLabel: "Beleg-\nzentrale" }}
+          />
+        )}
       </Tab.Navigator>
     </View>
   );
 };
 
-const Tab = createMaterialTopTabNavigator();
-const renderTab = (
-  name: string,
-  component:
-    | React.ComponentType<{}>
-    | React.ComponentType<{
-        route: RouteProp<ParamListBase, any>;
-        navigation: any;
-      }>,
-  label: string
-) => (
-  <Tab.Screen
-    name={name}
-    component={component}
-    options={{ tabBarLabel: label }}
-  />
-);
-
-const getScreenOptions = (background: any, primary: any) => ({
-  ...styles.Navigator,
-  tabBarStyle: {
-    ...styles.Navigator.tabBarStyle,
-    backgroundColor: background,
-    borderTopColor: background,
-  },
-  tabBarIndicatorStyle: {
-    ...styles.Navigator.tabBarIndicatorStyle,
-    backgroundColor: primary,
-  },
-  tabBarActiveTintColor: primary,
-});
-
 const styles = StyleSheet.create({
   Container: {
     height: "100%",
   },
-  Navigator: {
-    tabBarShowLabel: true,
-    headerShown: false,
-    swipeEnabled: true,
-    tabBarStyle: {
-      elevation: 0,
-      height: 60,
-      borderTopWidth: 0,
-    },
-    tabBarIndicatorStyle: {
-      position: "absolute",
-      bottom: 0,
-      height: 2,
-    },
-    tabBarInactiveTintColor: "grey",
-    tabBarLabelStyle: {
-      textTransform: "none",
-      fontSize: 12,
-    },
+  tabContainer: {
+    flexDirection: "row",
+    height: 60,
   },
 });
 

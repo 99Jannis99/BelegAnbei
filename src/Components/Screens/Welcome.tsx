@@ -36,13 +36,17 @@ const Welcome = () => {
 
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
+    console.log(dataStyle)
   }, [dataStyle]);
 
   return (
     <ScrollView
       style={[
         styles.container,
-        { backgroundColor: localDataStyle.body_background_color },
+        { 
+          backgroundColor: localDataStyle.body_background_color
+          // backgroundColor: localDataStyle.body_font_color
+         },
       ]}
     >
       <Image
