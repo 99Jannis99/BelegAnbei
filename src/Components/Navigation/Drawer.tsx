@@ -12,16 +12,19 @@ import { loadDate, storeDate } from "../../redux/AsyncManager";
 import LottieView from "lottie-react-native";
 
 import originalCustomer from "../../../data/customer.json";
-
 import BottomTaps from "./BottomTaps";
 import BeispielScreen from "../Screens/BeispielScreen";
 
 const DrawerComponent = () => {
   const [areDataLoaded, setDataLoaded] = useState(false);
   const [localDataSettings, setlocalDataSettings] = useState({});
+  const [localDataMoreIndex, setlocalDataMoreIndex] = useState([]);
+
   const [localDataStyle, setLocalDataStyle] = useState({});
 
-  const { dataSettings, dataStyle } = useSelector((state) => state.dataReducer);
+  const { dataSettings, dataStyle, dataMoreIndex } = useSelector(
+    (state) => state.dataReducer
+  );
 
   const downloadJSONFile = useDownloadJSON();
   const loadAndStoreData = useLoadAndStoreData();
@@ -29,7 +32,12 @@ const DrawerComponent = () => {
 
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
+    console.log(dataStyle);
   }, [dataStyle]);
+  useEffect(() => {
+    setlocalDataMoreIndex(JSON.parse(dataMoreIndex));
+    // console.log(JSON.parse(dataMoreIndex));
+  }, [dataMoreIndex]);
 
   const fetchData = async () => {
     try {
@@ -118,6 +126,58 @@ const DrawerComponent = () => {
 
   const Drawer = createDrawerNavigator();
 
+  const getIcon = (iconName, size, focused, color) => {
+    // Icon Auswahl basierend auf iconName
+    // switch (iconName) {
+    //   case "location-arrow":
+    //     return <Entypo name={iconName} size={size} color={color} />;
+    //   // Fügen Sie hier weitere Fälle für unterschiedliche Icons hinzu
+    //   default:
+    //     return <SimpleLineIcons name={iconName} size={size} color={color} />;
+    // }
+    return (
+      <SimpleLineIcons
+        name={"menu"}
+        size={size}
+        color={
+          focused
+            ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+            : localDataStyle.bottom_toolbar_icon_color
+        }
+      />
+    );
+  };
+
+  const createDrawerScreens = () => {
+    if (!Array.isArray(localDataMoreIndex)) {
+      return null;
+    }
+
+    return localDataMoreIndex.map((screenGroup, index) => {
+      return screenGroup.blocks.map((block, blockIndex) => {
+        if (block.active === "1") {
+          return (
+            <Drawer.Screen
+              key={`${index}-${blockIndex}`}
+              name={block.label}
+              component={BeispielScreen} // Ersetzen Sie dies durch Ihre entsprechende Komponente
+              options={{
+                headerShown: false,
+                drawerIcon: ({ focused, size }) =>
+                  getIcon(
+                    block.icon,
+                    size,
+                    focused,
+                    localDataSettings.textcolor_hex
+                  ),
+              }}
+            />
+          );
+        }
+      });
+    });
+  };
+
   if (!areDataLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -133,14 +193,55 @@ const DrawerComponent = () => {
   }
 
   return (
+    // <Drawer.Navigator
+    //   screenOptions={{
+    //     drawerStyle: {
+    //       backgroundColor: localDataStyle,
+    //     },
+    //     drawerActiveBackgroundColor: localDataSettings.statusbar_hex,
+    //     drawerInactiveTintColor: "grey",
+    //     drawerActiveTintColor: localDataSettings.textcolor_hex,
+    //   }}
+    // >
+    //   <Drawer.Screen
+    //     name="Home"
+    //     options={{
+    //       headerShown: false,
+    //       drawerIcon: ({ focused, size }) => (
+    //         <SimpleLineIcons
+    //           name="home"
+    //           size={size}
+    //           color={focused ? localDataSettings.textcolor_hex : "grey"}
+    //         />
+    //       ),
+    //     }}
+    //     component={BottomTaps}
+    //   />
+    //   <Drawer.Screen
+    //     name="BeispielScreen"
+    //     options={{
+    //       headerShown: false,
+    //       drawerIcon: ({ focused, size }) => (
+    //         <Entypo
+    //           name="windows-store"
+    //           size={size}
+    //           color={focused ? localDataSettings.textcolor_hex : "grey"}
+    //         />
+    //       ),
+    //     }}
+    //     component={BeispielScreen}
+    //   />
+    // </Drawer.Navigator>
     <Drawer.Navigator
       screenOptions={{
         drawerStyle: {
-          backgroundColor: localDataStyle,
+          backgroundColor: localDataStyle.bottom_toolbar_background_color,
         },
-        drawerActiveBackgroundColor: localDataSettings.statusbar_hex,
-        drawerInactiveTintColor: "grey",
-        drawerActiveTintColor: localDataSettings.textcolor_hex,
+        drawerActiveBackgroundColor:
+          localDataStyle.bottom_toolbar_belege_count_active_color,
+        drawerInactiveTintColor: localDataStyle.bottom_toolbar_icon_color,
+        drawerActiveTintColor:
+          localDataStyle.bottom_toolbar_belege_count_active_background_color,
       }}
     >
       <Drawer.Screen
@@ -157,20 +258,7 @@ const DrawerComponent = () => {
         }}
         component={BottomTaps}
       />
-      <Drawer.Screen
-        name="BeispielScreen"
-        options={{
-          headerShown: false,
-          drawerIcon: ({ focused, size }) => (
-            <Entypo
-              name="windows-store"
-              size={size}
-              color={focused ? localDataSettings.textcolor_hex : "grey"}
-            />
-          ),
-        }}
-        component={BeispielScreen}
-      />
+      {createDrawerScreens()}
     </Drawer.Navigator>
   );
 };

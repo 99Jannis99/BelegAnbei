@@ -36,7 +36,6 @@ const Welcome = () => {
 
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
-    console.log(dataStyle)
   }, [dataStyle]);
 
   return (
