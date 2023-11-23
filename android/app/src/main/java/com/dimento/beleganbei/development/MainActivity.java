@@ -1,12 +1,9 @@
-package com.meinprojekt;
-
-import android.os.Bundle;
+package com.dimento.beleganbei.development;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
-
 
 public class MainActivity extends ReactActivity {
 
@@ -16,7 +13,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "MeinProjekt";
+    return "BelegAnbeiDevelopment";
   }
 
   /**
@@ -31,10 +28,5 @@ public class MainActivity extends ReactActivity {
         getMainComponentName(),
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
         DefaultNewArchitectureEntryPoint.getFabricEnabled());
-  }
-
-   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(null);
   }
 }
