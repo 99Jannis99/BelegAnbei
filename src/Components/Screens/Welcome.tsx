@@ -7,17 +7,26 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import RenderHtml from "react-native-render-html";
 import { use } from "i18next";
+import { Button } from "react-native";
 
 const Welcome = () => {
+  const dispatch = useDispatch();
   const { dataCustomer, dataSettings, dataMorePages, dataStyle } = useSelector(
     (state) => state.dataReducer
   );
+
+  const { datevClient } = useSelector((state) => state.datevReducer);
+
   const [localDataSettings, setlocalDataSettings] = useState({});
   const [localDataMorePages, setLocalDataMorePages] = useState(null);
   const [localDataStyle, setLocalDataStyle] = useState({});
+
+  const updateDatev = (newClients) => {
+    dispatch({ type: "SET_DATEV_CLIENT", payload: newClients });
+  };
 
   const { width } = useWindowDimensions();
 
@@ -38,14 +47,18 @@ const Welcome = () => {
     setLocalDataStyle(JSON.parse(dataStyle));
   }, [dataStyle]);
 
+  useEffect(() => {
+    console.log("datevClient: ", datevClient);
+  }, [datevClient]);
+
   return (
     <ScrollView
       style={[
         styles.container,
-        { 
-          backgroundColor: localDataStyle.body_background_color
+        {
+          backgroundColor: localDataStyle.body_background_color,
           // backgroundColor: localDataStyle.body_font_color
-         },
+        },
       ]}
     >
       <Image
@@ -78,51 +91,10 @@ const Welcome = () => {
           />
         </View>
       )}
-
-      {/* <Text
-        style={[styles.headline, { color: localDataSettings.textcolor_hex }]}
-      >
-        {JSON.parse(dataCustomer).customer_name} !!
-      </Text>
-      <Text style={[styles.text, { color: localDataSettings.textcolor_hex }]}>
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-        eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-        amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-        nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-        ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
-        elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
-        aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
-        dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-        est Lorem ipsum dolor sit amet. ersetzen.
-      </Text>
-      <Text style={[styles.text, { color: localDataSettings.textcolor_hex }]}>
-        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
-        molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero
-        eros et accumsan et iusto odio dignissim qui blandit praesent luptatum
-        zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum
-        dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
-        euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-      </Text>
-      <Text style={[styles.text, { color: localDataSettings.textcolor_hex }]}>
-        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
-        suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem
-        vel eum iriure dolor in hendrerit in vulputate velit esse molestie
-        consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et
-        accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
-        delenit augue duis dolore te feugait nulla facilisi.
-      </Text>
-      <Text style={[styles.text, { color: localDataSettings.textcolor_hex }]}>
-        Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet
-        doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit
-        amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-        tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad
-        minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis
-        nisl ut aliquip ex ea commodo consequat.
-      </Text> */}
+      <Button
+        title="updateClient"
+        onPress={()=>updateDatev(["Sahra", "Navin", "Bernd"])}
+      ></Button>
     </ScrollView>
   );
 };

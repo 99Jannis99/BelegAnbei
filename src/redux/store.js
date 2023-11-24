@@ -4,13 +4,24 @@ import {
   applyMiddleware,
 } from "redux";
 import thunk from "redux-thunk";
-import { colorReducer, imageReducer, dataReducer } from "./reducers";
-import { storeColors, storeImages, storeData } from "./AsyncManager";
+import {
+  colorReducer,
+  imageReducer,
+  dataReducer,
+  datevReducer,
+} from "./reducers";
+import {
+  storeColors,
+  storeImages,
+  storeData,
+  storeDatev,
+} from "./AsyncManager";
 
 const rootReducer = combineReducers({
   colorReducer,
   imageReducer,
-  dataReducer, // Fügen Sie den dataReducer hinzu
+  dataReducer,
+  datevReducer, // Fügen Sie den dataReducer hinzu
 });
 
 export const Store = createStore(rootReducer, applyMiddleware(thunk));
@@ -18,7 +29,12 @@ export const Store = createStore(rootReducer, applyMiddleware(thunk));
 // Abo für Store-Änderungen
 Store.subscribe(() => {
   // Aktuellen State holen
-  const { colorReducer, imageReducer, dataReducer } = Store.getState();
+  const {
+    colorReducer,
+    imageReducer,
+    dataReducer,
+    datevReducer,
+  } = Store.getState();
 
   // Farben im AsyncStorage speichern
   storeColors({
@@ -48,5 +64,9 @@ Store.subscribe(() => {
     dataBelegcategories: dataReducer.dataBelegcategories,
     dataStyle: dataReducer.dataStyle,
     dataDocuments: dataReducer.dataDocuments,
+  });
+
+  storeDatev({
+    datevClient: datevReducer.datevClient,
   });
 });

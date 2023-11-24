@@ -116,3 +116,36 @@ export const loadDate = async () => {
 
   return "refresh"; // Rückgabe von "refresh" als Standardwert
 };
+
+export const storeDatev = async (data) => {
+  try {
+    for (const [key, value] of Object.entries(data)) {
+      if (Array.isArray(value)) {
+        console.log("setDatevValue: ", Array.isArray(value));
+        // Es ist ein Array, also fortfahren mit dem Speichern
+        await AsyncStorage.setItem(`@${key}`, JSON.stringify(value));
+      }
+    }
+  } catch (e) {
+    console.error("Error in storeData", e);
+  }
+};
+
+export const loadDatev = async () => {
+  const defaultDatev = {
+    datevClient: [],
+  };
+  try {
+    for (const key in defaultDatev) {
+      const value = await AsyncStorage.getItem(`@${key}`);
+      console.log("valueDatev: ", value);
+      if (value !== null) {
+        defaultDatev[key] = JSON.parse(value);
+      }
+    }
+    return defaultDatev;
+  } catch (e) {
+    console.error("Error in loadDatev", e);
+    return defaultDatev; // Wenn es einen Fehler gibt, geben Sie die Standardwerte zurück
+  }
+};

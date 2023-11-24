@@ -21,6 +21,7 @@ import {
   SET_DATA_STYLE,
   SET_DATA_DOCUMENTS,
   ADD_DATA_DOCUMENTS,
+  SET_DATEV_CLIENT,
 } from "./actions.js";
 
 var RNFileSystem = require("react-native-fs");
@@ -135,6 +136,22 @@ export function dataReducer(state = dataInitialState, action) {
           ...state.dataDocuments,
           ...action.payload,
         },
+      };
+    default:
+      return state;
+  }
+}
+
+const datevInitialState = {
+  datevClient: "[]",
+};
+
+export function datevReducer(state = datevInitialState, action) {
+  switch (action.type) {
+    case SET_DATEV_CLIENT:
+      return {
+        ...state,
+        datevClient: action.payload,
       };
     default:
       return state;

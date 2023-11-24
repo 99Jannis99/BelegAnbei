@@ -20,6 +20,7 @@ export const SET_DATA_BELEGCATEGORIES = "SET_DATA_BELEGCATEGORIES";
 export const SET_DATA_STYLE = "SET_DATA_STYLE";
 export const SET_DATA_DOCUMENTS = "SET_DATA_DOCUMENTS";
 export const ADD_DATA_DOCUMENTS = "ADD_DATA_DOCUMENTS";
+export const SET_DATEV_CLIENT = "SET_DATEV_CLIENT";
 
 export const setBackground = (background) => (dispatch) => {
   dispatch({
@@ -171,5 +172,12 @@ export const addDataDocuments = (dataDocuments) => (dispatch) => {
   dispatch({
     type: ADD_DATA_DOCUMENTS,
     payload: dataDocuments,
+  });
+};
+
+export const setDatevClient = (datevClient) => (dispatch) => {
+  dispatch({
+    type: SET_DATEV_CLIENT,
+    payload: datevClient,
   });
 };

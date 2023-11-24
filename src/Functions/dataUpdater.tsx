@@ -22,6 +22,7 @@ import {
   setDataDocuments,
   setWelcomeImage,
   setLogoImage,
+  setDatevClient,
 } from "../redux/actions";
 
 export const useDownloadJSON = () => {
@@ -95,10 +96,10 @@ export const useDownloadJSON = () => {
             dispatch(setDataBelegcategories(res.data));
             // console.log("belegcategories"," :",res.data);
             break;
-            case "style.json":
-              dispatch(setDataStyle(res.data));
-              // console.log("belegcategories"," :",res.data);
-              break;
+          case "style.json":
+            dispatch(setDataStyle(res.data));
+            // console.log("belegcategories"," :",res.data);
+            break;
           default:
             break;
         }
@@ -167,7 +168,7 @@ export const useDownloadImage = () => {
   return downloadImage;
 };
 
-import { loadData } from "../redux/AsyncManager";
+import { loadData, loadDatev } from "../redux/AsyncManager";
 
 export const useLoadAndStoreData = () => {
   const dispatch = useDispatch();
@@ -231,6 +232,9 @@ export const useLoadAndStoreData = () => {
           case "dataDocuments":
             dispatch(setDataDocuments(value));
             break;
+          case "datevClient":
+            dispatch(setDatevClient(value));
+            break;
           default:
             console.warn(`Unbekannter Schlüssel beim Laden der Daten: ${key}`);
             break;
@@ -244,4 +248,33 @@ export const useLoadAndStoreData = () => {
   };
 
   return loadAndStoreData;
+};
+
+export const useLoadAndStoreDatev = () => {
+  const dispatch = useDispatch();
+
+  const loadAndStoreDatev = async () => {
+    try {
+      // Laden Sie die Daten aus dem AsyncStore
+      const data = await loadDatev();
+      console.log("data: ", data);
+      // Überprüfen Sie jedes Datenobjekt und speichern Sie es im Redux-Store
+      for (const [key, value] of Object.entries(data)) {
+        switch (key) {
+          case "datevClient":
+            dispatch(setDatevClient(value));
+            break;
+          default:
+            console.warn(`Unbekannter Schlüssel beim Laden der Daten: ${key}`);
+            break;
+        }
+      }
+      return true; // Erfolgreiche Ausführung
+    } catch (error) {
+      console.error("Error in loadAndStoreData", error);
+      return false; // Fehler bei der Ausführung
+    }
+  };
+
+  return loadAndStoreDatev;
 };
