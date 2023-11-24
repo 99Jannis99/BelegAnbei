@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { View, Text } from "react-native";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from "@react-navigation/drawer";
 import { useSelector } from "react-redux";
 import { SimpleLineIcons, Entypo } from "../../helpers/icons";
 import {
   useDownloadJSON,
   useLoadAndStoreData,
   useDownloadImage,
+  useLoadAndStoreDatev,
 } from "../../Functions/dataUpdater";
 import { loadDate, storeDate } from "../../redux/AsyncManager";
 import LottieView from "lottie-react-native";
@@ -28,15 +34,17 @@ const DrawerComponent = () => {
 
   const downloadJSONFile = useDownloadJSON();
   const loadAndStoreData = useLoadAndStoreData();
+  const loadAndStoreDatev = useLoadAndStoreDatev();
   const downloadImage = useDownloadImage();
 
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
-    console.log(dataStyle);
+    // console.log(dataStyle);
   }, [dataStyle]);
+
   useEffect(() => {
     setlocalDataMoreIndex(JSON.parse(dataMoreIndex));
-    // console.log(JSON.parse(dataMoreIndex));
+    // console.log(localDataMoreIndex);
   }, [dataMoreIndex]);
 
   const fetchData = async () => {
@@ -108,7 +116,7 @@ const DrawerComponent = () => {
             storeDate(responseData.success.should);
           }
         } else {
-          const loadAndStoreSuccess = await loadAndStoreData();
+          const loadAndStoreSuccess = await loadAndStoreData() && await loadAndStoreDatev();
           if (loadAndStoreSuccess) {
             setDataLoaded(true);
           }
@@ -148,34 +156,102 @@ const DrawerComponent = () => {
     );
   };
 
-  const createDrawerScreens = () => {
-    if (!Array.isArray(localDataMoreIndex)) {
-      return null;
-    }
+  const CustomDrawerContent = (props) => {
+    return (
+      <DrawerContentScrollView {...props}>
+        {/* Home DrawerItem - Sie können dieses Muster für andere statische Links wiederholen */}
+        <View
+          style={{
+            marginHorizontal: 5,
+            borderRadius: 15,
+            backgroundColor:
+              props.state.routeNames[props.state.index] === "Home"
+                ? localDataStyle.bottom_toolbar_belege_count_active_color
+                : localDataStyle.bottom_toolbar_background_color,
+          }}
+        >
+          <DrawerItem
+            label="Home"
+            onPress={() => props.navigation.navigate("Home")}
+            icon={({ focused, size }) => (
+              <SimpleLineIcons
+                name="home"
+                size={size}
+                color={
+                  focused
+                    ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+                    : localDataStyle.bottom_toolbar_icon_color
+                }
+              />
+            )}
+            labelStyle={{
+              color:
+                props.state.routeNames[props.state.index] === "Home"
+                  ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+                  : localDataStyle.bottom_toolbar_icon_color,
+            }}
+          />
+        </View>
 
-    return localDataMoreIndex.map((screenGroup, index) => {
-      return screenGroup.blocks.map((block, blockIndex) => {
-        if (block.active === "1") {
-          return (
-            <Drawer.Screen
-              key={`${index}-${blockIndex}`}
-              name={block.label}
-              component={BeispielScreen} // Ersetzen Sie dies durch Ihre entsprechende Komponente
-              options={{
-                headerShown: false,
-                drawerIcon: ({ focused, size }) =>
-                  getIcon(
-                    block.icon,
-                    size,
-                    focused,
-                    localDataSettings.textcolor_hex
-                  ),
-              }}
-            />
-          );
-        }
-      });
-    });
+        {/* Restliche DrawerItems aus Ihrem Array */}
+        {localDataMoreIndex.map((group, index) => (
+          <View
+            style={{
+              borderColor: "white",
+              borderWidth: 1,
+              margin: 5,
+              borderRadius: 15,
+            }}
+            key={`group-${index}`}
+          >
+            {/* <Text style={{ fontWeight: "bold", padding: 10 }}>
+              {group.title}
+            </Text> */}
+            {group.blocks.map((block, blockIndex) => {
+              if (block.active === "1") {
+                return (
+                  <View
+                    key={`${index}-${blockIndex}`}
+                    style={{
+                      borderRadius: 15,
+                      backgroundColor:
+                        props.state.routeNames[props.state.index] ===
+                        block.label
+                          ? localDataStyle.bottom_toolbar_belege_count_active_color
+                          : localDataStyle.bottom_toolbar_background_color,
+                    }}
+                  >
+                    <DrawerItem
+                      label={block.label}
+                      onPress={() => props.navigation.navigate(block.label)}
+                      icon={({ focused, size }) => (
+                        <SimpleLineIcons
+                          name="home"
+                          size={size}
+                          color={
+                            focused
+                              ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+                              : localDataStyle.bottom_toolbar_icon_color
+                          }
+                        />
+                      )}
+                      labelStyle={{
+                        color:
+                          props.state.routeNames[props.state.index] ===
+                          block.label
+                            ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+                            : localDataStyle.bottom_toolbar_icon_color,
+                      }}
+                    />
+                  </View>
+                );
+              }
+              return null;
+            })}
+          </View>
+        ))}
+      </DrawerContentScrollView>
+    );
   };
 
   if (!areDataLoaded) {
@@ -196,11 +272,13 @@ const DrawerComponent = () => {
     // <Drawer.Navigator
     //   screenOptions={{
     //     drawerStyle: {
-    //       backgroundColor: localDataStyle,
+    //       backgroundColor: localDataStyle.bottom_toolbar_background_color,
     //     },
-    //     drawerActiveBackgroundColor: localDataSettings.statusbar_hex,
-    //     drawerInactiveTintColor: "grey",
-    //     drawerActiveTintColor: localDataSettings.textcolor_hex,
+    //     drawerActiveBackgroundColor:
+    //       localDataStyle.bottom_toolbar_belege_count_active_color,
+    //     drawerInactiveTintColor: localDataStyle.bottom_toolbar_icon_color,
+    //     drawerActiveTintColor:
+    //       localDataStyle.bottom_toolbar_belege_count_active_background_color,
     //   }}
     // >
     //   <Drawer.Screen
@@ -217,20 +295,7 @@ const DrawerComponent = () => {
     //     }}
     //     component={BottomTaps}
     //   />
-    //   <Drawer.Screen
-    //     name="BeispielScreen"
-    //     options={{
-    //       headerShown: false,
-    //       drawerIcon: ({ focused, size }) => (
-    //         <Entypo
-    //           name="windows-store"
-    //           size={size}
-    //           color={focused ? localDataSettings.textcolor_hex : "grey"}
-    //         />
-    //       ),
-    //     }}
-    //     component={BeispielScreen}
-    //   />
+    //   {createDrawerScreens()}
     // </Drawer.Navigator>
     <Drawer.Navigator
       screenOptions={{
@@ -243,22 +308,50 @@ const DrawerComponent = () => {
         drawerActiveTintColor:
           localDataStyle.bottom_toolbar_belege_count_active_background_color,
       }}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen
-        name="Home"
+        key={`Home`}
+        name={"Home"}
+        component={BottomTaps}
         options={{
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <SimpleLineIcons
               name="home"
               size={size}
-              color={focused ? localDataSettings.textcolor_hex : "grey"}
+              color={
+                focused
+                  ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+                  : localDataStyle.bottom_toolbar_icon_color
+              }
             />
           ),
         }}
-        component={BottomTaps}
       />
-      {createDrawerScreens()}
+      {localDataMoreIndex.map((group, index) =>
+        group.blocks.map((block, blockIndex) => (
+          <Drawer.Screen
+            key={`${index}-${blockIndex}`}
+            name={block.label}
+            component={BeispielScreen}
+            options={{
+              headerShown: false,
+              drawerIcon: ({ focused, size }) => (
+                <SimpleLineIcons
+                  name="home"
+                  size={size}
+                  color={
+                    focused
+                      ? localDataStyle.bottom_toolbar_belege_count_active_background_color
+                      : localDataStyle.bottom_toolbar_icon_color
+                  }
+                />
+              ),
+            }}
+          />
+        ))
+      )}
     </Drawer.Navigator>
   );
 };
