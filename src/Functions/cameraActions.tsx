@@ -7,15 +7,16 @@ import uuid from "react-native-uuid"; // Für die Generierung von zufälligen ID
 import { useNavigation } from "@react-navigation/native";
 
 const useCameraActions = () => {
-  const { dataDocuments } = useSelector((state) => state.dataReducer);
+  const { dataDocuments, navPage } = useSelector((state) => state.dataReducer);
   const navigation = useNavigation();
 
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const cameraRef = useRef(null);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  // }, [dataDocuments]);
+  useEffect(() => {
+    console.log(navPage);
+  }, [navPage]);
 
   const ensureDocumentsFolderExists = async () => {
     const documentsPath = `${RNFileSystem.DocumentDirectoryPath}/documents`;
@@ -49,9 +50,8 @@ const useCameraActions = () => {
       },
     };
     dispatch({ type: "ADD_DATA_DOCUMENTS", payload: newDocumentData });
-    navigation.navigate("EinkommenssteuerDocuments");
+    navigation.navigate(navPage);
   };
-  
 
   const convertUriToBase64 = async (uri: string) => {
     try {

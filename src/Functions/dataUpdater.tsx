@@ -23,6 +23,7 @@ import {
   setWelcomeImage,
   setLogoImage,
   setDatevClient,
+  setNavPage,
 } from "../redux/actions";
 
 export const useDownloadJSON = () => {
@@ -232,8 +233,8 @@ export const useLoadAndStoreData = () => {
           case "dataDocuments":
             dispatch(setDataDocuments(value));
             break;
-          case "datevClient":
-            dispatch(setDatevClient(value));
+          case "navPage":
+            dispatch(setNavPage(value));
             break;
           default:
             console.warn(`Unbekannter Schlüssel beim Laden der Daten: ${key}`);

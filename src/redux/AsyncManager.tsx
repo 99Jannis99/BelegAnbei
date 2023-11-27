@@ -81,6 +81,7 @@ export const loadData = async () => {
     dataBelegcategories: {},
     dataStyle: {},
     dataDocuments: {},
+    navPage:"StandardDocuments"
   };
   try {
     for (const key in defaultData) {

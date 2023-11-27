@@ -22,6 +22,7 @@ import {
   SET_DATA_DOCUMENTS,
   ADD_DATA_DOCUMENTS,
   SET_DATEV_CLIENT,
+  SET_NAV_PAGE,
 } from "./actions.js";
 
 var RNFileSystem = require("react-native-fs");
@@ -85,6 +86,7 @@ const dataInitialState = {
   dataBelegcategories: "{}",
   dataStyle: "{}",
   dataDocuments: {},
+  navPage: "StandardDocuments",
 };
 
 export function dataReducer(state = dataInitialState, action) {
@@ -128,7 +130,6 @@ export function dataReducer(state = dataInitialState, action) {
           ...action.payload,
         },
       };
-
     case ADD_DATA_DOCUMENTS:
       return {
         ...state,
@@ -137,6 +138,8 @@ export function dataReducer(state = dataInitialState, action) {
           ...action.payload,
         },
       };
+    case SET_NAV_PAGE:
+      return { ...state, navPage: action.payload };
     default:
       return state;
   }

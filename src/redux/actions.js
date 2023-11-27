@@ -21,6 +21,7 @@ export const SET_DATA_STYLE = "SET_DATA_STYLE";
 export const SET_DATA_DOCUMENTS = "SET_DATA_DOCUMENTS";
 export const ADD_DATA_DOCUMENTS = "ADD_DATA_DOCUMENTS";
 export const SET_DATEV_CLIENT = "SET_DATEV_CLIENT";
+export const SET_NAV_PAGE = "SET_NAV_PAGE";
 
 export const setBackground = (background) => (dispatch) => {
   dispatch({
@@ -179,5 +180,12 @@ export const setDatevClient = (datevClient) => (dispatch) => {
   dispatch({
     type: SET_DATEV_CLIENT,
     payload: datevClient,
+  });
+};
+
+export const setNavPage = (navPage) => (dispatch) => {
+  dispatch({
+    type: SET_NAV_PAGE,
+    payload: navPage,
   });
 };

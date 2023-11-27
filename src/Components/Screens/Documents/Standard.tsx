@@ -36,6 +36,13 @@ const StandardDocuments = () => {
     }
   }, [dataDocuments]);
 
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      dispatch({ type: "SET_NAV_PAGE", payload: "StandardDocuments" });
+    });
+    return focusListener;
+  }, [navigation]);
+
   const viewGroup = (groupID) => {
     const groupData = dataDocuments[groupID];
     if (groupData && groupData.images) {
