@@ -47,9 +47,9 @@ const Welcome = () => {
     setLocalDataStyle(JSON.parse(dataStyle));
   }, [dataStyle]);
 
-  useEffect(() => {
-    console.log("datevClient: ", datevClient);
-  }, [datevClient]);
+  // useEffect(() => {
+  //   console.log("datevClient: ", datevClient);
+  // }, [datevClient]);
 
   return (
     <ScrollView

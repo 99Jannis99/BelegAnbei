@@ -3,6 +3,8 @@ import { View, StyleSheet, TouchableHighlight, Text } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
 
+import StandardSettings from "../Screens/Settings/Standard";
+
 import BeispielScreen from "../Screens/BeispielScreen";
 import ChangeImage from "../Screens/ChangeImage";
 import DatevTopTaps from "./DatevTopTaps";
@@ -147,7 +149,7 @@ const SettingsTopTaps = () => {
         {modules.standard && (
           <Tab.Screen
             name="StandardSettings"
-            component={ChangeImage}
+            component={StandardSettings}
             options={{ tabBarLabel: "Standard" }}
           />
         )}

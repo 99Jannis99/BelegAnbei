@@ -258,7 +258,6 @@ export const useLoadAndStoreDatev = () => {
     try {
       // Laden Sie die Daten aus dem AsyncStore
       const data = await loadDatev();
-      console.log("data: ", data);
       // Überprüfen Sie jedes Datenobjekt und speichern Sie es im Redux-Store
       for (const [key, value] of Object.entries(data)) {
         switch (key) {
