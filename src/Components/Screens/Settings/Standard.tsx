@@ -410,7 +410,7 @@ function StandardSettings() {
       location_prefered: "0",
       location_lat: "52.2691667",
       location_lon: "8.0501386",
-      location_has_persons: "1",
+      location_has_persons: "0",
       location_has_only_persons: "0",
       location_text: "",
       location_index: "0",
@@ -1475,10 +1475,29 @@ function StandardSettings() {
 
   const { app_settings, multiple_locations } = settings;
 
+  // useEffect(() => {
+  //   const filteredLocations = locations.filter(
+  //     (loc) =>
+  //       loc.location_has_persons === "1" ||
+  //       loc.location_has_only_persons === "0"
+  //   );
+
+  //   console.log("filteredLocations: ", filteredLocations); // Zum Überprüfen der gefilterten Standorte
+
+  //   if (multiple_locations === "0" && filteredLocations.length === 1) {
+  //     setSelectedLocation(filteredLocations[0].location_id);
+  //   }
+  // }, [locations, multiple_locations]);
+
   useEffect(() => {
-    // Setze selectedLocation, wenn multiple_locations "0" ist und locations verfügbar sind
-    if (multiple_locations === "0" && locations.length > 0) {
-      setSelectedLocation(locations[0].location_id);
+    const filteredLocations = locations.filter(
+      (loc) => loc.location_has_persons === "1"
+    );
+
+    // console.log("filteredLocations: ", filteredLocations); // Zum Überprüfen der gefilterten Standorte
+
+    if (multiple_locations === "0" && filteredLocations.length === 1) {
+      setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
 
@@ -1488,7 +1507,7 @@ function StandardSettings() {
 
   const renderSettingsFields = () => {
     // const { app_settings } = settings;
-    console.log(app_settings);
+    // console.log(app_settings);
     return Object.entries(app_settings).map(([key, value]) => {
       // Überspringe location und person
       if (key === "location" || key === "person") {
@@ -1519,10 +1538,22 @@ function StandardSettings() {
   };
 
   // Standorte und Personen für Dropdowns vorbereiten
-  const locationData = locations.map((loc) => ({
-    label: loc.location_display_name,
-    value: loc.location_id,
-  }));
+  const locationData = locations
+    .filter((loc) => {
+      console.log(
+        `Checking location: ${loc.location_display_name}, has_persons: ${loc.location_has_persons}, has_only_persons: ${loc.location_has_only_persons}`
+      );
+      return (
+        loc.location_has_persons === "1" ||
+        loc.location_has_only_persons === "0"
+      );
+    })
+    .map((loc) => ({
+      label: loc.location_display_name,
+      value: loc.location_id,
+    }));
+
+  console.log("locationData: ", locationData);
 
   const personData = persons
     .filter((person) => person.location_id === selectedLocation)
@@ -1539,9 +1570,17 @@ function StandardSettings() {
   const renderDropdown = (key, data, value, onChange, dropdown) => {
     const setting = app_settings[key];
 
-    // Überprüfen, ob das Dropdown-Menü für Standorte gerendert werden soll
-    if (key === "location" && multiple_locations !== "1") {
-      return null; // Nicht rendern, wenn multiple_locations nicht "1" ist
+    // Wenn key "location" ist, überprüfen ob das Dropdown angezeigt werden soll
+    if (
+      key === "location" &&
+      (multiple_locations !== "1" ||
+        locations.filter(
+          (loc) =>
+            loc.location_has_persons === "1" ||
+            loc.location_has_only_persons === "0"
+        ).length <= 1)
+    ) {
+      return null;
     }
 
     return (
