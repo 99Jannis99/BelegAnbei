@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, Text, StyleSheet, Dimensions } from "react-native";
-import { Input, ButtonGroup } from "@rneui/themed";
+import { Input, ButtonGroup,Button  } from "@rneui/themed";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign, SimpleLineIcons } from "../../../helpers/icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,7 +12,20 @@ function StandardSettings() {
   const [settings, setSettings] = useState([]);
   const [locations, setLocations] = useState([]);
   const [persons, setPersons] = useState([]);
-
+  const [locationData, setLocationData] = useState([]);
+  const [personData, setPersonData] = useState([]);
+  const [identities, setIdentities] = useState([{
+    selectedLocation: null,
+    selectedPerson: null,
+    formData: {
+      name: "",
+      manno: "",
+      phone: "",
+      email: "",
+      location: "",
+      person: "",
+    },
+  }]);
   const [formData, setFormData] = useState({
     name: "",
     manno: "",
@@ -27,16 +40,69 @@ function StandardSettings() {
   );
 
   useEffect(() => {
-    setSettings(JSON.parse(dataSettings));
-    setLocations(JSON.parse(dataLocations));
-    setPersons(JSON.parse(dataPersons));
-  }, [dataSettings, dataLocations, dataPersons]);
+    const newSettings = JSON.parse(dataSettings);
+    const newLocations = JSON.parse(dataLocations);
+    const newPersons = JSON.parse(dataPersons);
+
+    setSettings(newSettings);
+    setLocations(newLocations);
+    setPersons(newPersons);
+
+    const newLocationData = Array.isArray(newLocations)
+      ? newLocations
+          .filter(
+            (loc) =>
+              loc.location_has_persons === "1" ||
+              loc.location_has_only_persons === "1"
+          )
+          .map((loc) => ({
+            label: loc.location_display_name,
+            value: loc.location_id,
+          }))
+      : [];
+    setLocationData(newLocationData);
+
+    const newPersonData = Array.isArray(newPersons)
+      ? newPersons
+          .filter((person) => person.location_id === selectedLocation)
+          .map((per) => ({ label: per.person_name, value: per.person_id }))
+      : [];
+
+    setPersonData(newPersonData);
+    // console.log(
+    //   "\n\nnewPersons: ",
+    //   newPersons,
+    //   "\nnewLocations: ",
+    //   dataLocations
+    // );
+    // console.log(
+    //   "\n\nnewLocationData: ",
+    //   newLocationData,
+    //   "\nnewPersonData: ",
+    //   newPersonData
+    // );
+  }, [dataSettings, dataLocations, dataPersons, selectedLocation]);
 
   const { width, height } = Dimensions.get("window");
 
   const [isFocus, setIsFocus] = useState(false);
 
   const { app_settings, multiple_locations } = settings;
+
+  const addIdentity = () => {
+    setIdentities([...identities, {
+      selectedLocation: null,
+      selectedPerson: null,
+      formData: {
+        name: "",
+        manno: "",
+        phone: "",
+        email: "",
+        location: "",
+        person: "",
+      },
+    }]);
+  };
 
   useEffect(() => {
     if (!Array.isArray(locations) || locations.length === 0) {
@@ -54,8 +120,22 @@ function StandardSettings() {
     }
   }, [locations, multiple_locations]);
 
-  const handleInputChange = (name, value) => {
-    setFormData({ ...formData, [name]: value });
+  const handleInputChange = (index, name, value) => {
+    const newIdentities = [...identities];
+    newIdentities[index].formData[name] = value;
+    setIdentities(newIdentities);
+  };
+
+  const setSelectedLocationForIdentity = (index, location) => {
+    const newIdentities = [...identities];
+    newIdentities[index].selectedLocation = location;
+    setIdentities(newIdentities);
+  };
+
+  const setSelectedPersonForIdentity = (index, person) => {
+    const newIdentities = [...identities];
+    newIdentities[index].selectedPerson = person;
+    setIdentities(newIdentities);
   };
 
   const renderSettingsFields = () => {
@@ -126,30 +206,6 @@ function StandardSettings() {
     return phone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
   };
 
-  // Standorte und Personen für Dropdowns vorbereiten
-  const locationData = Array.isArray(locations)
-    ? locations
-        .filter((loc) => {
-          return (
-            loc.location_has_persons === "1" ||
-            loc.location_has_only_persons === "1"
-          );
-        })
-        .map((loc) => ({
-          label: loc.location_display_name,
-          value: loc.location_id,
-        }))
-    : [];
-
-  const personData = Array.isArray(persons)
-    ? persons
-        .filter((person) => person.location_id === selectedLocation)
-        .map((per) => ({
-          label: per.person_name,
-          value: per.person_id,
-        }))
-    : [];
-
   // Funktionen, um den Fokus-Zustand zu verwalten
   const onFocus = () => setIsFocus(true);
   const onBlur = () => setIsFocus(false);
@@ -160,6 +216,16 @@ function StandardSettings() {
       return null; // Render nichts, wenn app_settings oder locations noch nicht geladen sind
     }
     if (!app_settings || !Array.isArray(data) || data.length === 0) {
+      // console.log(
+      //   "keine Daten vorhanden\napp_settings: ",
+      //   app_settings,
+      //   "\ndata: ",
+      //   data,
+      //   "\nlocationData: ",
+      //   locationData,
+      //   "\npersonData: ",
+      //   personData
+      // );
       return null; // Kein Dropdown rendern, wenn keine Daten vorhanden sind
     }
     const setting = app_settings[key];
@@ -176,7 +242,6 @@ function StandardSettings() {
     ) {
       return null;
     }
-
     return (
       <View style={styles.DropdownContainer}>
         <Dropdown
@@ -264,30 +329,32 @@ function StandardSettings() {
 
   return (
     <ScrollView>
-      {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
-      {settings && locations && persons && (
-        <>
-          <View style={styles.container}>{renderSettingsFields()}</View>
-          <View style={styles.container}>
+    {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
+    {settings && locations && persons && (
+      <>
+        {identities.map((identity, index) => (
+          <View key={index} style={styles.container}>
+            {renderSettingsFields(identity, index)}
             {multiple_locations === "1" &&
               renderDropdown(
                 "location",
                 locationData,
-                selectedLocation,
-                setSelectedLocation
+                identity.selectedLocation,
+                (location) => setSelectedLocationForIdentity(index, location)
               )}
-            {(multiple_locations === "0" || selectedLocation) &&
+            {(multiple_locations === "0" || identity.selectedLocation) &&
               renderDropdown(
                 "person",
                 personData,
-                selectedPerson,
-                setSelectedPerson,
-                multiple_locations === "1" && styles.dropdown
+                identity.selectedPerson,
+                (person) => setSelectedPersonForIdentity(index, person)
               )}
           </View>
-        </>
-      )}
-    </ScrollView>
+        ))}
+        <Button title="Weitere Identität hinzufügen" onPress={addIdentity} />
+      </>
+    )}
+  </ScrollView>
   );
 }
 

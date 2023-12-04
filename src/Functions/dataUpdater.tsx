@@ -49,7 +49,7 @@ export const useDownloadJSON = () => {
             dispatch(setDataSettings(res.data));
             // console.log("settings"," :",res.data);
             break;
-          case "loccations.json":
+          case "locations.json":
             dispatch(setDataLocations(res.data));
             // console.log("c"," :",res.data);
             break;
