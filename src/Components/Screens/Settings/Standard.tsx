@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, ScrollView, Text, StyleSheet, Dimensions } from "react-native";
-import { Input, ButtonGroup,Button  } from "@rneui/themed";
+import { Input, ButtonGroup, Button } from "@rneui/themed";
 import { Dropdown } from "react-native-element-dropdown";
+import RenderHtml from "react-native-render-html";
 import { AntDesign, SimpleLineIcons } from "../../../helpers/icons";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -9,23 +10,28 @@ function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [localDataStyle, setLocalDataStyle] = useState(null);
+  const [localTextsnippets, setLocalTextsnippets] = useState(null);
   const [settings, setSettings] = useState([]);
   const [locations, setLocations] = useState([]);
   const [persons, setPersons] = useState([]);
-  const [locationData, setLocationData] = useState([]);
+  const [locationData, setLocationData] = useState([1, 2, 3]);
   const [personData, setPersonData] = useState([]);
-  const [identities, setIdentities] = useState([{
-    selectedLocation: null,
-    selectedPerson: null,
-    formData: {
-      name: "",
-      manno: "",
-      phone: "",
-      email: "",
-      location: "",
-      person: "",
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [identities, setIdentities] = useState([
+    {
+      selectedLocation: null,
+      selectedPerson: null,
+      formData: {
+        name: "",
+        manno: "",
+        phone: "",
+        email: "",
+        location: "",
+        person: "",
+      },
     },
-  }]);
+  ]);
   const [formData, setFormData] = useState({
     name: "",
     manno: "",
@@ -35,9 +41,13 @@ function StandardSettings() {
     person: "",
   });
 
-  const { dataSettings, dataLocations, dataPersons, dataStyle } = useSelector(
-    (state) => state.dataReducer
-  );
+  const {
+    dataSettings,
+    dataLocations,
+    dataPersons,
+    dataStyle,
+    dataTextsnippets,
+  } = useSelector((state) => state.dataReducer);
 
   useEffect(() => {
     const newSettings = JSON.parse(dataSettings);
@@ -60,6 +70,9 @@ function StandardSettings() {
             value: loc.location_id,
           }))
       : [];
+
+    // console.log("Filtered Locations for Dropdown: ", newLocationData);
+
     setLocationData(newLocationData);
 
     const newPersonData = Array.isArray(newPersons)
@@ -83,6 +96,17 @@ function StandardSettings() {
     // );
   }, [dataSettings, dataLocations, dataPersons, selectedLocation]);
 
+  useEffect(() => {
+    setLocalDataStyle(JSON.parse(dataStyle));
+    // console.log("dataStyle: ", dataStyle);
+    setLocalTextsnippets(JSON.parse(dataTextsnippets));
+    // console.log("dataTextsnippets: ", dataTextsnippets);
+  }, [dataStyle, dataTextsnippets]);
+
+  useEffect(() => {
+    console.log("newIdentities: ", identities, "\n\n");
+  }, [identities]);
+
   const { width, height } = Dimensions.get("window");
 
   const [isFocus, setIsFocus] = useState(false);
@@ -90,18 +114,22 @@ function StandardSettings() {
   const { app_settings, multiple_locations } = settings;
 
   const addIdentity = () => {
-    setIdentities([...identities, {
-      selectedLocation: null,
-      selectedPerson: null,
-      formData: {
-        name: "",
-        manno: "",
-        phone: "",
-        email: "",
-        location: "",
-        person: "",
+    setActiveIndex(identities.length);
+    setIdentities([
+      ...identities,
+      {
+        selectedLocation: null,
+        selectedPerson: null,
+        formData: {
+          name: "",
+          manno: "",
+          phone: "",
+          email: "",
+          location: "",
+          person: "",
+        },
       },
-    }]);
+    ]);
   };
 
   useEffect(() => {
@@ -120,6 +148,18 @@ function StandardSettings() {
     }
   }, [locations, multiple_locations]);
 
+  const toggleActiveIndex = (index) => {
+    if (activeIndex === index) {
+      setActiveIndex(null); // Einklappen, wenn es bereits aktiv ist
+    } else {
+      setActiveIndex(index); // Andernfalls aktivieren
+    }
+  };
+
+  const collapseAllIdentities = () => {
+    setActiveIndex(null);
+  };
+
   const handleInputChange = (index, name, value) => {
     const newIdentities = [...identities];
     newIdentities[index].formData[name] = value;
@@ -127,20 +167,51 @@ function StandardSettings() {
   };
 
   const setSelectedLocationForIdentity = (index, location) => {
-    const newIdentities = [...identities];
-    newIdentities[index].selectedLocation = location;
-    setIdentities(newIdentities);
+    setIdentities(
+      identities.map((identity, idx) => {
+        if (idx === index) {
+          return { ...identity, selectedLocation: location };
+        }
+        return identity;
+      })
+    );
   };
 
   const setSelectedPersonForIdentity = (index, person) => {
-    const newIdentities = [...identities];
-    newIdentities[index].selectedPerson = person;
-    setIdentities(newIdentities);
+    setIdentities(
+      identities.map((identity, idx) => {
+        if (idx === index) {
+          return { ...identity, selectedPerson: person };
+        }
+        return identity;
+      })
+    );
   };
 
-  const renderSettingsFields = () => {
+  const renderSettingsFields = (identity, index) => {
+    if (index !== activeIndex) {
+      return (
+        <View style={styles.collapsedContainer}>
+          <View style={styles.collapsedTextView}>
+            <Text style={styles.collapsedText}>
+              {identity.formData.name || "Neue Identität"}
+            </Text>
+            <Text style={styles.collapsedText}>
+              {identity.formData.email || "Email"}
+            </Text>
+          </View>
+          <SimpleLineIcons
+            name="pencil"
+            size={20}
+            color="black"
+            onPress={() => toggleActiveIndex(index)}
+          />
+        </View>
+      );
+    }
+
     if (!app_settings) {
-      return null; // Render nichts, wenn app_settings noch nicht geladen ist
+      return null;
     }
 
     return Object.entries(app_settings).map(([key, value]) => {
@@ -149,25 +220,22 @@ function StandardSettings() {
       }
 
       const handleChange = (text) => {
-        if (key === "phone") {
-          text = formatPhoneNumber(text);
-        }
-        handleInputChange(key, text);
+        handleInputChange(index, key, text);
       };
 
       let errorMessage = "";
-      if (value.mandatory === "1" && !formData[key]) {
+      if (value.mandatory === "1" && !identity.formData[key]) {
         errorMessage = value.validation_info;
       } else if (
         key === "email" &&
-        formData[key] &&
-        !isValidEmail(formData[key])
+        identity.formData[key] &&
+        !isValidEmail(identity.formData[key])
       ) {
         errorMessage = "Ungültige E-Mail-Adresse";
       } else if (
         key === "manno" &&
-        formData[key] &&
-        !isValidMannnummer(formData[key])
+        identity.formData[key] &&
+        !isValidMannnummer(identity.formData[key])
       ) {
         errorMessage = "Mannnummer muss mindestens 4 Zahlen enthalten";
       }
@@ -177,7 +245,7 @@ function StandardSettings() {
           key={key}
           placeholder={value.placeholder_text}
           onChangeText={handleChange}
-          value={formData[key]}
+          value={identity.formData[key]}
           errorMessage={errorMessage}
           placeholderTextColor="grey"
           leftIcon={<SimpleLineIcons name="user" size={20} color="black" />}
@@ -211,26 +279,36 @@ function StandardSettings() {
   const onBlur = () => setIsFocus(false);
 
   // UI für jedes Dropdown
-  const renderDropdown = (key, data, value, onChange, dropdown) => {
+  const renderDropdown = (key, data, value, onChange, dropdown, index) => {
+    console.log("keyTOp: ", key);
+    if (index !== activeIndex) {
+      console.log(
+        `Dropdown nicht gerendert: Nicht aktives Formular (Index: ${index})`
+      );
+      return null;
+    }
+
     if (!app_settings || !locations) {
-      return null; // Render nichts, wenn app_settings oder locations noch nicht geladen sind
+      console.log(
+        `Dropdown nicht gerendert: app_settings oder locations nicht geladen`
+      );
+      return null;
     }
+
     if (!app_settings || !Array.isArray(data) || data.length === 0) {
-      // console.log(
-      //   "keine Daten vorhanden\napp_settings: ",
-      //   app_settings,
-      //   "\ndata: ",
-      //   data,
-      //   "\nlocationData: ",
-      //   locationData,
-      //   "\npersonData: ",
-      //   personData
-      // );
-      return null; // Kein Dropdown rendern, wenn keine Daten vorhanden sind
+      console.log(
+        `Dropdown nicht gerendert: Keine Daten vorhanden: `,
+        app_settings,
+        "data: ",
+        data,
+        "locationdata: ",
+        locationData,
+        `key:  ${key}`
+      );
+      return null;
     }
+
     const setting = app_settings[key];
-    // console.log("key: ", key, "value ", value, "data: ", data);
-    // Wenn key "location" ist, überprüfen ob das Dropdown angezeigt werden soll
     if (
       key === "location" &&
       (multiple_locations !== "1" ||
@@ -240,8 +318,14 @@ function StandardSettings() {
             loc.location_has_only_persons === "0"
         ).length <= 1)
     ) {
+      console.log(
+        `Dropdown nicht gerendert: Location Dropdown nicht benötigt (key: ${key})`
+      );
       return null;
     }
+
+    console.log(`Dropdown gerendert: ${key} Dropdown (Index: ${index})`);
+
     return (
       <View style={styles.DropdownContainer}>
         <Dropdown
@@ -326,35 +410,142 @@ function StandardSettings() {
 
   // Verwendung der Funktion mit benutzerdefinierten Abständen
   // Beispiel: createGrid(50, 50) für ein Raster mit 50px Abstand
+  const htmlSource = useMemo(() => {
+    // Stellen Sie sicher, dass localTextsnippets ein Array ist und durchsuchen Sie es
+    if (Array.isArray(localTextsnippets)) {
+      return {
+        html:
+          localTextsnippets.find(
+            (snippet) => snippet.callname === "app-settings-top"
+          )?.snippet || "<p>Snippet nicht gefunden.</p>",
+      };
+    }
+    // Rückgabe eines Standardwertes, wenn localTextsnippets kein Array ist
+    return { html: "<p>Snippet nicht gefunden.</p>" };
+  }, [localTextsnippets]);
+
+  const tagStyles = useMemo(
+    () => ({
+      p: {
+        textAlign: "center",
+        marginHorizontal: 50,
+        // Weitere CSS-Styles hier hinzufügen
+      },
+    }),
+    []
+  );
+
+  const areAllFieldsValid = () => {
+    return identities.every((identity, index) => {
+      // Prüfen, ob die allgemeinen Felder ausgefüllt sind
+      const isCommonFieldsValid =
+        identity.formData.name &&
+        identity.formData.manno &&
+        identity.formData.phone &&
+        identity.formData.email &&
+        identity.formData.person;
+  
+      // Prüfen, ob das Location Dropdown gerendert werden sollte
+      const isLocationDropdownVisible =
+        multiple_locations === "1" || // Wenn multiple locations aktiv sind
+        (multiple_locations === "0" && locations.some(loc => loc.location_has_persons === "1" || loc.location_has_only_persons === "1")); // Wenn multiple locations nicht aktiv, aber Locations vorhanden sind, die Personen haben
+  
+      // Wenn das Location Dropdown sichtbar ist, prüfen, ob eine Auswahl getroffen wurde
+      if (isLocationDropdownVisible) {
+        const isLocationSelected = !!identity.selectedLocation;
+        return isCommonFieldsValid && isLocationSelected;
+      }
+  
+      // Wenn das Location Dropdown nicht sichtbar ist, werden nur die allgemeinen Felder geprüft
+      return isCommonFieldsValid;
+    });
+  };
+  
 
   return (
     <ScrollView>
-    {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
-    {settings && locations && persons && (
-      <>
-        {identities.map((identity, index) => (
-          <View key={index} style={styles.container}>
-            {renderSettingsFields(identity, index)}
-            {multiple_locations === "1" &&
-              renderDropdown(
-                "location",
-                locationData,
-                identity.selectedLocation,
-                (location) => setSelectedLocationForIdentity(index, location)
+      {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
+      {Array.isArray(localTextsnippets) && (
+        <View style={{ flex: 1, padding: 10 }}>
+          <RenderHtml
+            contentWidth={Dimensions.get("window").width}
+            source={htmlSource}
+            tagsStyles={tagStyles}
+          />
+        </View>
+      )}
+
+      {settings && locations && persons && (
+        <>
+          {identities.map((identity, index) => (
+            <View key={index} style={styles.container}>
+              {renderSettingsFields(identity, index)}
+
+              {console.log(
+                `Index: ${index}, Multiple Locations: ${multiple_locations}`
               )}
-            {(multiple_locations === "0" || identity.selectedLocation) &&
-              renderDropdown(
-                "person",
-                personData,
-                identity.selectedPerson,
-                (person) => setSelectedPersonForIdentity(index, person)
+
+              {multiple_locations === "1" &&
+                renderDropdown(
+                  "location",
+                  locationData,
+                  identity.selectedLocation,
+                  (location) => setSelectedLocationForIdentity(index, location),
+                  styles.dropdownFirst,
+                  index
+                )}
+
+              {(multiple_locations === "0" || identity.selectedLocation) &&
+                renderDropdown(
+                  "person",
+                  personData,
+                  identity.selectedPerson,
+                  (person) => setSelectedPersonForIdentity(index, person),
+                  styles.dropdown,
+                  index
+                )}
+            </View>
+          ))}
+          {localDataStyle && (
+            <>
+              {activeIndex !== null && (
+                <Button
+                  buttonStyle={{
+                    backgroundColor:
+                      localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
+                    borderRadius: 10, // Eckenradius des Buttons
+                  }}
+                  containerStyle={{
+                    margin: 10, // Abstand um den Button herum
+                  }}
+                  titleStyle={{
+                    color: localDataStyle.bottom_toolbar_icon_color,
+                  }}
+                  disabled={!areAllFieldsValid()}
+                  title="Sichern (einklappen)"
+                  onPress={collapseAllIdentities}
+                />
               )}
-          </View>
-        ))}
-        <Button title="Weitere Identität hinzufügen" onPress={addIdentity} />
-      </>
-    )}
-  </ScrollView>
+              <Button
+                buttonStyle={{
+                  backgroundColor:
+                    localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
+                  borderRadius: 10, // Eckenradius des Buttons
+                }}
+                containerStyle={{
+                  margin: 10, // Abstand um den Button herum
+                }}
+                titleStyle={{
+                  color: localDataStyle.bottom_toolbar_icon_color,
+                }}
+                title="Weitere Identität hinzufügen"
+                onPress={addIdentity}
+              />
+            </>
+          )}
+        </>
+      )}
+    </ScrollView>
   );
 }
 
@@ -367,6 +558,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     marginHorizontal: 10,
     marginBottom: 5,
+    marginTop: 10,
     borderRadius: 15,
   },
   dropdownFirst: {
@@ -399,5 +591,20 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("screen").height,
     zIndex: 1000, // Stellen Sie sicher, dass das Gitter über allen anderen Elementen liegt
+  },
+  collapsedContainer: {
+    height: 50,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  collapsedTextView: {},
+  collapsedText: {
+    color: "black",
+    fontSize: 15,
+  },
+  button: {
+    margin: 5,
+    backgroundColor: "red",
   },
 });
