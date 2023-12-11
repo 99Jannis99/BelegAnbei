@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, ScrollView, Text, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { Input, ButtonGroup, Button } from "@rneui/themed";
 import { Dropdown } from "react-native-element-dropdown";
 import RenderHtml from "react-native-render-html";
@@ -111,13 +118,25 @@ function StandardSettings() {
 
   const { app_settings, multiple_locations } = settings;
 
+  // Funktion zum Auswählen einer Identität
+  const chooseIdentity = (index) => {
+    console.log("chooseIdentity")
+    const updatedIdentities = identities.map((identity, idx) => ({
+      ...identity,
+      choosed: idx === index,
+    }));
+    setIdentities(updatedIdentities);
+    console.log("updatedIdentities: ", updatedIdentities);
+  };
+
   const addIdentity = () => {
-    setActiveIndex(identities.length);
-    setIdentities([
-      ...identities,
+    const newIndex = identities.length;
+    const updatedIdentities = [
+      ...identities.map((identity) => ({ ...identity, choosed: false })),
       {
         selectedLocation: null,
         selectedPerson: null,
+        choosed: true, // Neu hinzugefügte Identität ist automatisch ausgewählt
         formData: {
           name: "",
           manno: "",
@@ -125,7 +144,10 @@ function StandardSettings() {
           email: "",
         },
       },
-    ]);
+    ];
+
+    setActiveIndex(newIndex);
+    setIdentities(updatedIdentities);
   };
 
   useEffect(() => {
@@ -195,9 +217,17 @@ function StandardSettings() {
   };
 
   const renderSettingsFields = (identity, index) => {
+    const backgroundColor = identity.choosed
+      ? localDataStyle.bottom_toolbar_background_active_color
+      : "transparent"; // oder eine andere Standardfarbe
+
     if (index !== activeIndex) {
       return (
-        <View style={styles.collapsedContainer}>
+        <TouchableOpacity
+          key={index}
+          style={[styles.collapsedContainer, { backgroundColor }]}
+          onPress={() => chooseIdentity(index)}
+        >
           <View style={styles.collapsedTextView}>
             <Text style={styles.collapsedText}>
               {identity.formData.name || "Neue Identität"}
@@ -212,7 +242,7 @@ function StandardSettings() {
             color="black"
             onPress={() => toggleActiveIndex(index)}
           />
-        </View>
+        </TouchableOpacity>
       );
     }
 
@@ -457,21 +487,21 @@ function StandardSettings() {
   );
 
   const areAllFieldsValid = () => {
-    console.log(
-      "\n\nÜberprüfung beginnt - komplette Identitäten: ",
-      identities
-    );
+    // console.log(
+    //   "\n\nÜberprüfung beginnt - komplette Identitäten: ",
+    //   identities
+    // );
 
     return identities.every((identity, index) => {
       // Log-Ausgaben für einzelne Felder in formData
-      console.log(`Identität ${index} - Name: `, identity.formData.name);
-      console.log(`Identität ${index} - Mannnummer: `, identity.formData.manno);
-      console.log(`Identität ${index} - Telefon: `, identity.formData.phone);
-      console.log(`Identität ${index} - Email: `, identity.formData.email);
-      console.log(
-        `Identität ${index} - Ausgewählte Person: `,
-        identity.selectedPerson
-      );
+      // console.log(`Identität ${index} - Name: `, identity.formData.name);
+      // console.log(`Identität ${index} - Mannnummer: `, identity.formData.manno);
+      // console.log(`Identität ${index} - Telefon: `, identity.formData.phone);
+      // console.log(`Identität ${index} - Email: `, identity.formData.email);
+      // console.log(
+      //   `Identität ${index} - Ausgewählte Person: `,
+      //   identity.selectedPerson
+      // );
 
       // Prüfen, ob die allgemeinen Felder ausgefüllt sind
       const isCommonFieldsValid =
@@ -481,10 +511,10 @@ function StandardSettings() {
         identity.formData.email &&
         identity.selectedPerson;
 
-      console.log(
-        `Überprüfung der allgemeinen Felder - Identität ${index}: `,
-        isCommonFieldsValid
-      );
+      // console.log(
+      //   `Überprüfung der allgemeinen Felder - Identität ${index}: `,
+      //   isCommonFieldsValid
+      // );
 
       // Prüfen, ob das Location Dropdown gerendert werden sollte
       const filteredLocations = locations.filter(
@@ -495,10 +525,10 @@ function StandardSettings() {
 
       const isLocationDropdownVisible =
         multiple_locations === "1" || filteredLocations.length > 1;
-      console.log(
-        `Location Dropdown sichtbar - Identität ${index}: `,
-        isLocationDropdownVisible
-      );
+      // console.log(
+      //   `Location Dropdown sichtbar - Identität ${index}: `,
+      //   isLocationDropdownVisible
+      // );
 
       // Automatische Auswahl der Location, wenn nur eine verfügbar ist
       if (
@@ -520,10 +550,10 @@ function StandardSettings() {
       }
 
       const isLocationSelected = !!identity.selectedLocation;
-      console.log(
-        `Location ausgewählt - Identität ${index}: `,
-        isLocationSelected
-      );
+      // console.log(
+      //   `Location ausgewählt - Identität ${index}: `,
+      //   isLocationSelected
+      // );
 
       // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl
       return isLocationDropdownVisible
