@@ -157,8 +157,18 @@ function StandardSettings() {
   };
 
   const handleInputChange = (index, name, value) => {
+    let formattedValue = value;
+
+    // Formatierung für Telefonnummer
+    if (name === "phone") {
+      formattedValue = formatPhoneNumber(
+        value,
+        identities[index].formData.phone
+      );
+    }
+
     const newIdentities = [...identities];
-    newIdentities[index].formData[name] = value;
+    newIdentities[index].formData[name] = formattedValue;
     setIdentities(newIdentities);
   };
 
@@ -264,10 +274,25 @@ function StandardSettings() {
     return /^\d{4,}$/.test(manno); // Überprüft, ob mindestens 4 Zahlen vorhanden sind
   };
 
-  const formatPhoneNumber = (phone) => {
-    // Fügen Sie hier Ihre Logik zur Formatierung der Telefonnummer hinzu
-    // Beispiel: formatiert eine Nummer zu einer Struktur wie 123-456-7890
-    return phone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+  const formatPhoneNumber = (phone, previousPhone) => {
+    // Entfernt alles außer Zahlen
+    const cleaned = phone.replace(/\D/g, "");
+
+    // Überprüfen, ob der Benutzer löscht
+    if (previousPhone && phone.length < previousPhone.length) {
+      // Rückgabe ohne erneutes Einfügen von Klammern oder Bindestrichen
+      return cleaned;
+    }
+
+    // Prüft die Länge und formatiert entsprechend
+    const match = cleaned.match(/^(\d{1,3})(\d{1,3})?(\d{1,4})?$/);
+    if (match) {
+      const intlCode = match[1] ? `(${match[1]}) ` : "";
+      const num1 = match[2] ? `${match[2]}` : "";
+      const num2 = match[3] ? `-${match[3]}` : "";
+      return `${intlCode}${num1}${num2}`;
+    }
+    return phone;
   };
 
   // Funktionen, um den Fokus-Zustand zu verwalten
@@ -432,16 +457,22 @@ function StandardSettings() {
   );
 
   const areAllFieldsValid = () => {
-    console.log("\n\nÜberprüfung beginnt - komplette Identitäten: ", identities);
-  
+    console.log(
+      "\n\nÜberprüfung beginnt - komplette Identitäten: ",
+      identities
+    );
+
     return identities.every((identity, index) => {
       // Log-Ausgaben für einzelne Felder in formData
       console.log(`Identität ${index} - Name: `, identity.formData.name);
       console.log(`Identität ${index} - Mannnummer: `, identity.formData.manno);
       console.log(`Identität ${index} - Telefon: `, identity.formData.phone);
       console.log(`Identität ${index} - Email: `, identity.formData.email);
-      console.log(`Identität ${index} - Ausgewählte Person: `, identity.selectedPerson);
-  
+      console.log(
+        `Identität ${index} - Ausgewählte Person: `,
+        identity.selectedPerson
+      );
+
       // Prüfen, ob die allgemeinen Felder ausgefüllt sind
       const isCommonFieldsValid =
         identity.formData.name &&
@@ -449,40 +480,57 @@ function StandardSettings() {
         identity.formData.phone &&
         identity.formData.email &&
         identity.selectedPerson;
-  
-      console.log(`Überprüfung der allgemeinen Felder - Identität ${index}: `, isCommonFieldsValid);
-  
-       // Prüfen, ob das Location Dropdown gerendert werden sollte
-    const filteredLocations = locations.filter(
-      (loc) => loc.location_has_persons === "1" || loc.location_has_only_persons === "1"
-    );
 
-    const isLocationDropdownVisible = multiple_locations === "1" || filteredLocations.length > 1;
-    console.log(`Location Dropdown sichtbar - Identität ${index}: `, isLocationDropdownVisible);
-
-    // Automatische Auswahl der Location, wenn nur eine verfügbar ist
-    if (!isLocationDropdownVisible && filteredLocations.length === 1 && !identity.selectedLocation) {
-      setIdentities(
-        identities.map((id, idx) => {
-          if (idx === index) {
-            return { ...id, selectedLocation: filteredLocations[0].location_id };
-          }
-          return id;
-        })
+      console.log(
+        `Überprüfung der allgemeinen Felder - Identität ${index}: `,
+        isCommonFieldsValid
       );
-    }
 
-    const isLocationSelected = !!identity.selectedLocation;
-    console.log(`Location ausgewählt - Identität ${index}: `, isLocationSelected);
+      // Prüfen, ob das Location Dropdown gerendert werden sollte
+      const filteredLocations = locations.filter(
+        (loc) =>
+          loc.location_has_persons === "1" ||
+          loc.location_has_only_persons === "1"
+      );
 
-    // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl
-    return isLocationDropdownVisible
-      ? isCommonFieldsValid && isLocationSelected
-      : isCommonFieldsValid;
-  });
+      const isLocationDropdownVisible =
+        multiple_locations === "1" || filteredLocations.length > 1;
+      console.log(
+        `Location Dropdown sichtbar - Identität ${index}: `,
+        isLocationDropdownVisible
+      );
+
+      // Automatische Auswahl der Location, wenn nur eine verfügbar ist
+      if (
+        !isLocationDropdownVisible &&
+        filteredLocations.length === 1 &&
+        !identity.selectedLocation
+      ) {
+        setIdentities(
+          identities.map((id, idx) => {
+            if (idx === index) {
+              return {
+                ...id,
+                selectedLocation: filteredLocations[0].location_id,
+              };
+            }
+            return id;
+          })
+        );
+      }
+
+      const isLocationSelected = !!identity.selectedLocation;
+      console.log(
+        `Location ausgewählt - Identität ${index}: `,
+        isLocationSelected
+      );
+
+      // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl
+      return isLocationDropdownVisible
+        ? isCommonFieldsValid && isLocationSelected
+        : isCommonFieldsValid;
+    });
   };
-  
-  
 
   return (
     <ScrollView>
