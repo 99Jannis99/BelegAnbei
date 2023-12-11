@@ -27,8 +27,6 @@ function StandardSettings() {
         manno: "",
         phone: "",
         email: "",
-        location: "",
-        person: "",
       },
     },
   ]);
@@ -37,8 +35,8 @@ function StandardSettings() {
     manno: "",
     phone: "",
     email: "",
-    location: "",
-    person: "",
+    selectedLocation: "",
+    selectedPerson: "",
   });
 
   const {
@@ -104,7 +102,7 @@ function StandardSettings() {
   }, [dataStyle, dataTextsnippets]);
 
   useEffect(() => {
-    console.log("newIdentities: ", identities, "\n\n");
+    // console.log("newIdentities: ", identities, "\n\n");
   }, [identities]);
 
   const { width, height } = Dimensions.get("window");
@@ -125,8 +123,6 @@ function StandardSettings() {
           manno: "",
           phone: "",
           email: "",
-          location: "",
-          person: "",
         },
       },
     ]);
@@ -280,31 +276,31 @@ function StandardSettings() {
 
   // UI für jedes Dropdown
   const renderDropdown = (key, data, value, onChange, dropdown, index) => {
-    console.log("keyTOp: ", key);
+    // console.log("keyTOp: ", key);
     if (index !== activeIndex) {
-      console.log(
-        `Dropdown nicht gerendert: Nicht aktives Formular (Index: ${index})`
-      );
+      // console.log(
+      //   `Dropdown nicht gerendert: Nicht aktives Formular (Index: ${index})`
+      // );
       return null;
     }
 
     if (!app_settings || !locations) {
-      console.log(
-        `Dropdown nicht gerendert: app_settings oder locations nicht geladen`
-      );
+      // console.log(
+      //   `Dropdown nicht gerendert: app_settings oder locations nicht geladen`
+      // );
       return null;
     }
 
     if (!app_settings || !Array.isArray(data) || data.length === 0) {
-      console.log(
-        `Dropdown nicht gerendert: Keine Daten vorhanden: `,
-        app_settings,
-        "data: ",
-        data,
-        "locationdata: ",
-        locationData,
-        `key:  ${key}`
-      );
+      // console.log(
+      //   `Dropdown nicht gerendert: Keine Daten vorhanden: `,
+      //   app_settings,
+      //   "data: ",
+      //   data,
+      //   "locationdata: ",
+      //   locationData,
+      //   `key:  ${key}`
+      // );
       return null;
     }
 
@@ -318,13 +314,13 @@ function StandardSettings() {
             loc.location_has_only_persons === "0"
         ).length <= 1)
     ) {
-      console.log(
-        `Dropdown nicht gerendert: Location Dropdown nicht benötigt (key: ${key})`
-      );
+      // console.log(
+      //   `Dropdown nicht gerendert: Location Dropdown nicht benötigt (key: ${key})`
+      // );
       return null;
     }
 
-    console.log(`Dropdown gerendert: ${key} Dropdown (Index: ${index})`);
+    // console.log(`Dropdown gerendert: ${key} Dropdown (Index: ${index})`);
 
     return (
       <View style={styles.DropdownContainer}>
@@ -436,30 +432,56 @@ function StandardSettings() {
   );
 
   const areAllFieldsValid = () => {
+    console.log("\n\nÜberprüfung beginnt - komplette Identitäten: ", identities);
+  
     return identities.every((identity, index) => {
+      // Log-Ausgaben für einzelne Felder in formData
+      console.log(`Identität ${index} - Name: `, identity.formData.name);
+      console.log(`Identität ${index} - Mannnummer: `, identity.formData.manno);
+      console.log(`Identität ${index} - Telefon: `, identity.formData.phone);
+      console.log(`Identität ${index} - Email: `, identity.formData.email);
+      console.log(`Identität ${index} - Ausgewählte Person: `, identity.selectedPerson);
+  
       // Prüfen, ob die allgemeinen Felder ausgefüllt sind
       const isCommonFieldsValid =
         identity.formData.name &&
         identity.formData.manno &&
         identity.formData.phone &&
         identity.formData.email &&
-        identity.formData.person;
+        identity.selectedPerson;
   
-      // Prüfen, ob das Location Dropdown gerendert werden sollte
-      const isLocationDropdownVisible =
-        multiple_locations === "1" || // Wenn multiple locations aktiv sind
-        (multiple_locations === "0" && locations.some(loc => loc.location_has_persons === "1" || loc.location_has_only_persons === "1")); // Wenn multiple locations nicht aktiv, aber Locations vorhanden sind, die Personen haben
+      console.log(`Überprüfung der allgemeinen Felder - Identität ${index}: `, isCommonFieldsValid);
   
-      // Wenn das Location Dropdown sichtbar ist, prüfen, ob eine Auswahl getroffen wurde
-      if (isLocationDropdownVisible) {
-        const isLocationSelected = !!identity.selectedLocation;
-        return isCommonFieldsValid && isLocationSelected;
-      }
-  
-      // Wenn das Location Dropdown nicht sichtbar ist, werden nur die allgemeinen Felder geprüft
-      return isCommonFieldsValid;
-    });
+       // Prüfen, ob das Location Dropdown gerendert werden sollte
+    const filteredLocations = locations.filter(
+      (loc) => loc.location_has_persons === "1" || loc.location_has_only_persons === "1"
+    );
+
+    const isLocationDropdownVisible = multiple_locations === "1" || filteredLocations.length > 1;
+    console.log(`Location Dropdown sichtbar - Identität ${index}: `, isLocationDropdownVisible);
+
+    // Automatische Auswahl der Location, wenn nur eine verfügbar ist
+    if (!isLocationDropdownVisible && filteredLocations.length === 1 && !identity.selectedLocation) {
+      setIdentities(
+        identities.map((id, idx) => {
+          if (idx === index) {
+            return { ...id, selectedLocation: filteredLocations[0].location_id };
+          }
+          return id;
+        })
+      );
+    }
+
+    const isLocationSelected = !!identity.selectedLocation;
+    console.log(`Location ausgewählt - Identität ${index}: `, isLocationSelected);
+
+    // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl
+    return isLocationDropdownVisible
+      ? isCommonFieldsValid && isLocationSelected
+      : isCommonFieldsValid;
+  });
   };
+  
   
 
   return (
@@ -481,9 +503,9 @@ function StandardSettings() {
             <View key={index} style={styles.container}>
               {renderSettingsFields(identity, index)}
 
-              {console.log(
+              {/* {console.log(
                 `Index: ${index}, Multiple Locations: ${multiple_locations}`
-              )}
+              )} */}
 
               {multiple_locations === "1" &&
                 renderDropdown(
