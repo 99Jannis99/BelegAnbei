@@ -664,6 +664,7 @@ function StandardSettings() {
                     titleStyle={{
                       color: localDataStyle.bottom_toolbar_icon_color,
                     }}
+                    disabled={!areAllFieldsValid()}
                     title="Sichern (einklappen)"
                     onPress={collapseAllIdentities}
                   />
