@@ -178,6 +178,28 @@ function StandardSettings() {
     setActiveIndex(null);
   };
 
+  const deleteActiveIdentity = () => {
+    const identityToBeDeleted = identities[activeIndex];
+
+    // Überprüfen, ob die zu löschende Identität ausgewählt (choosed) ist
+    const wasChosen = identityToBeDeleted && identityToBeDeleted.choosed;
+
+    // Entfernen der aktuellen Identität
+    const updatedIdentities = identities.filter(
+      (_, idx) => idx !== activeIndex
+    );
+
+    // Setze die letzte Identität als ausgewählt, wenn die zu löschende Identität ausgewählt war
+    if (wasChosen && updatedIdentities.length > 0) {
+      updatedIdentities[updatedIdentities.length - 1].choosed = true;
+    }
+
+    setIdentities(updatedIdentities);
+
+    // Einklappen des Formulars
+    setActiveIndex(null);
+  };
+
   const handleInputChange = (index, name, value) => {
     let formattedValue = value;
 
@@ -629,22 +651,39 @@ function StandardSettings() {
           {localDataStyle && (
             <>
               {activeIndex !== null && (
-                <Button
-                  buttonStyle={{
-                    backgroundColor:
-                      localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
-                    borderRadius: 10, // Eckenradius des Buttons
-                  }}
-                  containerStyle={{
-                    margin: 10, // Abstand um den Button herum
-                  }}
-                  titleStyle={{
-                    color: localDataStyle.bottom_toolbar_icon_color,
-                  }}
-                  disabled={!areAllFieldsValid()}
-                  title="Sichern (einklappen)"
-                  onPress={collapseAllIdentities}
-                />
+                <>
+                  <Button
+                    buttonStyle={{
+                      backgroundColor:
+                        localDataStyle.bottom_toolbar_background_color,
+                      borderRadius: 10,
+                    }}
+                    containerStyle={{
+                      margin: 10,
+                    }}
+                    titleStyle={{
+                      color: localDataStyle.bottom_toolbar_icon_color,
+                    }}
+                    title="Sichern (einklappen)"
+                    onPress={collapseAllIdentities}
+                  />
+                  {identities.length > 1 && (
+                    <Button
+                      buttonStyle={{
+                        backgroundColor: "red", // oder eine andere auffällige Farbe
+                        borderRadius: 10,
+                      }}
+                      containerStyle={{
+                        margin: 10,
+                      }}
+                      titleStyle={{
+                        color: "white", // Farbe für den Text im Button
+                      }}
+                      title="Abbrechen (löschen)"
+                      onPress={deleteActiveIdentity}
+                    />
+                  )}
+                </>
               )}
               <Button
                 buttonStyle={{
