@@ -120,7 +120,7 @@ function StandardSettings() {
 
   // Funktion zum Auswählen einer Identität
   const chooseIdentity = (index) => {
-    console.log("chooseIdentity")
+    console.log("chooseIdentity");
     const updatedIdentities = identities.map((identity, idx) => ({
       ...identity,
       choosed: idx === index,
@@ -189,8 +189,28 @@ function StandardSettings() {
       );
     }
 
-    const newIdentities = [...identities];
-    newIdentities[index].formData[name] = formattedValue;
+    const newIdentities = identities.map((identity, idx) => {
+      if (idx === index) {
+        // Aktualisieren der Daten für die aktuelle Identität
+        const updatedIdentity = {
+          ...identity,
+          formData: {
+            ...identity.formData,
+            [name]: formattedValue,
+          },
+        };
+
+        // Setze 'choosed' auf true, wenn es sich um die erste Identität handelt
+        // und sie zum ersten Mal ausgefüllt wird
+        if (index === 0 && !identity.choosed) {
+          updatedIdentity.choosed = true;
+        }
+
+        return updatedIdentity;
+      }
+      return identity;
+    });
+
     setIdentities(newIdentities);
   };
 
@@ -693,7 +713,9 @@ const styles = StyleSheet.create({
     zIndex: 1000, // Stellen Sie sicher, dass das Gitter über allen anderen Elementen liegt
   },
   collapsedContainer: {
-    height: 50,
+    // height: 50,
+    padding: 10,
+    borderRadius: 15,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
