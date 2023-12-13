@@ -65,6 +65,7 @@ Store.subscribe(() => {
     dataStyle: dataReducer.dataStyle,
     dataDocuments: dataReducer.dataDocuments,
     navPage: dataReducer.navPage,
+    dataIdentities: dataReducer.dataIdentities,
   });
 
   storeDatev({

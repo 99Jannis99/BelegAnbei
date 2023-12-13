@@ -23,6 +23,7 @@ import {
   ADD_DATA_DOCUMENTS,
   SET_DATEV_CLIENT,
   SET_NAV_PAGE,
+  SET_DATA_IDENTITIES,
 } from "./actions.js";
 
 var RNFileSystem = require("react-native-fs");
@@ -87,6 +88,18 @@ const dataInitialState = {
   dataStyle: "{}",
   dataDocuments: {},
   navPage: "StandardDocuments",
+  dataIdentities: [
+    {
+      selectedLocation: null,
+      selectedPerson: null,
+      formData: {
+        name: "",
+        manno: "",
+        phone: "",
+        email: "",
+      },
+    },
+  ],
 };
 
 export function dataReducer(state = dataInitialState, action) {
@@ -140,6 +153,8 @@ export function dataReducer(state = dataInitialState, action) {
       };
     case SET_NAV_PAGE:
       return { ...state, navPage: action.payload };
+    case SET_DATA_IDENTITIES:
+      return { ...state, dataIdentities: action.payload };
     default:
       return state;
   }

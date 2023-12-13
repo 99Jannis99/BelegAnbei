@@ -25,6 +25,8 @@ function StandardSettings() {
   const [locationData, setLocationData] = useState([1, 2, 3]);
   const [personData, setPersonData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const dispatch = useDispatch();
+
   const [identities, setIdentities] = useState([
     {
       selectedLocation: null,
@@ -52,6 +54,7 @@ function StandardSettings() {
     dataPersons,
     dataStyle,
     dataTextsnippets,
+    dataIdentities,
   } = useSelector((state) => state.dataReducer);
 
   useEffect(() => {
@@ -112,6 +115,28 @@ function StandardSettings() {
     // console.log("newIdentities: ", identities, "\n\n");
   }, [identities]);
 
+  useEffect(() => {
+    setIdentities(dataIdentities);
+    collapseAllIdentities(false);
+    console.log("\n\ndataIdentities: ",dataIdentities)
+  }, [dataIdentities]);
+
+  useEffect(() => {
+    if (!Array.isArray(locations) || locations.length === 0) {
+      // Array ist entweder nicht vorhanden oder leer
+      return;
+    }
+    const filteredLocations = locations.filter(
+      (loc) => loc.location_has_persons === "1"
+    );
+
+    // console.log("filteredLocations: ", filteredLocations); // Zum Überprüfen der gefilterten Standorte
+
+    if (multiple_locations === "0" && filteredLocations.length === 1) {
+      setSelectedLocation(filteredLocations[0].location_id);
+    }
+  }, [locations, multiple_locations]);
+
   const { width, height } = Dimensions.get("window");
 
   const [isFocus, setIsFocus] = useState(false);
@@ -127,6 +152,8 @@ function StandardSettings() {
     }));
     setIdentities(updatedIdentities);
     console.log("updatedIdentities: ", updatedIdentities);
+    dispatch({ type: "SET_DATA_IDENTITIES", payload: updatedIdentities });
+
   };
 
   const addIdentity = () => {
@@ -150,22 +177,6 @@ function StandardSettings() {
     setIdentities(updatedIdentities);
   };
 
-  useEffect(() => {
-    if (!Array.isArray(locations) || locations.length === 0) {
-      // Array ist entweder nicht vorhanden oder leer
-      return;
-    }
-    const filteredLocations = locations.filter(
-      (loc) => loc.location_has_persons === "1"
-    );
-
-    // console.log("filteredLocations: ", filteredLocations); // Zum Überprüfen der gefilterten Standorte
-
-    if (multiple_locations === "0" && filteredLocations.length === 1) {
-      setSelectedLocation(filteredLocations[0].location_id);
-    }
-  }, [locations, multiple_locations]);
-
   const toggleActiveIndex = (index) => {
     if (activeIndex === index) {
       setActiveIndex(null); // Einklappen, wenn es bereits aktiv ist
@@ -174,8 +185,9 @@ function StandardSettings() {
     }
   };
 
-  const collapseAllIdentities = () => {
+  const collapseAllIdentities = (Dispatch) => {
     setActiveIndex(null);
+    Dispatch && dispatch({ type: "SET_DATA_IDENTITIES", payload: identities });
   };
 
   const deleteActiveIdentity = () => {
@@ -666,7 +678,7 @@ function StandardSettings() {
                     }}
                     disabled={!areAllFieldsValid()}
                     title="Sichern (einklappen)"
-                    onPress={collapseAllIdentities}
+                    onPress={()=>collapseAllIdentities(true)}
                   />
                   {identities.length > 1 && (
                     <Button
