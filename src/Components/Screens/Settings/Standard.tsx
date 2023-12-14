@@ -93,6 +93,7 @@ function StandardSettings() {
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
     setLocalTextsnippets(JSON.parse(dataTextsnippets));
+    console.log("dataStyle: ", dataStyle);
   }, [dataStyle, dataTextsnippets]);
 
   useEffect(() => {}, [identities]);
@@ -552,7 +553,7 @@ function StandardSettings() {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor:localDataStyle.body_background_color}}>
       {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
       {Array.isArray(localTextsnippets) && (
         <View style={{ flex: 1, padding: 10 }}>
@@ -646,6 +647,42 @@ function StandardSettings() {
                   onPress={addIdentity}
                 />
               ) : null}
+              <View style={styles.cameraTypeContainer}>
+                <SimpleLineIcons
+                  style={[
+                    styles.cameraTypeIcon,
+                    { backgroundColor: localDataStyle.body_background_color },
+                  ]}
+                  name="camera"
+                  size={20}
+                  color="black"
+                  onPress={() => toggleActiveIndex(index)}
+                />
+                <View
+                  style={[
+                    styles.cameraTypeContent,
+                    { backgroundColor: localDataStyle.body_background_color },
+                  ]}
+                >
+                  <Text style={[styles.cameraTypeHeader,{color: localDataStyle.body_font_color}]}>Kamera Typ</Text>
+                  <View style={styles.cameraTypeButtonContainer}>
+                    <TouchableOpacity style={styles.cameraTypeButton}>
+                      <Text style={styles.cameraTypeButtonText}>
+                        Standard Kamera
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.cameraTypeButton}>
+                      <Text style={styles.cameraTypeButtonText}>
+                        Beleg Kamera
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.cameraTypeText}>
+                    Die "Belege Kamera" unterstützt Sie beim Fotografieren Ihrer
+                    Belege. Mehr Informationen erhalten Sie unter Hilfe
+                  </Text>
+                </View>
+              </View>
             </>
           )}
         </>
@@ -689,7 +726,7 @@ const styles = StyleSheet.create({
   gridContainer: {
     position: "absolute",
     pointerEvents: "none",
-    top:-11.5,
+    top: -11.5,
     left: 0,
     width: Dimensions.get("window").width,
     height: Dimensions.get("screen").height,
@@ -698,7 +735,7 @@ const styles = StyleSheet.create({
   collapsedContainer: {
     padding: 10,
     borderRadius: 15,
-    height:60,
+    height: 60,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -712,4 +749,42 @@ const styles = StyleSheet.create({
     margin: 5,
     backgroundColor: "red",
   },
+  cameraTypeContainer: {
+    margin: 10,
+  },
+  cameraTypeIcon: {
+    width: "auto",
+    position: "absolute",
+    padding: 10,
+    borderColor: "#575757",
+    borderWidth: 1,
+    borderRadius: 15,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderBottomColor: "white",
+    backgroundColor: "white",
+    borderBottomWidth: 0,
+    zIndex: 5,
+  },
+  cameraTypeContent: {
+    top: 41,
+    marginBottom: 41,
+    borderColor: "#575757",
+    borderWidth: 1,
+    borderRadius: 15,
+    padding: 10,
+    borderTopLeftRadius: 0,
+    alignItems: "center",
+  },
+  cameraTypeHeader: { fontSize: 20, textAlign: "center" },
+  cameraTypeButtonContainer: {
+    marginVertical: 10,
+    flexDirection: "row",
+    borderColor: "#575757",
+    borderWidth: 1,
+    borderRadius: 15,
+  },
+  cameraTypeButton: { margin: 5, width: 120 },
+  cameraTypeButtonText: { textAlign: "center" },
+  cameraTypeText: {},
 });
