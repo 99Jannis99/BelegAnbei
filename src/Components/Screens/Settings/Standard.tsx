@@ -541,21 +541,8 @@ function StandardSettings() {
   );
 
   const areAllFieldsValid = () => {
-    // console.log(
-    //   "\n\nÜberprüfung beginnt - komplette Identitäten: ",
-    //   identities
-    // );
 
     return identities.every((identity, index) => {
-      // Log-Ausgaben für einzelne Felder in formData
-      // console.log(`Identität ${index} - Name: `, identity.formData.name);
-      // console.log(`Identität ${index} - Mannnummer: `, identity.formData.manno);
-      // console.log(`Identität ${index} - Telefon: `, identity.formData.phone);
-      // console.log(`Identität ${index} - Email: `, identity.formData.email);
-      // console.log(
-      //   `Identität ${index} - Ausgewählte Person: `,
-      //   identity.selectedPerson
-      // );
 
       // Prüfen, ob die allgemeinen Felder ausgefüllt sind
       const isCommonFieldsValid =
@@ -565,10 +552,10 @@ function StandardSettings() {
         identity.formData.email &&
         identity.selectedPerson;
 
-      // console.log(
-      //   `Überprüfung der allgemeinen Felder - Identität ${index}: `,
-      //   isCommonFieldsValid
-      // );
+
+      // Zusätzliche Validierung für E-Mail und Mannnummer
+      const isEmailValid = identity.formData.email ? isValidEmail(identity.formData.email) : true;
+      const isMannnummerValid = identity.formData.manno ? isValidMannnummer(identity.formData.manno) : true;
 
       // Prüfen, ob das Location Dropdown gerendert werden sollte
       const filteredLocations = locations.filter(
@@ -579,12 +566,6 @@ function StandardSettings() {
 
       const isLocationDropdownVisible =
         multiple_locations === "1" || filteredLocations.length > 1;
-      // console.log(
-      //   `Location Dropdown sichtbar - Identität ${index}: `,
-      //   isLocationDropdownVisible
-      // );
-
-      // Automatische Auswahl der Location, wenn nur eine verfügbar ist
       if (
         !isLocationDropdownVisible &&
         filteredLocations.length === 1 &&
@@ -604,15 +585,11 @@ function StandardSettings() {
       }
 
       const isLocationSelected = !!identity.selectedLocation;
-      // console.log(
-      //   `Location ausgewählt - Identität ${index}: `,
-      //   isLocationSelected
-      // );
 
-      // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl
+      // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl        
       return isLocationDropdownVisible
-        ? isCommonFieldsValid && isLocationSelected
-        : isCommonFieldsValid;
+        ? isCommonFieldsValid && isLocationSelected && isEmailValid && isMannnummerValid
+        : isCommonFieldsValid && isEmailValid && isMannnummerValid;
     });
   };
 
