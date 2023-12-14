@@ -79,8 +79,6 @@ function StandardSettings() {
           }))
       : [];
 
-    // console.log("Filtered Locations for Dropdown: ", newLocationData);
-
     setLocationData(newLocationData);
 
     const newPersonData = Array.isArray(newPersons)
@@ -90,47 +88,28 @@ function StandardSettings() {
       : [];
 
     setPersonData(newPersonData);
-    // console.log(
-    //   "\n\nnewPersons: ",
-    //   newPersons,
-    //   "\nnewLocations: ",
-    //   dataLocations
-    // );
-    // console.log(
-    //   "\n\nnewLocationData: ",
-    //   newLocationData,
-    //   "\nnewPersonData: ",
-    //   newPersonData
-    // );
   }, [dataSettings, dataLocations, dataPersons, selectedLocation]);
 
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
-    // console.log("dataStyle: ", dataStyle);
     setLocalTextsnippets(JSON.parse(dataTextsnippets));
-    // console.log("dataTextsnippets: ", dataTextsnippets);
   }, [dataStyle, dataTextsnippets]);
 
   useEffect(() => {
-    // console.log("newIdentities: ", identities, "\n\n");
   }, [identities]);
 
   useEffect(() => {
     setIdentities(dataIdentities);
     collapseAllIdentities(false);
-    console.log("\n\ndataIdentities: ",dataIdentities)
   }, [dataIdentities]);
 
   useEffect(() => {
     if (!Array.isArray(locations) || locations.length === 0) {
-      // Array ist entweder nicht vorhanden oder leer
       return;
     }
     const filteredLocations = locations.filter(
       (loc) => loc.location_has_persons === "1"
     );
-
-    // console.log("filteredLocations: ", filteredLocations); // Zum Überprüfen der gefilterten Standorte
 
     if (multiple_locations === "0" && filteredLocations.length === 1) {
       setSelectedLocation(filteredLocations[0].location_id);
@@ -145,15 +124,12 @@ function StandardSettings() {
 
   // Funktion zum Auswählen einer Identität
   const chooseIdentity = (index) => {
-    console.log("chooseIdentity");
     const updatedIdentities = identities.map((identity, idx) => ({
       ...identity,
       choosed: idx === index,
     }));
     setIdentities(updatedIdentities);
-    console.log("updatedIdentities: ", updatedIdentities);
     dispatch({ type: "SET_DATA_IDENTITIES", payload: updatedIdentities });
-
   };
 
   const addIdentity = () => {
@@ -163,7 +139,7 @@ function StandardSettings() {
       {
         selectedLocation: null,
         selectedPerson: null,
-        choosed: true, // Neu hinzugefügte Identität ist automatisch ausgewählt
+        choosed: true, 
         formData: {
           name: "",
           manno: "",
@@ -385,31 +361,15 @@ function StandardSettings() {
 
   // UI für jedes Dropdown
   const renderDropdown = (key, data, value, onChange, dropdown, index) => {
-    // console.log("keyTOp: ", key);
     if (index !== activeIndex) {
-      // console.log(
-      //   `Dropdown nicht gerendert: Nicht aktives Formular (Index: ${index})`
-      // );
       return null;
     }
 
     if (!app_settings || !locations) {
-      // console.log(
-      //   `Dropdown nicht gerendert: app_settings oder locations nicht geladen`
-      // );
       return null;
     }
 
     if (!app_settings || !Array.isArray(data) || data.length === 0) {
-      // console.log(
-      //   `Dropdown nicht gerendert: Keine Daten vorhanden: `,
-      //   app_settings,
-      //   "data: ",
-      //   data,
-      //   "locationdata: ",
-      //   locationData,
-      //   `key:  ${key}`
-      // );
       return null;
     }
 
@@ -423,13 +383,8 @@ function StandardSettings() {
             loc.location_has_only_persons === "0"
         ).length <= 1)
     ) {
-      // console.log(
-      //   `Dropdown nicht gerendert: Location Dropdown nicht benötigt (key: ${key})`
-      // );
       return null;
     }
-
-    // console.log(`Dropdown gerendert: ${key} Dropdown (Index: ${index})`);
 
     return (
       <View style={styles.DropdownContainer}>
@@ -541,9 +496,7 @@ function StandardSettings() {
   );
 
   const areAllFieldsValid = () => {
-
     return identities.every((identity, index) => {
-
       // Prüfen, ob die allgemeinen Felder ausgefüllt sind
       const isCommonFieldsValid =
         identity.formData.name &&
@@ -552,10 +505,13 @@ function StandardSettings() {
         identity.formData.email &&
         identity.selectedPerson;
 
-
       // Zusätzliche Validierung für E-Mail und Mannnummer
-      const isEmailValid = identity.formData.email ? isValidEmail(identity.formData.email) : true;
-      const isMannnummerValid = identity.formData.manno ? isValidMannnummer(identity.formData.manno) : true;
+      const isEmailValid = identity.formData.email
+        ? isValidEmail(identity.formData.email)
+        : true;
+      const isMannnummerValid = identity.formData.manno
+        ? isValidMannnummer(identity.formData.manno)
+        : true;
 
       // Prüfen, ob das Location Dropdown gerendert werden sollte
       const filteredLocations = locations.filter(
@@ -586,9 +542,12 @@ function StandardSettings() {
 
       const isLocationSelected = !!identity.selectedLocation;
 
-      // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl        
+      // Gültigkeitsprüfung unter Berücksichtigung der Location-Auswahl
       return isLocationDropdownVisible
-        ? isCommonFieldsValid && isLocationSelected && isEmailValid && isMannnummerValid
+        ? isCommonFieldsValid &&
+            isLocationSelected &&
+            isEmailValid &&
+            isMannnummerValid
         : isCommonFieldsValid && isEmailValid && isMannnummerValid;
     });
   };
@@ -611,11 +570,6 @@ function StandardSettings() {
           {identities.map((identity, index) => (
             <View key={index} style={styles.container}>
               {renderSettingsFields(identity, index)}
-
-              {/* {console.log(
-                `Index: ${index}, Multiple Locations: ${multiple_locations}`
-              )} */}
-
               {multiple_locations === "1" &&
                 renderDropdown(
                   "location",
@@ -655,7 +609,7 @@ function StandardSettings() {
                     }}
                     disabled={!areAllFieldsValid()}
                     title="Sichern (einklappen)"
-                    onPress={()=>collapseAllIdentities(true)}
+                    onPress={() => collapseAllIdentities(true)}
                   />
                   {identities.length > 1 && (
                     <Button
@@ -675,21 +629,23 @@ function StandardSettings() {
                   )}
                 </>
               )}
-              <Button
-                buttonStyle={{
-                  backgroundColor:
-                    localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
-                  borderRadius: 10, // Eckenradius des Buttons
-                }}
-                containerStyle={{
-                  margin: 10, // Abstand um den Button herum
-                }}
-                titleStyle={{
-                  color: localDataStyle.bottom_toolbar_icon_color,
-                }}
-                title="Weitere Identität hinzufügen"
-                onPress={addIdentity}
-              />
+              {settings.multiple_persons == "1" ? (
+                <Button
+                  buttonStyle={{
+                    backgroundColor:
+                      localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
+                    borderRadius: 10, // Eckenradius des Buttons
+                  }}
+                  containerStyle={{
+                    margin: 10, // Abstand um den Button herum
+                  }}
+                  titleStyle={{
+                    color: localDataStyle.bottom_toolbar_icon_color,
+                  }}
+                  title="Weitere Identität hinzufügen"
+                  onPress={addIdentity}
+                />
+              ) : null}
             </>
           )}
         </>
@@ -701,10 +657,8 @@ function StandardSettings() {
 export default StandardSettings;
 
 const styles = StyleSheet.create({
-  // ... Ihre Stildefinitionen
   container: {
     borderColor: "black",
-    // borderWidth: 1,
     marginHorizontal: 10,
     marginBottom: 5,
     marginTop: 10,
@@ -739,10 +693,9 @@ const styles = StyleSheet.create({
     left: 0,
     width: Dimensions.get("window").width,
     height: Dimensions.get("screen").height,
-    zIndex: 1000, // Stellen Sie sicher, dass das Gitter über allen anderen Elementen liegt
+    zIndex: 1000, 
   },
   collapsedContainer: {
-    // height: 50,
     padding: 10,
     borderRadius: 15,
     flexDirection: "row",
