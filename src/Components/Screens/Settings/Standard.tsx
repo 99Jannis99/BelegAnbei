@@ -95,8 +95,7 @@ function StandardSettings() {
     setLocalTextsnippets(JSON.parse(dataTextsnippets));
   }, [dataStyle, dataTextsnippets]);
 
-  useEffect(() => {
-  }, [identities]);
+  useEffect(() => {}, [identities]);
 
   useEffect(() => {
     setIdentities(dataIdentities);
@@ -139,7 +138,7 @@ function StandardSettings() {
       {
         selectedLocation: null,
         selectedPerson: null,
-        choosed: true, 
+        choosed: true,
         formData: {
           name: "",
           manno: "",
@@ -565,6 +564,7 @@ function StandardSettings() {
         </View>
       )}
 
+      <View style={styles.gridContainer}>{createGrid(50, 20)}</View>
       {settings && locations && persons && (
         <>
           {identities.map((identity, index) => (
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
   container: {
     borderColor: "black",
     marginHorizontal: 10,
-    marginBottom: 5,
+    marginBottom: 10,
     marginTop: 10,
     borderRadius: 15,
   },
@@ -689,15 +689,16 @@ const styles = StyleSheet.create({
   gridContainer: {
     position: "absolute",
     pointerEvents: "none",
-    top: -28,
+    top:-11.5,
     left: 0,
     width: Dimensions.get("window").width,
     height: Dimensions.get("screen").height,
-    zIndex: 1000, 
+    zIndex: 1000,
   },
   collapsedContainer: {
     padding: 10,
     borderRadius: 15,
+    height:60,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
