@@ -648,7 +648,7 @@ function StandardSettings() {
                   )}
                 </>
               )}
-              {settings.multiple_persons == "0" ? (
+              {settings.multiple_persons == "1" ? (
                 <Button
                   buttonStyle={{
                     backgroundColor:
