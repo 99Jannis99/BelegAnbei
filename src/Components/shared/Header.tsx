@@ -21,9 +21,9 @@ const Header = () => {
   const { dataSettings, dataStyle } = useSelector((state) => state.dataReducer);
   const { logoImage, lastUpdated } = useSelector((state) => state.imageReducer);
 
-  useEffect(() => {
-    setlocalDataSettings(JSON.parse(dataSettings));
-  }, [dataSettings]);
+  // useEffect(() => {
+  //   setlocalDataSettings(JSON.parse(dataSettings));
+  // }, [dataSettings]);
 
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));

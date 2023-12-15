@@ -93,14 +93,13 @@ function StandardSettings() {
   useEffect(() => {
     setLocalDataStyle(JSON.parse(dataStyle));
     setLocalTextsnippets(JSON.parse(dataTextsnippets));
-    console.log("dataStyle: ", dataStyle);
   }, [dataStyle, dataTextsnippets]);
 
   useEffect(() => {}, [identities]);
 
   useEffect(() => {
     setIdentities(dataIdentities);
-    collapseAllIdentities(false);
+    dataIdentities[0].formData.name?collapseAllIdentities(false):null;
   }, [dataIdentities]);
 
   useEffect(() => {
@@ -552,47 +551,66 @@ function StandardSettings() {
     });
   };
 
+  const handleStandardCameraSelect = () => {
+    const newDataSettings = { ...settings, default_camera_mode: "standard" };
+    dispatch({
+      type: "SET_DATA_SETTINGS",
+      payload: JSON.stringify(newDataSettings),
+    });
+  };
+
+  const handleDocscanCameraSelect = () => {
+    const newDataSettings = { ...settings, default_camera_mode: "docscan" };
+    dispatch({
+      type: "SET_DATA_SETTINGS",
+      payload: JSON.stringify(newDataSettings),
+    });
+  };
+
   return (
-    <ScrollView style={{backgroundColor:localDataStyle.body_background_color}}>
-      {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
-      {Array.isArray(localTextsnippets) && (
-        <View style={{ flex: 1, padding: 10 }}>
-          <RenderHtml
-            contentWidth={Dimensions.get("window").width}
-            source={htmlSource}
-            tagsStyles={tagStyles}
-          />
-        </View>
-      )}
+    localDataStyle && (
+      <ScrollView
+        style={{ backgroundColor: localDataStyle.body_background_color }}
+      >
+        {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
+        {Array.isArray(localTextsnippets) && (
+          <View style={{ flex: 1, padding: 10 }}>
+            <RenderHtml
+              contentWidth={Dimensions.get("window").width}
+              source={htmlSource}
+              tagsStyles={tagStyles}
+            />
+          </View>
+        )}
 
-      <View style={styles.gridContainer}>{createGrid(50, 20)}</View>
-      {settings && locations && persons && (
-        <>
-          {identities.map((identity, index) => (
-            <View key={index} style={styles.container}>
-              {renderSettingsFields(identity, index)}
-              {multiple_locations === "1" &&
-                renderDropdown(
-                  "location",
-                  locationData,
-                  identity.selectedLocation,
-                  (location) => setSelectedLocationForIdentity(index, location),
-                  styles.dropdownFirst,
-                  index
-                )}
+        {/* <View style={styles.gridContainer}>{createGrid(50, 20)}</View> */}
+        {settings && locations && persons && (
+          <>
+            {identities.map((identity, index) => (
+              <View key={index} style={styles.container}>
+                {renderSettingsFields(identity, index)}
+                {multiple_locations === "1" &&
+                  renderDropdown(
+                    "location",
+                    locationData,
+                    identity.selectedLocation,
+                    (location) =>
+                      setSelectedLocationForIdentity(index, location),
+                    styles.dropdownFirst,
+                    index
+                  )}
 
-              {(multiple_locations === "0" || identity.selectedLocation) &&
-                renderDropdown(
-                  "person",
-                  personData,
-                  identity.selectedPerson,
-                  (person) => setSelectedPersonForIdentity(index, person),
-                  styles.dropdown,
-                  index
-                )}
-            </View>
-          ))}
-          {localDataStyle && (
+                {(multiple_locations === "0" || identity.selectedLocation) &&
+                  renderDropdown(
+                    "person",
+                    personData,
+                    identity.selectedPerson,
+                    (person) => setSelectedPersonForIdentity(index, person),
+                    styles.dropdown,
+                    index
+                  )}
+              </View>
+            ))}
             <>
               {activeIndex !== null && (
                 <>
@@ -630,7 +648,7 @@ function StandardSettings() {
                   )}
                 </>
               )}
-              {settings.multiple_persons == "1" ? (
+              {settings.multiple_persons == "0" ? (
                 <Button
                   buttonStyle={{
                     backgroundColor:
@@ -664,30 +682,74 @@ function StandardSettings() {
                     { backgroundColor: localDataStyle.body_background_color },
                   ]}
                 >
-                  <Text style={[styles.cameraTypeHeader,{color: localDataStyle.body_font_color}]}>Kamera Typ</Text>
+                  <Text
+                    style={[
+                      styles.cameraTypeHeader,
+                      { color: localDataStyle.body_font_color },
+                    ]}
+                  >
+                    Kamera Typ
+                  </Text>
                   <View style={styles.cameraTypeButtonContainer}>
-                    <TouchableOpacity style={styles.cameraTypeButton}>
-                      <Text style={styles.cameraTypeButtonText}>
+                    <TouchableOpacity
+                      style={[
+                        styles.cameraTypeButton,
+                        {
+                          backgroundColor:
+                            settings.default_camera_mode == "standard"
+                              ? localDataStyle.bottom_toolbar_background_active_color
+                              : localDataStyle.bottom_toolbar_icon_color,
+                        },
+                      ]}
+                      onPress={handleStandardCameraSelect}
+                    >
+                      <Text
+                        style={[
+                          styles.cameraTypeButtonText,
+                          { color: localDataStyle.body_font_color },
+                        ]}
+                      >
                         Standard Kamera
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.cameraTypeButton}>
-                      <Text style={styles.cameraTypeButtonText}>
+                    <TouchableOpacity
+                      style={[
+                        styles.cameraTypeButton,
+                        {
+                          backgroundColor:
+                            settings.default_camera_mode == "docscan"
+                              ? localDataStyle.bottom_toolbar_background_active_color
+                              : localDataStyle.bottom_toolbar_icon_color,
+                        },
+                      ]}
+                      onPress={handleDocscanCameraSelect}
+                    >
+                      <Text
+                        style={[
+                          styles.cameraTypeButtonText,
+                          { color: localDataStyle.body_font_color },
+                        ]}
+                      >
                         Beleg Kamera
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  <Text style={styles.cameraTypeText}>
+                  <Text
+                    style={[
+                      styles.cameraTypeText,
+                      { color: localDataStyle.body_font_color },
+                    ]}
+                  >
                     Die "Belege Kamera" unterstützt Sie beim Fotografieren Ihrer
                     Belege. Mehr Informationen erhalten Sie unter Hilfe
                   </Text>
                 </View>
               </View>
             </>
-          )}
-        </>
-      )}
-    </ScrollView>
+          </>
+        )}
+      </ScrollView>
+    )
   );
 }
 
@@ -767,7 +829,7 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   cameraTypeContent: {
-    top: 41,
+    top: 40.5,
     marginBottom: 41,
     borderColor: "#575757",
     borderWidth: 1,
@@ -784,7 +846,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
   },
-  cameraTypeButton: { margin: 5, width: 120 },
+  cameraTypeButton: { padding: 5, width: 120, borderRadius: 15 },
   cameraTypeButtonText: { textAlign: "center" },
   cameraTypeText: {},
 });
