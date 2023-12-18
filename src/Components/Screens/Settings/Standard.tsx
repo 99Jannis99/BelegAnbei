@@ -47,6 +47,9 @@ function StandardSettings() {
     selectedLocation: "",
     selectedPerson: "",
   });
+  const { width, height } = Dimensions.get("window");
+  const [isFocus, setIsFocus] = useState(false);
+  const { app_settings, multiple_locations } = settings;
 
   const {
     dataSettings,
@@ -83,10 +86,14 @@ function StandardSettings() {
 
     const newPersonData = Array.isArray(newPersons)
       ? newPersons
-          .filter((person) => person.location_id === selectedLocation)
+          .filter(
+            (person) =>
+              person.location_id === selectedLocation &&
+              (person.person_for_send === "both" ||
+                person.person_for_send === "standard")
+          )
           .map((per) => ({ label: per.person_name, value: per.person_id }))
       : [];
-
     setPersonData(newPersonData);
   }, [dataSettings, dataLocations, dataPersons, selectedLocation]);
 
@@ -99,7 +106,7 @@ function StandardSettings() {
 
   useEffect(() => {
     setIdentities(dataIdentities);
-    dataIdentities[0].formData.name?collapseAllIdentities(false):null;
+    dataIdentities[0].formData.name ? collapseAllIdentities(false) : null;
   }, [dataIdentities]);
 
   useEffect(() => {
@@ -114,12 +121,6 @@ function StandardSettings() {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
-
-  const { width, height } = Dimensions.get("window");
-
-  const [isFocus, setIsFocus] = useState(false);
-
-  const { app_settings, multiple_locations } = settings;
 
   // Funktion zum Auswählen einer Identität
   const chooseIdentity = (index) => {
@@ -224,6 +225,7 @@ function StandardSettings() {
   };
 
   const setSelectedLocationForIdentity = (index, location) => {
+    setSelectedLocation(location); // Aktualisiert die selectedLocation State-Variable
     setIdentities(
       identities.map((identity, idx) => {
         if (idx === index) {
@@ -233,6 +235,7 @@ function StandardSettings() {
       })
     );
   };
+  
 
   const setSelectedPersonForIdentity = (index, person) => {
     setIdentities(
@@ -601,6 +604,7 @@ function StandardSettings() {
                   )}
 
                 {(multiple_locations === "0" || identity.selectedLocation) &&
+                  (
                   renderDropdown(
                     "person",
                     personData,
@@ -608,7 +612,7 @@ function StandardSettings() {
                     (person) => setSelectedPersonForIdentity(index, person),
                     styles.dropdown,
                     index
-                  )}
+                  ))}
               </View>
             ))}
             <>
