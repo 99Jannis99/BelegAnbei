@@ -19,7 +19,27 @@ import LottieView from "lottie-react-native";
 
 import originalCustomer from "../../../data/customer.json";
 import BottomTaps from "./BottomTaps";
-import BeispielScreen from "../Screens/BeispielScreen";
+
+import LocationScreen from "../Screens/More/LocationScreen";
+import LocationsScreen from "../Screens/More/LocationsScreen";
+import BelegArchivScreen from "../Screens/More/BelegArchivScreen";
+import TextScreen from "../Screens/More/TextScreen";
+import DocExchangeScreen from "../Screens/More/DocExchangeScreen";
+import DownloadsScreen from "../Screens/More/DownloadsScreen";
+import NewsScreen from "../Screens/More/NewsScreen";
+import AnsprechpartnerScreen from "../Screens/More/AnsprechpartnerScreen";
+import AppointmentsScreen from "../Screens/More/AppointmentsScreen";
+import NotesScreen from "../Screens/More/NotesScreen";
+import FAQScreen from "../Screens/More/FAQScreen";
+import KontaktScreen from "../Screens/More/KontaktScreen";
+import FormulareScreen from "../Screens/More/FormulareScreen";
+import VideosScreen from "../Screens/More/VideosScreen";
+import VideoScreen from "../Screens/More/VideoScreen";
+import AppCleanScreen from "../Screens/More/AppCleanScreen";
+import AppInfoScreen from "../Screens/More/AppInfoScreen";
+import ChatScreen from "../Screens/More/ChatScreen";
+import NotFoundScreen from "../Screens/More/NotFoundScreen";
+
 
 const DrawerComponent = () => {
   const [areDataLoaded, setDataLoaded] = useState(false);
@@ -44,8 +64,10 @@ const DrawerComponent = () => {
 
   useEffect(() => {
     setlocalDataMoreIndex(JSON.parse(dataMoreIndex));
-    // console.log(localDataMoreIndex);
+  //  console.log("dataMoreIndex: ", dataMoreIndex);
   }, [dataMoreIndex]);
+
+  //console.log('localDataMoreIndex', localDataMoreIndex)
 
   const fetchData = async () => {
     try {
@@ -334,7 +356,8 @@ const DrawerComponent = () => {
           <Drawer.Screen
             key={`${index}-${blockIndex}`}
             name={block.label}
-            component={BeispielScreen}
+            component={moreContentSwitcher(block.type)}
+            initialParams={ block }
             options={{
               headerShown: false,
               drawerIcon: ({ focused, size }) => (
@@ -355,5 +378,72 @@ const DrawerComponent = () => {
     </Drawer.Navigator>
   );
 };
+
+const moreContentSwitcher = (type) => {
+  switch(type) {
+    case 'map-location':
+      return LocationScreen
+    break;
+    case 'locations':
+      return LocationsScreen
+    break;
+    case 'stats':
+      return BelegArchivScreen
+    break;
+    case 'text':
+      return TextScreen
+    break;
+    case 'documents':
+      return DocExchangeScreen
+    break;
+    case 'downloads':
+      return DownloadsScreen
+    break;
+    case 'news':
+      return NewsScreen
+    break;
+    case 'persons':
+      return AnsprechpartnerScreen
+    break;
+    case 'appointments':
+      return AppointmentsScreen
+    break;
+    case 'notiz':
+      return NotesScreen
+    break;
+    case 'help':
+      return FAQScreen
+    break;
+    case 'contact':
+      return KontaktScreen
+    break;
+case 'x':
+  return PushSettingsScreen
+break;
+case 'x':
+  return PushMessagesScreen
+break;
+    case 'mandates':
+      return FormulareScreen
+    break;
+    case 'videos':
+      return VideosScreen
+    break;
+    case 'video':
+      return VideoScreen
+    break;
+    case 'cleanup':
+      return AppCleanScreen
+    break;
+    case 'app-info':
+      return AppInfoScreen
+    break;
+    case 'chat':
+      return ChatScreen
+    break;
+    default:
+      return NotFoundScreen
+  }
+}
 
 export default DrawerComponent;
