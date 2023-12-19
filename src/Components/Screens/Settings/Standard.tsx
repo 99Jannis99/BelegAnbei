@@ -12,7 +12,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import RenderHtml from "react-native-render-html";
 import { AntDesign, SimpleLineIcons } from "../../../helpers/icons";
 import { useSelector, useDispatch } from "react-redux";
-import { chooseIdentity } from '../../../Functions/StandardSettings/IdentityManagement'; 
+import { chooseIdentity, addIdentity  } from '../../../Functions/StandardSettings/IdentityManagement'; 
 
 function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
@@ -122,27 +122,6 @@ function StandardSettings() {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
-
-  const addIdentity = () => {
-    const newIndex = identities.length;
-    const updatedIdentities = [
-      ...identities.map((identity) => ({ ...identity, choosed: false })),
-      {
-        selectedLocation: null,
-        selectedPerson: null,
-        choosed: true,
-        formData: {
-          name: "",
-          manno: "",
-          phone: "",
-          email: "",
-        },
-      },
-    ];
-
-    setActiveIndex(newIndex);
-    setIdentities(updatedIdentities);
-  };
 
   const toggleActiveIndex = (index) => {
     if (activeIndex === index) {
@@ -657,7 +636,7 @@ function StandardSettings() {
                     color: localDataStyle.bottom_toolbar_icon_color,
                   }}
                   title="Weitere Identität hinzufügen"
-                  onPress={addIdentity}
+                  onPress={() => addIdentity(identities, setActiveIndex, setIdentities)}
                 />
               ) : null}
               <View style={styles.cameraTypeContainer}>
