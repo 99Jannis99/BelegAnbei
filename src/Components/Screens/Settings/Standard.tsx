@@ -12,6 +12,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import RenderHtml from "react-native-render-html";
 import { AntDesign, SimpleLineIcons } from "../../../helpers/icons";
 import { useSelector, useDispatch } from "react-redux";
+import { chooseIdentity } from '../../../Functions/StandardSettings/IdentityManagement'; 
 
 function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
@@ -121,16 +122,6 @@ function StandardSettings() {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
-
-  // Funktion zum Auswählen einer Identität
-  const chooseIdentity = (index) => {
-    const updatedIdentities = identities.map((identity, idx) => ({
-      ...identity,
-      choosed: idx === index,
-    }));
-    setIdentities(updatedIdentities);
-    dispatch({ type: "SET_DATA_IDENTITIES", payload: updatedIdentities });
-  };
 
   const addIdentity = () => {
     const newIndex = identities.length;
@@ -258,7 +249,7 @@ function StandardSettings() {
         <TouchableOpacity
           key={index}
           style={[styles.collapsedContainer, { backgroundColor }]}
-          onPress={() => chooseIdentity(index)}
+          onPress={() => chooseIdentity(identities, dispatch, index)}
         >
           <View style={styles.collapsedTextView}>
             <Text style={styles.collapsedText}>
