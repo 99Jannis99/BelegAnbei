@@ -25,3 +25,8 @@ export const addIdentity = (identities, setActiveIndex, setIdentities) => {
   setActiveIndex(newIndex);
   setIdentities(updatedIdentities);
 };
+
+export const toggleActiveIndex = (currentActiveIndex, index, setActiveIndex) => {
+  const newActiveIndex = currentActiveIndex === index ? null : index;
+  setActiveIndex(newActiveIndex);
+};

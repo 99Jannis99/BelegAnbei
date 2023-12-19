@@ -12,7 +12,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import RenderHtml from "react-native-render-html";
 import { AntDesign, SimpleLineIcons } from "../../../helpers/icons";
 import { useSelector, useDispatch } from "react-redux";
-import { chooseIdentity, addIdentity  } from '../../../Functions/StandardSettings/IdentityManagement'; 
+import { chooseIdentity, addIdentity,toggleActiveIndex   } from '../../../Functions/StandardSettings/IdentityManagement'; 
 
 function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
@@ -122,14 +122,6 @@ function StandardSettings() {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
-
-  const toggleActiveIndex = (index) => {
-    if (activeIndex === index) {
-      setActiveIndex(null); // Einklappen, wenn es bereits aktiv ist
-    } else {
-      setActiveIndex(index); // Andernfalls aktivieren
-    }
-  };
 
   const collapseAllIdentities = (Dispatch) => {
     setActiveIndex(null);
@@ -242,7 +234,7 @@ function StandardSettings() {
             name="pencil"
             size={20}
             color="black"
-            onPress={() => toggleActiveIndex(index)}
+            onPress={() => toggleActiveIndex(activeIndex, index, setActiveIndex)}
           />
         </TouchableOpacity>
       );
@@ -648,7 +640,6 @@ function StandardSettings() {
                   name="camera"
                   size={20}
                   color="black"
-                  onPress={() => toggleActiveIndex(index)}
                 />
                 <View
                   style={[
