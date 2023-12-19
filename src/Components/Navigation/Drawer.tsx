@@ -20,6 +20,7 @@ import LottieView from "lottie-react-native";
 import originalCustomer from "../../../data/customer.json";
 import BottomTaps from "./BottomTaps";
 import BeispielScreen from "../Screens/BeispielScreen";
+import Impressum from "../Screens/MorePages/Impressum";
 
 const DrawerComponent = () => {
   const [areDataLoaded, setDataLoaded] = useState(false);
@@ -334,7 +335,7 @@ const DrawerComponent = () => {
           <Drawer.Screen
             key={`${index}-${blockIndex}`}
             name={block.label}
-            component={BeispielScreen}
+            component={Impressum}
             options={{
               headerShown: false,
               drawerIcon: ({ focused, size }) => (
