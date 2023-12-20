@@ -32,7 +32,7 @@ export const useDownloadJSON = () => {
 
   const downloadJSONFile = async (token: string, filename: string) => {
     try {
-      const url = `http://app-backend.beleganbei.de/api/app-sync/files/${token}/${filename}`;
+      const url = `https://apiv5.beleganbei.de/${token}/${filename}`;
       const res = await RNFetchBlob.fetch("GET", url);
       let status = res.info().status;
 
