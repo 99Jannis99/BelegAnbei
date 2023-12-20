@@ -12,7 +12,12 @@ import { Dropdown } from "react-native-element-dropdown";
 import RenderHtml from "react-native-render-html";
 import { AntDesign, SimpleLineIcons } from "../../../helpers/icons";
 import { useSelector, useDispatch } from "react-redux";
-import { chooseIdentity, addIdentity,toggleActiveIndex   } from '../../../Functions/StandardSettings/IdentityManagement'; 
+import {
+  chooseIdentity,
+  addIdentity,
+  toggleActiveIndex,
+  collapseAllIdentities,
+} from "../../../Functions/StandardSettings/IdentityManagement";
 
 function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
@@ -103,11 +108,13 @@ function StandardSettings() {
     setLocalTextsnippets(JSON.parse(dataTextsnippets));
   }, [dataStyle, dataTextsnippets]);
 
-  useEffect(() => {}, [identities]);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     setIdentities(dataIdentities);
-    dataIdentities[0].formData.name ? collapseAllIdentities(false) : null;
+    dataIdentities[0].formData.name
+      ? collapseAllIdentities(identities, setActiveIndex, dispatch, false)
+      : null;
   }, [dataIdentities]);
 
   useEffect(() => {
@@ -122,11 +129,6 @@ function StandardSettings() {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
-
-  const collapseAllIdentities = (Dispatch) => {
-    setActiveIndex(null);
-    Dispatch && dispatch({ type: "SET_DATA_IDENTITIES", payload: identities });
-  };
 
   const deleteActiveIdentity = () => {
     const identityToBeDeleted = identities[activeIndex];
@@ -197,7 +199,6 @@ function StandardSettings() {
       })
     );
   };
-  
 
   const setSelectedPersonForIdentity = (index, person) => {
     setIdentities(
@@ -234,7 +235,9 @@ function StandardSettings() {
             name="pencil"
             size={20}
             color="black"
-            onPress={() => toggleActiveIndex(activeIndex, index, setActiveIndex)}
+            onPress={() =>
+              toggleActiveIndex(activeIndex, index, setActiveIndex)
+            }
           />
         </TouchableOpacity>
       );
@@ -566,7 +569,6 @@ function StandardSettings() {
                   )}
 
                 {(multiple_locations === "0" || identity.selectedLocation) &&
-                  (
                   renderDropdown(
                     "person",
                     personData,
@@ -574,7 +576,7 @@ function StandardSettings() {
                     (person) => setSelectedPersonForIdentity(index, person),
                     styles.dropdown,
                     index
-                  ))}
+                  )}
               </View>
             ))}
             <>
@@ -594,7 +596,15 @@ function StandardSettings() {
                     }}
                     disabled={!areAllFieldsValid()}
                     title="Sichern (einklappen)"
-                    onPress={() => collapseAllIdentities(true)}
+                    onPress={() => {
+                      collapseAllIdentities(
+                        identities,
+                        setActiveIndex,
+                        dispatch,
+                        true
+                      );
+                      console.log("collapseAllIdentities 2");
+                    }}
                   />
                   {identities.length > 1 && (
                     <Button
@@ -628,7 +638,9 @@ function StandardSettings() {
                     color: localDataStyle.bottom_toolbar_icon_color,
                   }}
                   title="Weitere Identität hinzufügen"
-                  onPress={() => addIdentity(identities, setActiveIndex, setIdentities)}
+                  onPress={() =>
+                    addIdentity(identities, setActiveIndex, setIdentities)
+                  }
                 />
               ) : null}
               <View style={styles.cameraTypeContainer}>

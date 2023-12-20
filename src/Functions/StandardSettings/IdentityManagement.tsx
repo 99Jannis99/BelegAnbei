@@ -26,7 +26,22 @@ export const addIdentity = (identities, setActiveIndex, setIdentities) => {
   setIdentities(updatedIdentities);
 };
 
-export const toggleActiveIndex = (currentActiveIndex, index, setActiveIndex) => {
+export const toggleActiveIndex = (
+  currentActiveIndex,
+  index,
+  setActiveIndex
+) => {
   const newActiveIndex = currentActiveIndex === index ? null : index;
   setActiveIndex(newActiveIndex);
+};
+
+export const collapseAllIdentities = (
+  identities,
+  setActiveIndex,
+  dispatch,
+  performDispatch
+) => {
+  setActiveIndex(null);
+  performDispatch &&
+    dispatch({ type: "SET_DATA_IDENTITIES", payload: identities });
 };

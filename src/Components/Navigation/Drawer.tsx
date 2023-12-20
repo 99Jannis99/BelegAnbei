@@ -229,23 +229,23 @@ const DrawerComponent = () => {
             {/* <Text style={{ fontWeight: "bold", padding: 10 }}>
               {group.title}
             </Text> */}
-            {group.blocks.map((block, blockIndex) => {
-              if (block.active === "1") {
+            {group.items.map((item, itemIndex) => {
+              if (item.active === "1") {
                 return (
                   <View
-                    key={`${index}-${blockIndex}`}
+                    key={`${index}-${itemIndex}`}
                     style={{
                       borderRadius: 15,
                       backgroundColor:
                         props.state.routeNames[props.state.index] ===
-                        block.label
+                        item.label
                           ? localDataStyle.bottom_toolbar_belege_count_active_color
                           : localDataStyle.bottom_toolbar_background_color,
                     }}
                   >
                     <DrawerItem
-                      label={block.label}
-                      onPress={() => props.navigation.navigate(block.label)}
+                      label={item.label}
+                      onPress={() => props.navigation.navigate(item.label)}
                       icon={({ focused, size }) => (
                         <SimpleLineIcons
                           name="home"
@@ -260,7 +260,7 @@ const DrawerComponent = () => {
                       labelStyle={{
                         color:
                           props.state.routeNames[props.state.index] ===
-                          block.label
+                          item.label
                             ? localDataStyle.bottom_toolbar_belege_count_active_background_color
                             : localDataStyle.bottom_toolbar_icon_color,
                       }}
@@ -352,12 +352,12 @@ const DrawerComponent = () => {
         }}
       />
       {localDataMoreIndex.map((group, index) =>
-        group.blocks.map((block, blockIndex) => (
+        group.items.map((item, itemIndex) => (
           <Drawer.Screen
-            key={`${index}-${blockIndex}`}
-            name={block.label}
-            component={moreContentSwitcher(block.type)}
-            initialParams={ block }
+            key={`${index}-${itemIndex}`}
+            name={item.label}
+            component={moreContentSwitcher(item.type)}
+            initialParams={ item }
             options={{
               headerShown: false,
               drawerIcon: ({ focused, size }) => (
