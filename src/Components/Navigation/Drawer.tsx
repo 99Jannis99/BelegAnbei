@@ -230,7 +230,6 @@ const DrawerComponent = () => {
               {group.title}
             </Text> */}
             {group.items.map((item, itemIndex) => {
-              if (item.active === "1") {
                 return (
                   <View
                     key={`${index}-${itemIndex}`}
@@ -267,7 +266,6 @@ const DrawerComponent = () => {
                     />
                   </View>
                 );
-              }
               return null;
             })}
           </View>

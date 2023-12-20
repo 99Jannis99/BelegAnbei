@@ -55,7 +55,7 @@ function StandardSettings() {
   });
   const { width, height } = Dimensions.get("window");
   const [isFocus, setIsFocus] = useState(false);
-  const { app_settings, multiple_locations } = settings;
+  const { form_settings, multiple_locations } = settings;
 
   const {
     dataSettings,
@@ -125,7 +125,7 @@ function StandardSettings() {
       (loc) => loc.location_has_persons === "1"
     );
 
-    if (multiple_locations === "0" && filteredLocations.length === 1) {
+    if (multiple_locations.enabled === false && filteredLocations.length === 1) {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
@@ -243,12 +243,12 @@ function StandardSettings() {
       );
     }
 
-    if (!app_settings) {
+    if (!form_settings) {
       return null;
     }
 
-    return Object.entries(app_settings).map(([key, value]) => {
-      if (key === "location" || key === "person" || value.available !== "1") {
+    return Object.entries(form_settings).map(([key, value]) => {
+      if (key === "location" || key === "person" || !value.available) {
         return null;
       }
 
@@ -329,21 +329,24 @@ function StandardSettings() {
   // UI für jedes Dropdown
   const renderDropdown = (key, data, value, onChange, dropdown, index) => {
     if (index !== activeIndex) {
+      console.log("null 1")
       return null;
     }
 
-    if (!app_settings || !locations) {
+    if (!form_settings || !locations) {
+      console.log("null 2")
       return null;
     }
 
-    if (!app_settings || !Array.isArray(data) || data.length === 0) {
+    if (!form_settings || !Array.isArray(data) || data.length === 0) {
+      console.log("null 3",!form_settings , !Array.isArray(data) , data )
       return null;
     }
 
-    const setting = app_settings[key];
+    const setting = form_settings[key];
     if (
       key === "location" &&
-      (multiple_locations !== "1" ||
+      (multiple_locations.enabled !== true ||
         locations.filter(
           (loc) =>
             loc.location_has_persons === "1" ||
@@ -488,7 +491,7 @@ function StandardSettings() {
       );
 
       const isLocationDropdownVisible =
-        multiple_locations === "1" || filteredLocations.length > 1;
+        multiple_locations.enabled === true || filteredLocations.length > 1;
       if (
         !isLocationDropdownVisible &&
         filteredLocations.length === 1 &&
@@ -557,7 +560,7 @@ function StandardSettings() {
             {identities.map((identity, index) => (
               <View key={index} style={styles.container}>
                 {renderSettingsFields(identity, index)}
-                {multiple_locations === "1" &&
+                {multiple_locations.enabled === true &&
                   renderDropdown(
                     "location",
                     locationData,
@@ -568,7 +571,7 @@ function StandardSettings() {
                     index
                   )}
 
-                {(multiple_locations === "0" || identity.selectedLocation) &&
+                {(multiple_locations.enabled === false || identity.selectedLocation) &&
                   renderDropdown(
                     "person",
                     personData,
