@@ -13,7 +13,7 @@ const TextSnippet = (props) => {
   let neededSnippet = useSnippets.filter((snippet) => {
     return snippet.callname === props.call
   })[0]
-  console.log('------------------- neededSnippet', neededSnippet)
+  // console.log('------------------- neededSnippet', neededSnippet)
 
   return (
       <View>
