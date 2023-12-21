@@ -55,7 +55,7 @@ function StandardSettings() {
   });
   const { width, height } = Dimensions.get("window");
   const [isFocus, setIsFocus] = useState(false);
-  const { form_settings, multiple_locations } = settings;
+  const { form_settings, multiple_locations, multiple_persons } = settings;
 
   const {
     dataSettings,
@@ -78,16 +78,13 @@ function StandardSettings() {
     const newLocationData = Array.isArray(newLocations)
       ? newLocations
           .filter(
-            (loc) =>
-              loc.location_has_persons === "1" ||
-              loc.location_has_only_persons === "1"
+            (loc) => loc.location_has_people || loc.location_has_only_people
           )
           .map((loc) => ({
             label: loc.location_display_name,
             value: loc.location_id,
           }))
       : [];
-
     setLocationData(newLocationData);
 
     const newPersonData = Array.isArray(newPersons)
@@ -125,7 +122,10 @@ function StandardSettings() {
       (loc) => loc.location_has_persons === "1"
     );
 
-    if (multiple_locations.enabled === false && filteredLocations.length === 1) {
+    if (
+      multiple_locations.enabled === false &&
+      filteredLocations.length === 1
+    ) {
       setSelectedLocation(filteredLocations[0].location_id);
     }
   }, [locations, multiple_locations]);
@@ -257,7 +257,7 @@ function StandardSettings() {
       };
 
       let errorMessage = "";
-      if (value.mandatory === "1" && !identity.formData[key]) {
+      if (value.mandatory && !identity.formData[key]) {
         errorMessage = value.validation_info;
       } else if (
         key === "email" &&
@@ -329,17 +329,14 @@ function StandardSettings() {
   // UI für jedes Dropdown
   const renderDropdown = (key, data, value, onChange, dropdown, index) => {
     if (index !== activeIndex) {
-      console.log("null 1")
       return null;
     }
 
     if (!form_settings || !locations) {
-      console.log("null 2")
       return null;
     }
 
     if (!form_settings || !Array.isArray(data) || data.length === 0) {
-      console.log("null 3",!form_settings , !Array.isArray(data) , data )
       return null;
     }
 
@@ -348,9 +345,7 @@ function StandardSettings() {
       key === "location" &&
       (multiple_locations.enabled !== true ||
         locations.filter(
-          (loc) =>
-            loc.location_has_persons === "1" ||
-            loc.location_has_only_persons === "0"
+          (loc) => loc.location_has_people || loc.location_has_only_people
         ).length <= 1)
     ) {
       return null;
@@ -485,13 +480,11 @@ function StandardSettings() {
 
       // Prüfen, ob das Location Dropdown gerendert werden sollte
       const filteredLocations = locations.filter(
-        (loc) =>
-          loc.location_has_persons === "1" ||
-          loc.location_has_only_persons === "1"
+        (loc) => loc.location_has_people || loc.location_has_only_people
       );
 
       const isLocationDropdownVisible =
-        multiple_locations.enabled === true || filteredLocations.length > 1;
+        multiple_locations.enabled || filteredLocations.length > 1;
       if (
         !isLocationDropdownVisible &&
         filteredLocations.length === 1 &&
@@ -560,7 +553,7 @@ function StandardSettings() {
             {identities.map((identity, index) => (
               <View key={index} style={styles.container}>
                 {renderSettingsFields(identity, index)}
-                {multiple_locations.enabled === true &&
+                {multiple_locations.enabled &&
                   renderDropdown(
                     "location",
                     locationData,
@@ -571,7 +564,7 @@ function StandardSettings() {
                     index
                   )}
 
-                {(multiple_locations.enabled === false || identity.selectedLocation) &&
+                {(!multiple_locations.enabled || identity.selectedLocation) &&
                   renderDropdown(
                     "person",
                     personData,
@@ -606,7 +599,6 @@ function StandardSettings() {
                         dispatch,
                         true
                       );
-                      console.log("collapseAllIdentities 2");
                     }}
                   />
                   {identities.length > 1 && (
@@ -627,7 +619,7 @@ function StandardSettings() {
                   )}
                 </>
               )}
-              {settings.multiple_persons == "1" ? (
+              {multiple_persons.enabled ? (
                 <Button
                   buttonStyle={{
                     backgroundColor:
