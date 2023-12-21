@@ -33,6 +33,8 @@ export const useDownloadJSON = () => {
   const downloadJSONFile = async (token: string, filename: string) => {
     try {
       const url = `https://apiv5.beleganbei.de/${token}/${filename}`;
+      console.log('url', url)
+
       const res = await RNFetchBlob.fetch("GET", url);
       let status = res.info().status;
 
@@ -91,6 +93,7 @@ export const useDownloadJSON = () => {
             // console.log("news"," :",res.data);
             break;
           case "mandates.json":
+          case "formulare.json":
             dispatch(setDataMandates(res.data));
             // console.log("mandates"," :",res.data);
             break;
@@ -123,10 +126,7 @@ export const useDownloadImage = () => {
 
   const downloadImage = async (token: string, imageName: string) => {
     try {
-      console.log(
-        "ImageURL: ",
-        `http://app-backend.beleganbei.de/api/app-sync/files/${token}/${imageName}`
-      );
+      console.log("ImageURL: ", `http://app-backend.beleganbei.de/api/app-sync/files/${token}/${imageName}`);
 
       // Verwenden Sie RNFetchBlob direkt zum Herunterladen und Speichern der Datei
       const res = await RNFetchBlob.config({

@@ -30,7 +30,7 @@ function LocationsScreen() {
           <Text style={[styles.moreHeadline, { color: primary }]}>LocationsScreen</Text>
         </View>
         <View style={styles.moreContent}>
-          <Text>{JSON.stringify(useLocations, null, 2)}</Text>
+          <Text>COUNT: {useLocations.length}</Text>
         </View>
       </DrawerContentScrollView>
     </SafeAreaView>

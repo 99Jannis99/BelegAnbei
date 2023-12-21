@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
-import { Text, View, SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import { Text, View, SafeAreaView, StyleSheet, useWindowDimensions, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 import Header from "../../shared/Header";
 import RenderHtml from "react-native-render-html";
@@ -14,24 +14,27 @@ function TextScreen({ route, navigation }) {
 
   let useMorePages = JSON.parse(dataMorePages)
 
-  let callname = route.params.callname
-  let headline = useMorePages.find((item) => item.callname === callname) ?.headline || ""
+  let callname = route.params.params.callname
+
+  let headline = useMorePages.find((item) => item.callname === callname) ?.headline || `NOT FOUND -> ${callname}`
   let content = useMorePages.find((item) => item.callname === callname) ?.content || ""
 
   return (
     <SafeAreaView style={[styles.moreSafeView, { backgroundColor: background }]}>
       <Header></Header>
-      <View>
-        <Text style={[styles.moreHeadline, { color: primary }]}>{ headline }</Text>
-      </View>
-      <View style={styles.moreContent}>
-        <RenderHtml
-          contentWidth={width}
-          source={{
-            html: content
-          }}
-        />
-      </View>
+      <ScrollView>
+        <View>
+          <Text style={[styles.moreHeadline, { color: primary }]}>{ headline }</Text>
+        </View>
+        <View style={styles.moreContent}>
+          <RenderHtml
+            contentWidth={width}
+            source={{
+              html: content
+            }}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

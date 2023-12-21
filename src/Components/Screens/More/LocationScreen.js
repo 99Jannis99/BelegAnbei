@@ -16,8 +16,9 @@ function LocationScreen({ route, navigation }) {
 
   let useLocations = JSON.parse(dataLocations)
 
-  let callname = route.params.callname
+  let callname = route.params.params.callname
   console.log('callname', callname)
+  
   let location = useLocations.find((item) => item.location_callname === callname)
   console.log('location', location)
 
@@ -29,7 +30,7 @@ function LocationScreen({ route, navigation }) {
           <Text style={[styles.moreHeadline, { color: primary }]}>{ location.location_display_name }</Text>
         </View>
         <View style={styles.moreContent}>
-          <Text>{JSON.stringify(location, null, 2)}</Text>
+          <Text>{location.location_display_name}</Text>
         </View>
       </DrawerContentScrollView>
     </SafeAreaView>

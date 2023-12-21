@@ -13,11 +13,10 @@ function VideoScreen({ route, navigation }) {
   );
 
   let useVideos = JSON.parse(dataMoreVideos)
-  console.log('useVideos', useVideos)
 
-  let callname = route.params.callname_id
+  let callname = route.params.params.id
   console.log('callname', callname)
-  let video = useVideos.find((item) => item.id === callname)
+  let video = useVideos.find((item) => item.video_id == callname)
   console.log('video', video)
 
   return (

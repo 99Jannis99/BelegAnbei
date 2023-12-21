@@ -39,6 +39,10 @@ import AppCleanScreen from "../Screens/More/AppCleanScreen";
 import AppInfoScreen from "../Screens/More/AppInfoScreen";
 import ChatScreen from "../Screens/More/ChatScreen";
 import NotFoundScreen from "../Screens/More/NotFoundScreen";
+import PushSettingsScreen from "../Screens/More/PushSettingsScreen";
+import PushArchiveScreen from "../Screens/More/PushArchiveScreen";
+import CalculatorsScreen from "../Screens/More/CalculatorsScreen";
+import DebugScreen from "../Screens/More/DebugScreen";
 
 
 const DrawerComponent = () => {
@@ -87,7 +91,7 @@ const DrawerComponent = () => {
         "more.downloads.json",
         "more.videos.json",
         "news.json",
-        "mandates.json",
+        "formulare.json",
         "belegcategories.json",
         "style.json",
       ];
@@ -378,6 +382,8 @@ const DrawerComponent = () => {
 };
 
 const moreContentSwitcher = (type) => {
+  console.log('moreContentSwitcher type', type)
+
   switch(type) {
     case 'map-location':
       return LocationScreen
@@ -415,14 +421,18 @@ const moreContentSwitcher = (type) => {
     case 'contact':
       return KontaktScreen
     break;
-case 'x':
-  return PushSettingsScreen
-break;
-case 'x':
-  return PushMessagesScreen
-break;
-    case 'mandates':
+    case 'push-settings':
+      return PushSettingsScreen
+    break;
+    case 'push-archive':
+      return PushArchiveScreen
+    break;
+    case 'formulare':
+    //case 'mandates':
       return FormulareScreen
+    break;
+    case 'debug':
+      return DebugScreen
     break;
     case 'videos':
       return VideosScreen
@@ -438,6 +448,9 @@ break;
     break;
     case 'chat':
       return ChatScreen
+    break;
+    case 'calculators':
+      return CalculatorsScreen
     break;
     default:
       return NotFoundScreen
