@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, StyleSheet, ScrollView, Image, TouchableOpaci
 import { useSelector } from "react-redux";
 import Header from "../../shared/Header";
 import TextSnippet from "../../shared/TextSnippets";
-// import { DrawerContentScrollView } from "@react-navigation/drawer";
+import { ListItem, Avatar, Card, Button, Icon, Overlay } from "@rneui/themed";
 
 function AnsprechpartnerScreen() {
   const { background, primary } = useSelector((state) => state.colorReducer);
@@ -17,7 +17,7 @@ function AnsprechpartnerScreen() {
   );
 
   const openOverlay = function(person) {
-    console.log('openOverlay', person)
+    console.log('openOverlay', person.person_name)
 
     setOverlayOpen(true);
     setOverlayPerson(person);
@@ -53,43 +53,48 @@ function AnsprechpartnerScreen() {
       <Header></Header>
       <ScrollView>
         <TextSnippet call="more-persons-top" />
-
-        {usePersons.map((person, index) => (
-          <TouchableOpacity key={ person.person_id } onPress={() => { openOverlay(person) }}>
-            {person.person_photo &&
-              <Image source={{ uri: person.person_photo }} style={styles.image} />
-            }
-            <Text>{person.person_name}</Text>
-            {person.person_show.email &&
-              <Text>{person.person_email}</Text>
-            }
-            {person.person_show.phone &&
-              <Text>{person.person_phone.display}</Text>
-            }
-          </TouchableOpacity>
-        ))}
+         <View>
+          {
+            usePersons.map((person, i) => (
+              <ListItem key={i} bottomDivider onPress={() => { openOverlay(person) }}>
+                {person.person_photo &&
+                    <Avatar rounded source={{uri: person.person_photo }} />
+                }
+                <ListItem.Content>
+                  <ListItem.Title>{person.person_name}</ListItem.Title>
+                  {person.person_show.phone &&
+                    <ListItem.Subtitle>{person.person_phone.display}</ListItem.Subtitle>
+                  }
+            </ListItem.Content>
+              </ListItem>
+            ))
+          }
+        </View>
       </ScrollView>
 
-      {overlayOpen &&
-        <TouchableOpacity style={ styles.overlay } onPress={() => { closeOverlay() }}>
+
+
+      <Overlay isVisible={overlayOpen} onBackdropPress={closeOverlay}>
+        <Card>
           {overlayPerson.person_photo &&
-            <Image source={{ uri: overlayPerson.person_photo }} style={styles.image} />
+            <Card.Image source={{ uri: overlayPerson.person_photo }} />
+          }            
+          <Card.Title>{overlayPerson.person_name}</Card.Title>
+          {overlayPerson.person_position_title && 
+            <Text>{overlayPerson.person_position_title}</Text>
           }
-          <Text>{overlayPerson.person_name}</Text>
-          {overlayPerson.person_show.email &&
-            <Text>{overlayPerson.person_email}</Text>
-          }
-          {overlayPerson.person_show.fax &&
-            <Text>{overlayPerson.person_fax.display}</Text>
-          }
-          {overlayPerson.person_show.phone &&
-            <Text>{overlayPerson.person_phone.display}</Text>
-          }
-          {overlayPerson.person_show.cell &&
-            <Text>{overlayPerson.person_cell.display}</Text>
-          }
-        </TouchableOpacity>
-      }
+          <Card.Divider />
+          <ScrollView>
+            {overlayPerson.person_email && overlayPerson.person_show.email && 
+              <Text>Email {overlayPerson.person_email}</Text>
+            }
+            <Card.Divider />
+            {overlayPerson.person_text && 
+              <Text>{overlayPerson.person_text}</Text>
+            }
+          </ScrollView>
+        </Card>
+      </Overlay>
     </SafeAreaView>
   );
 }

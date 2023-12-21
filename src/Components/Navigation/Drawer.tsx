@@ -382,7 +382,7 @@ const DrawerComponent = () => {
 };
 
 const moreContentSwitcher = (type) => {
-  console.log('moreContentSwitcher type', type)
+  //console.log('moreContentSwitcher type', type)
 
   switch(type) {
     case 'map-location':
