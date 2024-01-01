@@ -13,7 +13,7 @@ function NewsScreen() {
   );
 
   let useNews = JSON.parse(dataNews)
-  console.log('useNews', useNews)
+  //console.log('useNews', useNews)
 
   return (
     <SafeAreaView style={[styles.moreSafeView, { backgroundColor: background }]}>

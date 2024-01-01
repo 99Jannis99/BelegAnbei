@@ -5,6 +5,8 @@ import { Store } from "./src/redux/store";
 
 import Drawer from "./src/Components/Navigation/Drawer";
 
+const basicFontSize = 20;
+
 function App(): React.JSX.Element {
   return (
     <Provider store={Store}>

@@ -1,6 +1,7 @@
 export const SET_COLOR_BACKGROUND = "SET_COLOR_BACKGROUND";
 export const SET_COLOR_PRIMARY = "SET_COLOR_PRIMARY";
 export const SET_WELCOME_IMAGE = "SET_WELCOME_IMAGE";
+export const SET_ICON_IMAGE = "SET_ICON_IMAGE";
 export const SET_LOGO_IMAGE = "SET_LOGO_IMAGE";
 export const SET_DATA_UPDATE = "SET_DATA_UPDATE";
 export const SET_DATA_CUSTOMER = "SET_DATA_CUSTOMER";
@@ -35,6 +36,13 @@ export const setPrimary = (primary) => (dispatch) => {
   dispatch({
     type: SET_COLOR_PRIMARY,
     payload: primary,
+  });
+};
+
+export const setIconImage = (iconImage) => (dispatch) => {
+  dispatch({
+    type: SET_ICON_IMAGE,
+    payload: iconImage,
   });
 };
 

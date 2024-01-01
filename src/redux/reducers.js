@@ -2,6 +2,7 @@ import {
   SET_COLOR_BACKGROUND,
   SET_COLOR_PRIMARY,
   SET_WELCOME_IMAGE,
+  SET_ICON_IMAGE,
   SET_LOGO_IMAGE,
   SET_DATA_UPDATE,
   SET_DATA_CUSTOMER,
@@ -47,6 +48,7 @@ export function colorReducer(state = colorInitialState, action) {
 const imageInitialState = {
   welcomeImage: `file://${RNFileSystem.DocumentDirectoryPath}/homeImg.jpg`,
   logoImage: `file://${RNFileSystem.DocumentDirectoryPath}/header.png`,
+  iconImage: `file://${RNFileSystem.DocumentDirectoryPath}/onload.png`,
   lastUpdated: null,
 };
 
@@ -62,6 +64,12 @@ export function imageReducer(state = imageInitialState, action) {
       return {
         ...state,
         logoImage: action.payload,
+        lastUpdated: Date.now(),
+      };
+    case SET_ICON_IMAGE:
+      return {
+        ...state,
+        iconImage: action.payload,
         lastUpdated: Date.now(),
       };
     default:

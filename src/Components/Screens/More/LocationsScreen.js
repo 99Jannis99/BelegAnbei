@@ -31,6 +31,7 @@ function LocationsScreen() {
         </View>
         <View style={styles.moreContent}>
           <Text>COUNT: {useLocations.length}</Text>
+          <Text>{JSON.stringify(useLocations, null, 2)}</Text>
         </View>
       </DrawerContentScrollView>
     </SafeAreaView>

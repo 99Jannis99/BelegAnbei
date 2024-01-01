@@ -72,8 +72,6 @@ function AnsprechpartnerScreen() {
         </View>
       </ScrollView>
 
-
-
       <Overlay isVisible={overlayOpen} onBackdropPress={closeOverlay}>
         <Card>
           {overlayPerson.person_photo &&

@@ -49,6 +49,7 @@ export const loadImages = async () => {
   return {
     welcomeImage: "", // Standardwert oder Placeholder-Image in base64
     logoImage: "",
+    iconImage: ""
   };
 };
 

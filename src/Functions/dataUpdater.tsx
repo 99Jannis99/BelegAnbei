@@ -21,6 +21,7 @@ import {
   setDataStyle,
   setDataDocuments,
   setWelcomeImage,
+  setIconImage,
   setLogoImage,
   setDatevClient,
   setNavPage,
@@ -152,6 +153,9 @@ export const useDownloadImage = () => {
             dispatch(setWelcomeImage(`file://${res.path()}`));
             break;
           case "header.png":
+            dispatch(setLogoImage(`file://${res.path()}`));
+            break;
+          case "icon.png":
             dispatch(setLogoImage(`file://${res.path()}`));
             break;
           default:

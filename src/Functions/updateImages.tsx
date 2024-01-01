@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import RNFetchBlob from "rn-fetch-blob";
 import { Alert, PermissionsAndroid, Platform, Linking } from "react-native";
 
-import { setWelcomeImage, setLogoImage } from "../redux/actions";
+import { setWelcomeImage, setLogoImage, setIconImage } from "../redux/actions";
 
 var RNFileSystem = require("react-native-fs");
 
@@ -43,7 +43,14 @@ export const useDownloadFile = () => {
           case "logoImage":
             dispatch(
               setLogoImage(
-                `file://${RNFileSystem.DocumentDirectoryPath}/logoImage.jpg`
+                `file://${RNFileSystem.DocumentDirectoryPath}/logoImage.png`
+              )
+            );
+            break;
+          case "iconImage":
+            dispatch(
+              setIconImage(
+                `file://${RNFileSystem.DocumentDirectoryPath}/onload.png`
               )
             );
             break;

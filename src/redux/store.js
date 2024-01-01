@@ -43,6 +43,7 @@ Store.subscribe(() => {
   });
   storeImages({
     welcomeImage: imageReducer.welcomeImage,
+    iconImage: imageReducer.iconImage,
     logoImage: imageReducer.logoImage,
   });
   // Daten speichern (implementieren Sie die Logik, die Sie benötigen)

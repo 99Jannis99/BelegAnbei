@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableHighlight } from "react-native";
-import { SimpleLineIcons } from "../../helpers/icons";
+import { FontAwesome5 } from "../../helpers/icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
 
@@ -32,21 +32,21 @@ const BottomTaps = () => {
         iconName = "home"; // Ersetzen Sie 'home' mit dem tatsächlichen Icon-Namen für 'Welcome'
         break;
       case "settings":
-        iconName = "settings"; // Ersetzen Sie 'settings' mit dem tatsächlichen Icon-Namen für 'Settings'
+        iconName = "user"; // Ersetzen Sie 'settings' mit dem tatsächlichen Icon-Namen für 'Settings'
         break;
       case "camera":
         iconName = "camera"; // Ersetzen Sie 'camera' mit dem tatsächlichen Icon-Namen für 'Camera'
         break;
       case "documents":
-        iconName = "docs"; // Ersetzen Sie 'docs' mit dem tatsächlichen Icon-Namen für 'Documents'
+        iconName = "file-image"; // Ersetzen Sie 'docs' mit dem tatsächlichen Icon-Namen für 'Documents'
         break;
       default:
-        iconName = "question"; // Ein Standard-Icon, falls kein passendes gefunden wird
+        iconName = "question-circle"; // Ein Standard-Icon, falls kein passendes gefunden wird
     }
     return (
-      <SimpleLineIcons
+      <FontAwesome5
         name={iconName}
-        size={22.5}
+        size={26}
         color={
           focused
             ? localDataStyle.bottom_toolbar_icon_active_color

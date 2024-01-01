@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   Image,
   NativeModules,
-  DeviceEventEmitter,
+  DeviceEventEmitter
 } from "react-native";
-import { SimpleLineIcons } from "../../helpers/icons";
+import { SimpleLineIcons, FontAwesome5 } from "../../helpers/icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
@@ -52,14 +52,6 @@ const Header = () => {
     };
   }, []);
 
-  // Zugriff auf die NativeModules, um eine native Funktion zu öffnen
-  var openActivity = NativeModules.OpenActivity;
-
-  // Funktion zum Aufrufen der nativen Funktion
-  const openfunc = () => {
-    openActivity.open("name");
-  };
-
   // Rendering der Header-Komponente
   return (
     <SafeAreaView
@@ -71,19 +63,21 @@ const Header = () => {
       {/* Wir verwenden eine View-Komponente, um das MenuIcon zu umschließen. */}
       <View style={{ width: iconContainerWidth }}>
         {/* Das eigentliche Icon, welches beim Drücken das Drawer-Menü öffnet. */}
-        <SimpleLineIcons
-          name="menu"
+        <FontAwesome5
+          name={'bars'}
           size={26}
           color={localDataStyle.top_toolbar_icon_color}
-          onPress={() => navigation.openDrawer()} // Beim Drücken wird die Drawer-Navigation geöffnet.
+          onPress={() => navigation.openDrawer()} 
         />
       </View>
 
       {/* Logo in der Mitte des Headers */}
-      <Image
-        source={{ uri: `${logoImage}?t=${lastUpdated}` }}
-        style={styles.logo}
-      />
+      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+        <Image
+          source={{ uri: `${logoImage}?t=${lastUpdated}` }}
+          style={styles.logo}
+        />
+      </TouchableOpacity>
 
       {/* Hier haben wir eine View-Komponente, die den Container für die Icons auf der rechten Seite darstellt. */}
       <View
@@ -99,20 +93,22 @@ const Header = () => {
         }}
       >
         {/* Icon für Informationen */}
-        <TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
-          <SimpleLineIcons
-            color={localDataStyle.top_toolbar_icon_color}
-            name="info"
+        {/*<TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
+          <FontAwesome5
+            name={'info-circle'} light 
             size={24}
+            //style={{ aspectRatio: 1 }}
+            //allowFontScaling
+            color={localDataStyle.top_toolbar_icon_color}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Icon für Telefon, führt openfunc aus beim Drücken */}
-        <TouchableOpacity onPress={() => openfunc()}>
-          <SimpleLineIcons
-            color={localDataStyle.top_toolbar_icon_color}
-            name="phone"
+        <TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
+          <FontAwesome5
+            name={'phone'}
             size={24}
+            color={localDataStyle.top_toolbar_icon_color}
           />
         </TouchableOpacity>
       </View>
@@ -127,12 +123,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#121212",
-    height: 50,
+    height: 60,
     paddingHorizontal: 20,
   },
   logo: {
-    width: 100,
-    height: 50, // Anpassung der Höhe und Breite des Logos
+    width: 140,
+    height: 60, // Anpassung der Höhe und Breite des Logos
     resizeMode: "contain",
   },
   iconsContainer: {

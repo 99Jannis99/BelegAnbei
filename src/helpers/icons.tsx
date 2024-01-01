@@ -1,5 +1,6 @@
 // icons.js
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import FontAwesome5Pro from "react-native-vector-icons/FontAwesome5Pro";
 import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
@@ -22,6 +23,7 @@ export {
   EvilIcons,
   Feather,
   FontAwesome5,
+  FontAwesome5Pro,
   FontAwesome6,
   Fontisto,
   Foundation,

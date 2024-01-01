@@ -1,0 +1,93 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Bitter-Bold.ttf",
+      "sha1": "7ca6d90997a9b7d1b9efe0c181e88bf6ef696e20"
+    },
+    {
+      "path": "assets/fonts/Bitter-Italic.ttf",
+      "sha1": "eeb5139656448342b38ebb46e7f94c907df72463"
+    },
+    {
+      "path": "assets/fonts/Bitter-Light.ttf",
+      "sha1": "0c8e4b262f076c1c0662eeee4b162f299bc3943d"
+    },
+    {
+      "path": "assets/fonts/Bitter-Medium.ttf",
+      "sha1": "ce024ad8d1c29b3295c77332478e82d433b5c7d0"
+    },
+    {
+      "path": "assets/fonts/Bitter-Regular.ttf",
+      "sha1": "90f07f9485d9d007e729b16b2edb5019f7cf1ac0"
+    },
+    {
+      "path": "assets/fonts/Bitter-Thin.ttf",
+      "sha1": "e54e538560d143396feafa6a02a04cc69b163e58"
+    },
+    {
+      "path": "assets/fonts/ChakraPetch-Bold.ttf",
+      "sha1": "2ac71b32044a6325b1c7042583099b3c743f78ac"
+    },
+    {
+      "path": "assets/fonts/ChakraPetch-Italic.ttf",
+      "sha1": "a309fd4c59e51dd800b62aa48d4632f5508d53fd"
+    },
+    {
+      "path": "assets/fonts/ChakraPetch-Light.ttf",
+      "sha1": "9349cfaaad8e5b443f959f9ec85d06cfa14bfaf2"
+    },
+    {
+      "path": "assets/fonts/ChakraPetch-Medium.ttf",
+      "sha1": "47c2adf99cc286e5e2c8394185f0738878c5c504"
+    },
+    {
+      "path": "assets/fonts/ChakraPetch-Regular.ttf",
+      "sha1": "934a68bd78f594e3c6eed5258322bd4da514a22a"
+    },
+    {
+      "path": "assets/fonts/fa-brands-400.ttf",
+      "sha1": "952ebf1c13d93f4ac968033683ebb6bccb5a3e14"
+    },
+    {
+      "path": "assets/fonts/fa-duotone-900.ttf",
+      "sha1": "c232873109bd50b63398c9fd5b639656364c1f93"
+    },
+    {
+      "path": "assets/fonts/fa-light-300.ttf",
+      "sha1": "f41ce4024abf40759e115946ec44cfbefba63639"
+    },
+    {
+      "path": "assets/fonts/fa-regular-400.ttf",
+      "sha1": "9d1ecd142b2e766c675dd93b22939c4f9d4ccd79"
+    },
+    {
+      "path": "assets/fonts/fa-solid-900.ttf",
+      "sha1": "69f786606f7f21d9a42c82eed3b15c7078ed47db"
+    },
+    {
+      "path": "assets/fonts/Poppins-Bold.ttf",
+      "sha1": "875cf0cecd647bcf22e79d633d868c1b1ec98dfa"
+    },
+    {
+      "path": "assets/fonts/Poppins-Italic.ttf",
+      "sha1": "e2bfcd56016c3c915221ef1c5fc1a17b0776eb91"
+    },
+    {
+      "path": "assets/fonts/Poppins-Light.ttf",
+      "sha1": "e247a92158e112f8bf7b638c8d95381d66b00dbb"
+    },
+    {
+      "path": "assets/fonts/Poppins-Medium.ttf",
+      "sha1": "283f21b44efbdbf276ba802be2d949a36bbc4233"
+    },
+    {
+      "path": "assets/fonts/Poppins-Regular.ttf",
+      "sha1": "fdd3002e7d814ee47c1c1b8487c72c6bbb3a2d00"
+    },
+    {
+      "path": "assets/fonts/RubikDoodleShadow-Regular.ttf",
+      "sha1": "1b0092781395a98142548d15929cfbb2c16e2334"
+    }
+  ]
+}

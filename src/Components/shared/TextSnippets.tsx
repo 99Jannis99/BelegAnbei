@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, useWindowDimensions } from "react-native";
+import { View, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 import RenderHtml from "react-native-render-html";
+
+import CustomText from './CustomText'
 
 const TextSnippet = (props) => {
   const [textSnippets, setTextSnippets] = useState([]);
   const { dataTextsnippets } = useSelector((state) => state.dataReducer);
   const { width } = useWindowDimensions();
+  const { container, customTextStyle } = styles
 
   const useSnippets = JSON.parse(dataTextsnippets);
 
@@ -16,36 +19,28 @@ const TextSnippet = (props) => {
   // console.log('------------------- neededSnippet', neededSnippet)
 
   return (
-      <View>
-      {neededSnippet &&
-        <TouchableOpacity style={ styles.container }>
+    <View>
+      {neededSnippet && 
+        <View style={ styles.container }>
           {neededSnippet.headline &&
-            <Text style={ styles.headline }>{ neededSnippet.headline }</Text>
+            <CustomText textType="headline" style={[customTextStyle, {}]}>{ neededSnippet.headline }</CustomText>
+          }
+          {neededSnippet.subheadline &&
+            <CustomText textType="subheadline" style={[customTextStyle, {}]}>{ neededSnippet.subheadline }</CustomText>
           }
           {neededSnippet.snippet &&
-            <RenderHtml baseStyle={ styles.text } contentWidth={width} source={{ html: neededSnippet.snippet }} />
+            <CustomText fontType="light" style={[customTextStyle, { marginLeft: 2, paddingRight: 1, marginBottom: 18 }]}>{neededSnippet.snippet}</CustomText>
           }
-        </TouchableOpacity>
-      }
-      </View>
+        </View>
+    }
+    </View>
   );
 };
 
-// Styling-Objekt für die Header-Komponente
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-    color: "#ffffff"
-  },
-  headline: {
-    fontSize: 28
-  },
-  text: {
-    marginBottom: 12,
-    fontSize: 18
-  },
+    flexDirection: "column"
+  }
 });
 
 // Exportieren der Header-Komponente als Standard-Export

@@ -6,15 +6,19 @@ import {
   Image,
   StyleSheet,
   useWindowDimensions,
+  TouchableOpacity
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import RenderHtml from "react-native-render-html";
 import { use } from "i18next";
 import { Button } from "react-native";
 
-const Welcome = () => {
+import CustomHTML from "../shared/CustomHTML";
+import CustomText from "../shared/CustomText";
+import TextSnippet from "../shared/TextSnippets";
+
+const Welcome = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { dataCustomer, dataSettings, dataMorePages, dataStyle } = useSelector(
+  const { dataCustomer, dataSettings, dataMorePages, dataStyle, dataNews } = useSelector(
     (state) => state.dataReducer
   );
 
@@ -23,6 +27,7 @@ const Welcome = () => {
   const [localDataSettings, setlocalDataSettings] = useState({});
   const [localDataMorePages, setLocalDataMorePages] = useState(null);
   const [localDataStyle, setLocalDataStyle] = useState({});
+  const [localDataNews, setLocalDataNews] = useState([]);
 
   const updateDatev = (newClients) => {
     dispatch({ type: "SET_DATEV_CLIENT", payload: newClients });
@@ -47,9 +52,33 @@ const Welcome = () => {
     setLocalDataStyle(JSON.parse(dataStyle));
   }, [dataStyle]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      if(localDataSettings.hasOwnProperty('news')) {
+        let news = JSON.parse(dataNews);
+        //const limitNews = news.slice(0, localDataSettings.news.settings.show_home_amount);
+        const limitNews = news.slice(0, 5);
+        setLocalDataNews(limitNews);
+      }
+    }, 500)
+  }, [dataNews, dataSettings]);
+
+  const openNews = (news) => {
+    console.log('news', news)
+
+    navigation.navigate("Neuigkeiten", {
+      params: {
+        id: news.news_id
+      }
+    });
+  }
+
   // useEffect(() => {
   //   console.log("datevClient: ", datevClient);
   // }, [datevClient]);
+
+  //let headline = dataMorePages.find((item) => item.callname === "home") ?.headline || `NOT FOUND -> HOME`
+  //let content = dataMorePages.find((item) => item.callname === "home") ?.content || ""
 
   return (
     <ScrollView
@@ -69,32 +98,38 @@ const Welcome = () => {
       {/* Textkomponenten */}
       {localDataMorePages && (
         <View style={styles.content}>
-          <Text
-            style={[
-              styles.header,
-              {
-                color: localDataStyle.body_headline_color,
-                fontFamily: localDataStyle.body_font_family,
-              },
-            ]}
-          >
-            {localDataMorePages.find((item) => item.callname === "home")
-              ?.headline || ""}
-          </Text>
-          <RenderHtml
-            contentWidth={width}
-            source={{
-              html:
-                localDataMorePages.find((item) => item.callname === "home")
-                  ?.content || "",
-            }}
-          />
+          <CustomText textType="headline" style={{}}>{ localDataMorePages.find((item) => item.callname === "home") ?.headline || "" }</CustomText>
+          <CustomHTML htmlContent={ localDataMorePages.find((item) => item.callname === "home") ?.content || "" }></CustomHTML>
         </View>
       )}
-      <Button
+
+      { localDataSettings.news && 
+        <View style={{}}>
+          <View style={{padding: 18, paddingBottom:0}}>
+            <TextSnippet call="news-home" />
+          </View>
+          <View style={{paddingLeft: 20, paddingRight: 20, paddingTop: 0, paddingBottom:0}}>
+            {
+            localDataSettings.news.settings.show_home && localDataNews.map((newsItem, i) => (
+                  <TouchableOpacity key={i} activeOpacity={i} style={{padding: 0, marginBottom: 12}} onPress={() => { openNews(newsItem) }}>
+                      <View style={{padding: 0, margin: 0}}>
+                          <CustomText fontType="bold" style={{}}>{newsItem.news_headline}</CustomText>
+                          <CustomText fontType="bold" style={{ fontSize: 12 }}>{newsItem.news_release_from}</CustomText>
+                          <CustomText fontType="light" style={{}}>{newsItem.news_excerpt}</CustomText>
+                      </View>
+                  </TouchableOpacity>
+                ))
+            }
+          </View>
+        </View>
+      }
+
+      {/* <Text>{JSON.stringify(localDataSettings.news, null, 2)}</Text> */}
+
+      {/* <Button
         title="updateClient"
         onPress={()=>updateDatev(["Sahra", "Navin", "Bernd"])}
-      ></Button>
+      ></Button> */}
     </ScrollView>
   );
 };
@@ -110,7 +145,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%", // Bildbreite nimmt den gesamten verfügbaren Platz ein
     height: 200, // Höhe des Bildes
-    resizeMode: "cover", // Bild wird beschnitten, um die Größe zu füllen, ohne das Seitenverhältnis zu verzerren
+    resizeMode: "stretch", // Bild wird beschnitten, um die Größe zu füllen, ohne das Seitenverhältnis zu verzerren
   },
   headline: {
     paddingVertical: 10, // Innenabstand um den Text

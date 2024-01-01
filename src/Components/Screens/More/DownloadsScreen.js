@@ -13,7 +13,7 @@ function DownloadsScreen() {
   );
 
   let useMoreDownloads = JSON.parse(dataMoreDownloads)
-  console.log('useMoreDownloads', useMoreDownloads)
+  //console.log('useMoreDownloads', useMoreDownloads)
 
   return (
     <SafeAreaView style={[styles.moreSafeView, { backgroundColor: background }]}>

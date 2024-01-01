@@ -2,11 +2,12 @@ import React, { Component, useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet, useWindowDimensions, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 import Header from "../../shared/Header";
-import RenderHtml from "react-native-render-html";
+
+import CustomHTML from "../../shared/CustomHTML";
+import CustomText from "../../shared/CustomText";
 
 function TextScreen({ route, navigation }) {
   const { background, primary } = useSelector((state) => state.colorReducer);
-  const { width } = useWindowDimensions();
 
   const { dataMorePages } = useSelector(
     (state) => state.dataReducer
@@ -17,22 +18,19 @@ function TextScreen({ route, navigation }) {
   let callname = route.params.params.callname
 
   let headline = useMorePages.find((item) => item.callname === callname) ?.headline || `NOT FOUND -> ${callname}`
+  let subheadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || ""
   let content = useMorePages.find((item) => item.callname === callname) ?.content || ""
 
   return (
     <SafeAreaView style={[styles.moreSafeView, { backgroundColor: background }]}>
       <Header></Header>
       <ScrollView>
-        <View>
-          <Text style={[styles.moreHeadline, { color: primary }]}>{ headline }</Text>
-        </View>
         <View style={styles.moreContent}>
-          <RenderHtml
-            contentWidth={width}
-            source={{
-              html: content
-            }}
-          />
+          <CustomText textType="headline" style={{}}>{ headline }</CustomText>
+          {subheadline && 
+            <CustomText textType="subheadline" style={{}}>{ subheadline }</CustomText>
+          }
+          <CustomHTML htmlContent={ content }></CustomHTML>
         </View>
       </ScrollView>
     </SafeAreaView>
