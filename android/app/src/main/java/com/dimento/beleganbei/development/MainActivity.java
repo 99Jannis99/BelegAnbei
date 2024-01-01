@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import datev.de.dcal.*;
+//import datev.de.dcal.*;
 
 public class MainActivity extends ReactActivity {
   final String TAG = "MainActivity";
@@ -32,7 +32,7 @@ public class MainActivity extends ReactActivity {
 
   protected String getURLIntentName() { return "beleganbeiopendevelopment";  } // Wichtig für DATEV Login
 
-  private DCALapi DCAL = datev.de.dcal.DCALapiKt.getDCAL();
+  //private DCALapi DCAL = datev.de.dcal.DCALapiKt.getDCAL();
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MainActivity extends ReactActivity {
       Log.i(TAG,"INTENT_STRING intentType " + intentType);
       Log.i(TAG,"INTENT_STRING intentString " + intentString);
 
-      if(intentString.startsWith("beleganbeiopen") && intentString.contains("smartlogin")) {
+      /*if(intentString.startsWith("beleganbeiopen") && intentString.contains("smartlogin")) {
         Log.i(TAG, "INCOMING: DATEV SMARTLOGIN INTENT");
 
         intentString = intentString.replace("$intentName://datev?data=", "");
@@ -81,7 +81,7 @@ public class MainActivity extends ReactActivity {
           Log.e(TAG,e.getLocalizedMessage());
         }
 
-      } else if(intentType.equals("application/pdf")) { // Einzelnes PDF, "Datei senden"
+      } else */if(intentType.equals("application/pdf")) { // Einzelnes PDF, "Datei senden"
         Log.i(TAG, "INCOMING: PDF IMPORT");
 
         final Handler handler = new Handler();

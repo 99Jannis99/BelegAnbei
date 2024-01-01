@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet, View, ScrollView, ActivityIndicator } from "react-native";
+import { SafeAreaView, StyleSheet, View, ScrollView, ActivityIndicator, Text } from "react-native";
 import { useSelector } from "react-redux";
 
 import Header from "../../shared/Header";
@@ -10,34 +10,45 @@ function TextScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
     const { dataMorePages } = useSelector((state) => state.dataReducer);
 
-    let useMorePages = JSON.parse(dataMorePages)
+    const [page, setPage] = useState({});
 
-    let callname = route.params.params.callname
-    console.log('callname', callname)
+    useEffect(() => {
+        setTimeout(() => {
+            let useMorePages = JSON.parse(dataMorePages)
 
-    let pageHeadline = useMorePages.find((item) => item.callname === callname) ?.headline || ""
-    let pageSubHeadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || ""
-    let pageContent = useMorePages.find((item) => item.callname === callname) ?.content || ""
+            let callname = route.params.params.callname
+            console.log('callname', callname)
+            
+            let usePage = {}
 
-    if(!pageContent && !pageHeadline) {
-        pageHeadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || `Nicht gefunden`
-        pageSubHeadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || `Die angeforderte Seite "${callname}" wurden nicht gefunden.`
-    }
+            usePage.pageHeadline = useMorePages.find((item) => item.callname === callname) ?.headline || ""
+            usePage.pageSubHeadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || ""
+            usePage.pageContent = useMorePages.find((item) => item.callname === callname) ?.content || ""
+        
+            if(!usePage.pageContent && !usePage.pageHeadline) {
+                usePage.pageHeadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || `Nicht gefunden`
+                usePage.pageSubHeadline = useMorePages.find((item) => item.callname === callname) ?.subheadline || `Die angeforderte Seite "${callname}" wurden nicht gefunden.`
+            }
+
+            setPage(usePage)
+        }, 250)
+    }, [dataMorePages]);
+
     
     return (
         <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
             <Header></Header>
             <ScrollView style={styles.content}>
-                { !pageHeadline && !pageContent && <ActivityIndicator size={'large'} /> }
+                { !page.pageHeadline && !page.pageContent && <ActivityIndicator size={'large'} /> }
                 <View>
-                    {pageHeadline && 
-                    <CustomText textType="headline" style={{}}>{ pageHeadline }</CustomText>
+                    {page.pageHeadline && 
+                    <CustomText textType="headline" style={{}}>{ page.pageHeadline }</CustomText>
                     }
-                    {pageSubHeadline && 
-                        <CustomText textType="subheadline" style={{}}>{ pageSubHeadline }</CustomText>
+                    {page.pageSubHeadline && 
+                        <CustomText textType="subheadline" style={{}}>{ page.pageSubHeadline }</CustomText>
                     }
-                    {pageContent && pageContent != "" && 
-                        <CustomHTML htmlContent={ pageContent }></CustomHTML>
+                    {page.pageContent && page.pageContent != "" && 
+                        <CustomHTML htmlContent={ page.pageContent }></CustomHTML>
                     }
                 </View>
             </ScrollView>

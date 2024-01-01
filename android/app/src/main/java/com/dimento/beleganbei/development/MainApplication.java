@@ -17,9 +17,9 @@ import com.dimento.beleganbei.ConfigPropertiesPackage;
 import com.dimento.beleganbei.DATEVPackage;
 import com.dimento.beleganbei.DATEVDUOPackage;
 import com.dimento.beleganbei.DATEVDMSPackage;
+import com.dimento.beleganbei.SpinnerPackage;
 //import com.dimento.beleganbei.BelegeStorePackage;
 //import com.dimento.beleganbei.SendMailPackage;
-//import com.dimento.beleganbei.SpinnerPackage;
 //import com.dimento.beleganbei.MakeSignaturePackage;
 //import com.dimento.beleganbei.PDFViewerPackage;
 //import com.dimento.beleganbei.PDFPickerPackage;
@@ -60,6 +60,9 @@ public class MainApplication extends Application implements ReactApplication {
                     packages.add(new DATEVDUOPackage());
                     packages.add(new DATEVDMSPackage());
 
+                    // Spinner
+                    packages.add(new SpinnerPackage());
+
                     // MakeSignature
                     //packages.add(new MakeSignaturePackage());
 
@@ -86,9 +89,6 @@ public class MainApplication extends Application implements ReactApplication {
 
                     // Formulare
                     //packages.add(new FormularePackage());
-
-                    // StatusBar
-                    //packages.add(new SpinnerPackage());
 
                     // SendMail
                     //packages.add(new SendMailPackage());

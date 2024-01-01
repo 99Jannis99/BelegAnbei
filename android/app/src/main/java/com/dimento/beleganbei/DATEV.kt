@@ -144,8 +144,30 @@ class DATEV(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(
         println("DATEV requestLogout")
         DCAL.requestLogout()
 
-        Thread.sleep(1000L);
+        Thread.sleep(500L);
         isLoggedIn();
+    }
+
+    @ReactMethod
+    fun handleURL(url: String) {
+        println("DATEV handleURL url " + url);
+        var useURL = url.replace("beleganbeiopengrahl://datev?data=", "")
+            .replace("beleganbeiopendevelopment://datev?data=", "")
+        useURL = Uri.decode(useURL)
+        println("DATEV handleURL useURL " + useURL);
+
+        try {
+            val datevCodeURL = Uri.parse(useURL)
+            val DCAL = DCAL
+            DCAL.handleUrl(datevCodeURL)
+
+            Thread.sleep(1000L);
+            isLoggedIn();
+
+        } catch (e: Exception) {
+            println("DATEV Exception DATEV Handle URL")
+            println(e.localizedMessage)
+        }
     }
 
     fun handleIntent(intentString: String, intentName: String) {

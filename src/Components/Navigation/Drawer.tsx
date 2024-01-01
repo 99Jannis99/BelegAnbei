@@ -200,7 +200,7 @@ const DrawerComponent = () => {
   useEffect(() => {
     Linking.getInitialURL().then((url) => {
       console.log('DATEV Q Linking.getInitialURL')
-      if(Platform.OS !== 'ios') return;
+      //if(Platform.OS !== 'ios') return;
 
       if (url) {
         Linking.canOpenURL(url).then((supported) => {
@@ -217,7 +217,7 @@ const DrawerComponent = () => {
 
     const urlListener = Linking.addEventListener('url', (event) => {
       console.log('DATEV A Linking.addEventListener')
-      if(Platform.OS !== 'ios') return;
+      //if(Platform.OS !== 'ios') return;
 
       Linking.canOpenURL(event.url).then((supported) => {
         if (supported) {
@@ -558,20 +558,20 @@ console.log('PROCEED FROM ERROR')
                 source={require("../../../assets/images/datev_duo.png")}
               />
               { !IsDATEVInitialized && 
-                <TouchableOpacity onPress={() => { console.log('init') }}>
+                <View>
                   <CustomText fontType="light" style={{}}>DATEV ist nicht initialisiert</CustomText>
                   <TouchableOpacity onPress={() => { isDatevEnabled() }}>
                     <CustomText fontType="bold" style={{}}>Jetzt initialisieren</CustomText>
                   </TouchableOpacity>
-                </TouchableOpacity>
+                </View>
               }
               { IsDATEVInitialized && IsDATEVSmartloginAvailable && !IsDATEVLoggedIn && 
-                <TouchableOpacity onPress={() => { console.log('login') }}>
+                <View>
                   <CustomText fontType="light" style={{}}>Sie sind nicht angemeldet.</CustomText>
                   <TouchableOpacity onPress={() => { DATEV.requestLogin() }}>
                     <CustomText fontType="bold" style={{}}>Jetzt anmelden</CustomText>
                   </TouchableOpacity>
-                </TouchableOpacity>
+                </View>
               }
               { IsDATEVInitialized && !IsDATEVSmartloginAvailable && !IsDATEVLoggedIn && 
                 <View>
