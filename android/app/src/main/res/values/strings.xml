@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BelegAnbeiDevelopment</string>
+
+    <string name="page">Seite</string>
+    <string name="von">von</string>
+    <string name="wird_geoffnet">PDF wird geöffnet</string>
 </resources>

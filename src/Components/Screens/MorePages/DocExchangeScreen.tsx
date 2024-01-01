@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, TextInput, View, ScrollView, Text, Button, Alert, ActivityIndicator } from "react-native";
+import { NativeModules, SafeAreaView, StyleSheet, TextInput, View, ScrollView, Text, Button, Alert, ActivityIndicator, DeviceEventEmitter, NativeEventEmitter, Platform } from "react-native";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Icon } from "@rneui/themed";
@@ -8,6 +8,9 @@ import Header from "../../shared/Header";
 import CustomText from "../../shared/CustomText";
 import CustomHTML from "../../shared/CustomHTML";
 import TextSnippet from "../../shared/TextSnippets";
+
+const { DocExchange } = NativeModules;
+
 const customerData = require("../../../../data/customer.json");
 
 function DocExchangeScreen() {
@@ -85,8 +88,6 @@ function DocExchangeScreen() {
       console.log('----> AvailableDocuments', 'UserDocExchangeToken', UserDocExchangeToken);
       console.log('----> AvailableDocuments', 'customerData.customer_api_token', customerData.customer_api_token);
   
-      setLoadingAvailableDocuments(true);
-  
       fetch('https://apiv5.beleganbei.de/docexchange/documents/available/', {
         method: 'POST',
         headers: {
@@ -128,6 +129,7 @@ function DocExchangeScreen() {
             setLoadingAvailableDocuments(true);
             setTimeout(function() {
                 console.log('load available')
+                setLoadingAvailableDocuments(true);
                 loadAvailableDocuments(res);
               }, 500)
             }
@@ -148,9 +150,62 @@ function DocExchangeScreen() {
         }).length;
     }
 
-    const openDocument = (document) => {
-        console.log('document', document)
+    const openDocument = async (document) => {
+        console.log('document', JSON.stringify(document, null, 2))
+        
+        const formData  = new FormData();
+        formData.append('utkn', UserDocExchangeToken); // customer token
+        formData.append('atkn', customerData.customer_api_token); // user access token
+        formData.append('dtkn', document.document_token);
+        console.log('formData', formData)
+
+        const rawResponse = await fetch('https://app-backend.beleganbei.de/api/app-bridge/docexchange/document/details/', {
+          method: 'POST',
+          headers: {
+            'Accept'        : 'application/json'
+          },
+          body: formData
+        });
+        const result = await rawResponse.json();
+        console.log('DocexchangeOpenDocument result', result);
+
+        if(result.error) {
+          Alert.alert('Achtung', result.error, [{ text: 'OK' }]);
+          return;
+        } else if(result.hasOwnProperty('success')) {
+          let data = JSON.stringify(result.success);
+
+          DocExchange.open(data, customerData.customer_api_token, UserDocExchangeToken, customerData.customer_id, 'ABNC-123', '#007EDF', '#defdef', '6', '5.0.0', 'true');
+          // DocExchange.open('data', 'apiToken', 'fetchToken', 'cid', 'uuid', 'bgColor', 'textColor', 'int', 'appVersion', 'true');
+        } else {
+          
+        }
     }
+
+    // Dokumententausch Doc Result
+    useEffect(() => {
+      const emitter = Platform.OS === 'ios' ? new NativeEventEmitter(NativeModules.DocExchange) : DeviceEventEmitter
+      const DOCEXCHANGE_DOCUMENT_RESULT_Listener = emitter.addListener('DOCEXCHANGE_DOCUMENT_RESULT', (e) => {
+        console.log("NATIVE_EVENT DOCEXCHANGE_DOCUMENT_RESULT typeof", typeof e);
+        console.log("NATIVE_EVENT DOCEXCHANGE_DOCUMENT_RESULT e", e);
+  
+        let result = e;
+  
+        if(result.code == 200) {
+          Alert.alert('Achtung', `Dokument "${result.result.title}" wurde zurück geschickt`, [{ text: 'OK' }]);
+        } else {
+          let message = result.hasOwnProperty('message') ? result.message : '';
+          let title = result.hasOwnProperty('title') ? result.title : '';
+          console.log(`Dokument "${title}" -> Error Code: ${result.code} | Message: ${message}`)
+          if(result.code != 400) { // KEIN Abbruch
+            Alert.alert(title ?? 'Achtung', message ?? `Unbekannter Fehler`, [{ text: 'OK' }]);
+          }
+        }
+  
+        loadAvailableDocuments(UserDocExchangeToken);
+      });
+      return () => DOCEXCHANGE_DOCUMENT_RESULT_Listener.remove(); // never forget to unsubscribe
+    }, []);
 
     return (
         <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>

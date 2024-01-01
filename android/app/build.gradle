@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: "kotlin-android"
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 /**
@@ -80,7 +81,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
-        versionName "1.0"
+        versionName "5.0"
     }
     signingConfigs {
         debug {
@@ -115,6 +116,23 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+
+    implementation files("src/main/libs/dcal-release.aar")
+    implementation files("src/main/libs/additionnal.jar")
+    implementation files("src/main/libs/mail.jar")
+    implementation files("src/main/libs/activation.jar")
+
+    implementation 'com.android.volley:volley:1.2.1'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.bendspoons:AndroidPdfViewer:2.8.8'
+    //implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.core:core:1.8.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+
+    implementation 'com.github.tejpratap46:PDFCreatorAndroid:3.0.2'
+
+    //implementation 'com.github.bendspoons.EdgeDetectionCamera:liveedgedetection:4bff991f8a'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {

@@ -40,7 +40,7 @@ function TextScreen({ route }) {
                         <CustomHTML htmlContent={ pageContent }></CustomHTML>
                     }
                 </View>
-                </ScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
 }

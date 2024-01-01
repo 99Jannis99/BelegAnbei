@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableHighlight, Text } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
-import BeispielScreen from "../Screens/BeispielScreen";
+
+import DATEVDUOScreen from "../Screens/Settings/DATEVDUO";
+import DATEVDMSScreen from "../Screens/Settings/DATEVDMS";
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   const { dataStyle } = useSelector((state) => state.dataReducer);
@@ -104,12 +106,12 @@ const DatevTopTaps = () => {
       >
         <Tab.Screen
           name="UnternehmenOnlineSettings"
-          component={BeispielScreen}
+          component={DATEVDUOScreen}
           options={{ tabBarLabel: "Unternehmen Online" }}
         />
         <Tab.Screen
           name="MeineSteuernSettings"
-          component={BeispielScreen}
+          component={DATEVDMSScreen}
           options={{ tabBarLabel: "Meine Steuern" }}
         />
       </Tab.Navigator>

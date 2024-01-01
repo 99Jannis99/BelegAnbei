@@ -1,29 +1,173 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission
+        android:name="android.permission.CAMERA" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
 
     <application
-      android:name=".MainApplication"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
-      android:theme="@style/AppTheme">
-      <activity
-        android:name=".MainActivity"
+        android:name=".MainApplication"
+        android:requestLegacyExternalStorage="true"
         android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
-        android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-      </activity>
-      
-      <meta-data 
-        android:name="com.google.android.geo.API_KEY" 
-        android:value="AIzaSyBgMo-mtlSrK2K6nmDMljeuG1rg4sulaW0" />
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="false"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true"
+            android:theme="@style/AppTheme">
+            <!-- Main -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Main -->
+
+            <!-- PDF -->
+            <!-- Multiple -->
+            <intent-filter>
+                <data android:mimeType="application/pdf"/>
+                <action android:name="android.intent.action.SEND_MULTIPLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- Single -->
+            <intent-filter>
+                <data android:mimeType="application/pdf"/>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- <intent-filter>
+                <data android:mimeType="image/jpg"/>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" android:pathPattern=".*\\.jpg" />
+            </intent-filter> -->
+            <!-- PDF -->
+
+            <!-- Links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="smartlogin-demo.beleganbei.de"
+                    android:scheme="https"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="smartlogin.beleganbei.de"
+                    android:scheme="https"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="www.beleg-anbei.de"
+                    android:scheme="https"
+                    android:pathPrefix="/app-oeffnen/"/>
+            </intent-filter>
+            <!-- Links -->
+
+            <!-- Quicklink -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="beleganbeiopengrahl"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="beleganbeiopendevelopment"/>
+            </intent-filter>
+            <!-- Quicklink -->
+        </activity>
+
+        <!-- Provider (u.a. Documententausch Teilen) -->
+        <provider android:authorities="${applicationId}.beleganbei.provider" android:exported="false" android:grantUriPermissions="true" android:name="com.dimento.beleganbei.Provider">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepaths"/>
+        </provider>
+        <!-- Provider (u.a. Documententausch Teilen) -->
+
+        <!-- Maps -->
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBgMo-mtlSrK2K6nmDMljeuG1rg4sulaW0"/>
+        <!-- Maps -->
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
+        <!-- Activities -->
+        <activity android:label="MakeSignature Activity" android:name="com.dimento.beleganbei.MakeSignatureActivity" android:screenOrientation="landscape" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:label="PDFViewer Activity" android:name="com.dimento.beleganbei.PDFViewerActivity" android:screenOrientation="portrait" />
+        <activity android:label="DocExchange Activity" android:name="com.dimento.beleganbei.DocExchangeActivity" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity android:label="Formular Preview Activity" android:name="com.dimento.beleganbei.FormularPreviewActivity" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity android:label="Image Edit Activity" android:name="com.dimento.beleganbei.ImageEditActivity" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <!--<activity android:label="DocScanner Activity" android:name="com.dimento.beleganbei.DocScannerActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />-->
+        <activity android:label="LoadingSpinner Activity" android:name="com.dimento.beleganbei.SpinnerActivity" android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity android:label="PDFCreation Activity" android:name="com.dimento.beleganbei.PDFCreationActivity" android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" android:screenOrientation="portrait" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <!-- Activities -->
     </application>
+
+    <!-- Access to other Apps/Packages request permission -->
+    <queries>
+        <package android:name="com.google.android.apps.maps"/>
+    </queries>
+    <queries>
+        <package android:name="de.datev.smartlogin"/>
+    </queries>
+    <!-- Access to other Apps/Packages request permission -->
+
+    <!-- Intent actions -->
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PICK"/>
+        </intent>
+        <intent>
+            <action android:name="com.android.camera.action.CROP"/>
+            <data android:mimeType="image/*" android:scheme="content"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto"/>
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT"/>
+        </intent>
+    </queries>
+    <!-- Intent actions -->
 </manifest>

@@ -56,12 +56,23 @@ const Welcome = ({ navigation }) => {
     setTimeout(() => {
       if(localDataSettings.hasOwnProperty('news')) {
         let news = JSON.parse(dataNews);
-        //const limitNews = news.slice(0, localDataSettings.news.settings.show_home_amount);
-        const limitNews = news.slice(0, 5);
+        const limitNews = news.slice(0, localDataSettings.news.settings.show_home_amount);
+        //const limitNews = news.slice(0, 5);
         setLocalDataNews(limitNews);
       }
-    }, 500)
-  }, [dataNews, dataSettings]);
+    }, 1000)
+  }, [dataSettings]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if(localDataSettings.hasOwnProperty('news')) {
+        let news = JSON.parse(dataNews);
+        const limitNews = news.slice(0, localDataSettings.news.settings.show_home_amount);
+        //const limitNews = news.slice(0, 5);
+        setLocalDataNews(limitNews);
+      }
+    }, 1000)
+  }, [localDataSettings]);
 
   const openNews = (news) => {
     console.log('news', news)
