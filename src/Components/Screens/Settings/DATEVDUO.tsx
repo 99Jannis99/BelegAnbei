@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomText from "../../shared/CustomText";
 import TextSnippet from "../../shared/TextSnippets";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { HideSpinner, ShowSpinner } from '../../../Functions/LoadingSpinner';
 
 const { DATEV, DATEVDUO, DATEVDMS, ConfigProperties } = NativeModules;
 
@@ -53,6 +54,14 @@ const readDATEVUserData = async () => {
   }
 };
 /* MOVE TO SHARED */
+
+const doLogin = () => {
+  DATEV.requestLogin();
+}
+
+const doLogout = () => {
+  DATEV.requestLogout();
+}
 
 function DATEVDUOScreen() {
     const { background } = useSelector((state) => state.colorReducer);
@@ -158,7 +167,7 @@ function DATEVDUOScreen() {
     }, []);
 
     return (
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: background}}>
             <View style={styles.contentView}>
                 <TextSnippet call="app-dcalsettings-top-login" />
             </View>
@@ -175,14 +184,10 @@ function DATEVDUOScreen() {
 
             <View style={styles.contentView}>
                 { IsDATEVLoggedIn && 
-                    <Button title="Abmelden" onPress={() => DATEV.requestLogout()}>
-                        <CustomText fontType="bold" style={{}}></CustomText>
-                    </Button>
+                    <Button title="Abmelden" onPress={() => doLogout() }></Button>
                 }
                 { !IsDATEVLoggedIn && 
-                    <Button title="Anmelden" onPress={() => DATEV.requestLogin()}>
-                        
-                    </Button>
+                    <Button title="Anmelden" onPress={() => doLogin() }></Button>
                 }
             </View>
             

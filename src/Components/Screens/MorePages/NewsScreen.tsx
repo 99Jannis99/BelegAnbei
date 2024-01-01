@@ -19,7 +19,6 @@ const {width, height} = Dimensions.get('window');
 function NewsScreen({route}) {
     const width = Dimensions.get('window').width;
 
-
     const mapRef = useRef(null);
 
     const { background } = useSelector((state) => state.colorReducer);
