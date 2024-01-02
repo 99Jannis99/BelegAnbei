@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { textFontFamily, textFontSize, headlineFontFamily, headlineFontSize, subHeadlineFontFamily, subheadlineFontSize } from "../../../data/CustomerConstants";
 
-import { widthPixel, heightPixel, fontPixel, pixelSizeVertical, pixelSizeHorizontal } from "../shared/SizeNormalizer";
+import { fontPixel } from "../shared/SizeNormalizer";
 
 type CustomTextProps = {
     children?: any

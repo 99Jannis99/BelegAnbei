@@ -8,8 +8,11 @@ const {
   height: SCREEN_HEIGHT 
 } = Dimensions.get('window');
 
-const widthBaseScale = SCREEN_WIDTH / 360; // width from Samsung Galaxy S21 FE (Basis Styling, adjusting based on that)
-const heightBaseScale = SCREEN_HEIGHT / 732; // height from Samsung Galaxy S21 FE (Basis Styling, adjusting based on that)
+//const widthBaseScale = SCREEN_WIDTH / 360; // width from Samsung Galaxy S21 FE (Basis Styling, adjusting based on that)
+//const heightBaseScale = SCREEN_HEIGHT / 732; // height from Samsung Galaxy S21 FE (Basis Styling, adjusting based on that)
+
+const widthBaseScale = SCREEN_WIDTH / 390; // iPhone 12
+const heightBaseScale = SCREEN_HEIGHT / 844; // iPhone 12
 
 function normalize(size, based = 'width') {
     const newSize = (based === 'height') ? 
