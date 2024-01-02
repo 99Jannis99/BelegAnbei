@@ -11,6 +11,7 @@ import { Image } from "@rneui/base";
 import CustomText from "../../shared/CustomText";
 import { textFontSize } from "../../../../data/CustomerConstants";
 import Contacts from "react-native-contacts";
+import { widthPixel, heightPixel, fontPixel, pixelSizeVertical, pixelSizeHorizontal } from "../../shared/SizeNormalizer";
 
 function LocationScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
@@ -87,7 +88,7 @@ function LocationScreen({ route }) {
             <ScrollView style={ styles.detailModalScrollView }>
                 
                 <View style={ styles.detailModalViewCol }>
-                    <CustomText style={[styles.detailModalViewColText, {fontSize: textFontSize}]}>
+                    <CustomText style={[styles.detailModalViewColText, {fontSize: fontPixel(textFontSize)}]}>
                         {location.location_address}
                         {"\n"}
                         {location.location_zip} {location.location_city}
@@ -98,14 +99,14 @@ function LocationScreen({ route }) {
                 <View style={ styles.detailModalViewRow }>
                     <Icon
                         name="envelope"
-                        size={textFontSize}
+                        size={fontPixel(textFontSize)}
                         style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                         allowFontScaling
                         type="font-awesome"
                     />
                                                 
                     <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`mailto:${location.location_email}`)}>
-                        <CustomText style={{fontSize: textFontSize}}>{location.location_email}</CustomText>
+                        <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_email}</CustomText>
                     </TouchableOpacity>
                 </View>
                 }
@@ -114,14 +115,14 @@ function LocationScreen({ route }) {
                 <View style={ styles.detailModalViewRow }>
                     <Icon
                         name="link"
-                        size={textFontSize}
+                        size={fontPixel(textFontSize)}
                         style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                         allowFontScaling
                         type="font-awesome"
                     />
                                                 
                     <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`https://${location.location_web}`)}>
-                        <CustomText style={{fontSize: textFontSize}}>{location.location_web}</CustomText>
+                        <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_web}</CustomText>
                     </TouchableOpacity>
                 </View>
                 }
@@ -130,14 +131,14 @@ function LocationScreen({ route }) {
                     <View style={ styles.detailModalViewRow }>
                         <Icon
                             name="phone"
-                            size={textFontSize}
+                            size={fontPixel(textFontSize)}
                             style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                             allowFontScaling
                             type="font-awesome"
                         />
                                                 
                         <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`tel:${location.location_phone.dial}`)}>
-                            <CustomText style={{fontSize: textFontSize}}>{location.location_phone.display}</CustomText>
+                            <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_phone.display}</CustomText>
                         </TouchableOpacity>
                     </View>
                 }
@@ -145,26 +146,26 @@ function LocationScreen({ route }) {
                     <View style={ styles.detailModalViewRow }>
                         <Icon
                             name="fax"
-                            size={textFontSize}
+                            size={fontPixel(textFontSize)}
                             style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                             allowFontScaling
                             type="font-awesome"
                         />
-                        <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{location.location_fax.display}</CustomText>
+                        <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_fax.display}</CustomText>
                     </View>
                 }
                 {location.location_cell.dial && 
                     <View style={ styles.detailModalViewRow }>
                         <Icon
                             name="mobile"
-                            size={textFontSize}
+                            size={fontPixel(textFontSize)}
                             style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                             allowFontScaling
                             type="font-awesome"
                         />
                                                 
                         <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`tel:${location.location_cell.dial}`)}>
-                            <CustomText style={{fontSize: textFontSize}}>{location.location_cell.display}</CustomText>
+                            <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_cell.display}</CustomText>
                         </TouchableOpacity>
                     </View>
                 }

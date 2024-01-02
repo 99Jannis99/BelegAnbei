@@ -10,7 +10,6 @@ import Modal from "react-native-modal";
 import MapView, {Marker, AnimatedRegion} from 'react-native-maps';
 import { Image } from "@rneui/base";
 import CustomText from "../../shared/CustomText";
-import { textFontFamily, textFontSize } from "../../../../data/CustomerConstants";
 import Contacts from "react-native-contacts";
 import CustomHTML from "../../shared/CustomHTML";
 

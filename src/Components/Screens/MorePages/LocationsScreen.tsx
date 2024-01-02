@@ -12,6 +12,7 @@ import { Image } from "@rneui/base";
 import CustomText from "../../shared/CustomText";
 import { textFontFamily, textFontSize } from "../../../../data/CustomerConstants";
 import Contacts from "react-native-contacts";
+import { widthPixel, heightPixel, fontPixel, pixelSizeVertical, pixelSizeHorizontal } from "../../shared/SizeNormalizer";
 
 const {width, height} = Dimensions.get('window');
 
@@ -199,7 +200,7 @@ function LocationsScreen() {
                                             <CustomText textType="headline" style={{}}>{location.location_display_name}</CustomText>
                                             
                                             <View style={ styles.detailModalViewCol }>
-                                                <CustomText style={[styles.detailModalViewColText, {fontSize: textFontSize}]}>
+                                                <CustomText style={[styles.detailModalViewColText, {fontSize: fontPixel(textFontSize)}]}>
                                                     {location.location_address}
                                                     {"\n"}
                                                     {location.location_zip} {location.location_city}
@@ -210,12 +211,12 @@ function LocationsScreen() {
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="envelope"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                     allowFontScaling
                                                     type="font-awesome"
                                                 />
-                                                <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{location.location_email}</CustomText>
+                                                <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_email}</CustomText>
                                             </View>
                                             }
 
@@ -223,12 +224,12 @@ function LocationsScreen() {
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="link"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                     allowFontScaling
                                                     type="font-awesome"
                                                 />
-                                                <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{location.location_web}</CustomText>
+                                                <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_web}</CustomText>
                                             </View>
                                             }
 
@@ -236,36 +237,36 @@ function LocationsScreen() {
                                                 <View style={ styles.detailModalViewRow }>
                                                     <Icon
                                                         name="phone"
-                                                        size={textFontSize}
+                                                        size={fontPixel(textFontSize)}
                                                         style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                         allowFontScaling
                                                         type="font-awesome"
                                                     />
-                                                    <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{location.location_phone.display}</CustomText>
+                                                    <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_phone.display}</CustomText>
                                                 </View>
                                             }
                                             {location.location_fax.dial && 
                                                 <View style={ styles.detailModalViewRow }>
                                                     <Icon
                                                         name="fax"
-                                                        size={textFontSize}
+                                                        size={fontPixel(textFontSize)}
                                                         style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                         allowFontScaling
                                                         type="font-awesome"
                                                     />
-                                                    <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{location.location_fax.display}</CustomText>
+                                                    <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_fax.display}</CustomText>
                                                 </View>
                                             }
                                             {location.location_cell.dial && 
                                                 <View style={ styles.detailModalViewRow }>
                                                     <Icon
                                                         name="mobile"
-                                                        size={textFontSize}
+                                                        size={fontPixel(textFontSize)}
                                                         style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                         allowFontScaling
                                                         type="font-awesome"
                                                     />
-                                                    <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{location.location_cell.display}</CustomText>
+                                                    <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_cell.display}</CustomText>
                                                 </View>
                                             }
 
