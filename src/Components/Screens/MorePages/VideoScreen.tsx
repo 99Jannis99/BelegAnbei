@@ -51,7 +51,7 @@ function VideoScreen({ route }) {
                     <View>
                         <View style={styles.contentView}>
                             <CustomText textType="headline" style={{}}>{video.headline}</CustomText>
-                            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                            <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8}}>
                                 <CustomText fontType="light" style={{ fontSize:14 }}>Quelle: {sourceName(video.video.source)}</CustomText>
                                 <CustomText fontType="light" style={{ fontSize:14 }}>Dauer: {video.video.data.duration} min.</CustomText>
                             </View>

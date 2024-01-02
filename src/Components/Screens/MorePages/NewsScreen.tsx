@@ -77,9 +77,9 @@ function NewsScreen({route}) {
                         <View key={i}>
                             <TouchableOpacity activeOpacity={1} style={{padding: 0, marginBottom: 12}} bottomDivider onPress={() => newsModal(newsItem.news_id)}>
                                 <View style={{padding: 0, margin: 0}}>
-                                    <CustomText fontType="bold" style={{}}>{newsItem.news_headline}</CustomText>
-                                    <CustomText fontType="bold" style={{ fontSize: 12 }}>{newsItem.news_release_from}</CustomText>
-                                    <CustomText fontType="light" style={{}}>{newsItem.news_excerpt}</CustomText>
+                                    <CustomText fontType="bold" style={{marginBottom: 4}}>{newsItem.news_headline}</CustomText>
+                                    <CustomText fontType="light" style={{ fontSize: 12, marginBottom: 4 }}>{newsItem.news_release_from}</CustomText>
+                                    <CustomText fontType="regular" style={{marginBottom: 12}}>{newsItem.news_excerpt}</CustomText>
                                 </View>
                             </TouchableOpacity>
                             <Modal 

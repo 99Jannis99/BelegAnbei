@@ -1,14 +1,14 @@
 const textFontSize = 18;
-const textFontFamily = "ChakraPetch";
+const textFontFamily = "OpenSans";
 
 const headlineFontSize = 26;
-const headlineFontFamily = "ChakraPetch";
+const headlineFontFamily = "Roboto";
 
 const subheadlineFontSize = 24;
-const subHeadlineFontFamily = "ChakraPetch";
+const subHeadlineFontFamily = "OpenSans";
 
 const navFontSize = 16;
-const navFontFamily = "Poppins-Medium"; // WITH size Appendix, e.g. -Bold (see filename)
+const navFontFamily = "Roboto-Regular"; // WITH size Appendix, e.g. -Bold (see filename)
 
 export { 
     textFontSize, 

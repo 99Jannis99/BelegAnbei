@@ -275,15 +275,15 @@ function DocExchangeScreen() {
                                 </View>
 
                                 <View style={{flex: 1}}>
-                                    <CustomText fontType="bold" style={{}}>{document.document_title}</CustomText>
-                                    <CustomText fontType="light" style={{ flexShrink: 1, fontSize: 12 }}>
+                                    <CustomText fontType="medium" style={{}}>{document.document_title}</CustomText>
+                                    <CustomText fontType="light" style={{ flexShrink: 1, fontSize: 12, marginTop: 4 }}>
                                         <Text>{document.document_added_at} </Text>
                                         { document.document_category_id > 0 && 
                                             <Text> | {document.document_category_id}</Text>
                                         }
                                     </CustomText>
                                     { document.document_text &&
-                                        <Text>{document.document_text}</Text>
+                                        <CustomText fontType="light" style={{marginTop: 4, marginBottom: 4, fontSize: 14}}>{document.document_text}</CustomText>
                                     }
 
                                     { document.signaturable_document == 1 &&

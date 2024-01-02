@@ -19,6 +19,8 @@ import {
   collapseAllIdentities,
 } from "../../../Functions/StandardSettings/IdentityManagement";
 
+import TextSnippet from "../../shared/TextSnippets";
+
 function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -536,6 +538,8 @@ function StandardSettings() {
       <ScrollView
         style={{ backgroundColor: localDataStyle.body_background_color }}
       >
+                <TextSnippet call="app-settings-top" />
+
         {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
         {Array.isArray(localTextsnippets) && (
           <View style={{ flex: 1, padding: 10 }}>

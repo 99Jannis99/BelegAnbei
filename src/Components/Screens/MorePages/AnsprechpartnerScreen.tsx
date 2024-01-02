@@ -255,6 +255,7 @@ function AnsprechpartnerScreen() {
 
                                         <CustomText style={{}}>{person.person_text}</CustomText>
                                         <Text style={{}}> </Text>
+                                        <Text style={{}}> </Text>
                                     </ScrollView>
                                 </View>
                             </Modal>

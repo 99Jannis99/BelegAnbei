@@ -55,9 +55,9 @@ function AppInfoScreen() {
         console.log('useSnippets', typeof useSnippets)
       
         let availableMethods = [];
-        for(methodKey in useSettings.sendmethods) {
+        for(const methodKey in useSettings.sendmethods) {
           if(useSettings.sendmethods[methodKey].enabled) {
-            textName = methodKey;
+            let textName = methodKey;
             textName = (methodKey == 'belegzentrale' ? 'bzupload' : textName);
             textName = (methodKey == 'einkommensteuer' ? 'einkommenssteuer' : textName);
             textName = (methodKey == 'unternehmenonline' ? 'dcal' : textName);
@@ -148,21 +148,21 @@ function AppInfoScreen() {
                 {
                     sendMethods.map((method, i) => (
                         <View key={i} style={{}}>
-                            <CustomText fontType="bold" style={{}}>{method.name}</CustomText>
-                            <CustomText fontType="light" style={{}}>{method.desc}</CustomText>
+                            <CustomText fontType="bold" style={{marginBottom: 4}}>{method.name}</CustomText>
+                            <CustomText fontType="light" style={{marginBottom: 8}}>{method.desc}</CustomText>
                         </View>  
                     ))
                 }
 
                 <CustomText textType="subheadline" style={{ marginTop: 12 }}>Berechtigungen</CustomText>
-                <CustomText fontType="bold" style={{}}>Kamera</CustomText>
-                <CustomText style={{}}>Wird benötigt, um Ihre Belege und Dokumente zu fotografieren. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen.</CustomText>
+                <CustomText fontType="bold" style={{marginBottom: 4}}>Kamera</CustomText>
+                <CustomText style={{marginBottom: 8}}>Wird benötigt, um Ihre Belege und Dokumente zu fotografieren. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen.</CustomText>
                 
-                <CustomText fontType="bold" style={{}}>Speicher</CustomText>
-                <CustomText style={{}}>Wird benötigt, um Ihre Belege und Dokumente zu sichern. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen, z.B. einen neuen Beleg fotografieren.</CustomText>
+                <CustomText fontType="bold" style={{marginBottom: 4}}>Speicher</CustomText>
+                <CustomText style={{marginBottom: 8}}>Wird benötigt, um Ihre Belege und Dokumente zu sichern. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen, z.B. einen neuen Beleg fotografieren.</CustomText>
                 
-                <CustomText fontType="bold" style={{}}>Kontakte</CustomText>
-                <CustomText style={{}}>Diese Berechtigung wird nur dann aungefordert, wenn Sie einen Ansprechpartner oder Standort zu Ihren Kontakten hinzufügen möchten. Diese Berechtigung ist nicht notwendig für die volle Nutzung der App.</CustomText>
+                <CustomText fontType="bold" style={{marginBottom: 4}}>Kontakte</CustomText>
+                <CustomText style={{marginBottom: 8}}>Diese Berechtigung wird nur dann aungefordert, wenn Sie einen Ansprechpartner oder Standort zu Ihren Kontakten hinzufügen möchten. Diese Berechtigung ist nicht notwendig für die volle Nutzung der App.</CustomText>
 
                 <TouchableOpacity activeOpacity={1} style={{marginTop: 8, justifyContent: "center", flexDirection: "row", alignItems: "center"}} onPress={toAppSettings}>
                     <Icon
@@ -179,21 +179,22 @@ function AppInfoScreen() {
 
                 <CustomText textType="subheadline" style={{ marginTop: 12 }}>Geräte-Informationen</CustomText>
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>Hersteller</CustomText>
-                    <CustomText fontType="light" style={{textTransform: 'capitalize'}}>{deviceData.brand}</CustomText>
+                    <CustomText fontType="bold" style={{marginBottom: 4}}>Hersteller</CustomText>
+                    <CustomText fontType="light" style={{textTransform: 'capitalize', marginBottom: 4}}>{deviceData.brand}</CustomText>
                 </View>    
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>Modell</CustomText>
-                    <CustomText fontType="light" style={{}}>{deviceData.model}</CustomText>
+                    <CustomText fontType="bold" style={{marginBottom: 4}}>Modell</CustomText>
+                    <CustomText fontType="light" style={{marginBottom: 4}}>{deviceData.model}</CustomText>
                 </View>    
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>Platform</CustomText>
-                    <CustomText fontType="light" style={{}}>{deviceData.systemName}</CustomText>
+                    <CustomText fontType="bold" style={{marginBottom: 4}}>Platform</CustomText>
+                    <CustomText fontType="light" style={{marginBottom: 4}}>{deviceData.systemName}</CustomText>
                 </View>    
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>{deviceData.systemName} Version</CustomText>
-                    <CustomText fontType="light" style={{}}>{deviceData.systemVersion}</CustomText>
+                    <CustomText fontType="bold" style={{marginBottom: 4}}>{deviceData.systemName} Version</CustomText>
+                    <CustomText fontType="light" style={{marginBottom: 4}}>{deviceData.systemVersion}</CustomText>
                 </View>      
+                <Text> </Text>
                 <Text> </Text>
             </ScrollView>
         </SafeAreaView>

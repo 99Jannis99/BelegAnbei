@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Animated, NativeModules, NativeEventEmitter, DeviceEventEmitter, Platform, Linking } from "react-native";
+import { View, Text, Image, TouchableOpacity, Animated, NativeModules, NativeEventEmitter, DeviceEventEmitter, Platform, Linking, Alert } from "react-native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   createDrawerNavigator,
   DrawerContentScrollView,

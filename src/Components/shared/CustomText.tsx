@@ -52,17 +52,17 @@ const CustomText: FunctionComponent<CustomTextProps> = ({ children, fontType, te
             passedStyles.fontSize = headlineFontSize;
             textStyle = styles.headline
             passedStyles.color = localDataStyle.body_headline_color
-            //if(!passedStyles.marginBottom && !passedStyles.margin) {
-            //    passedStyles.marginBottom = 6;
-            //}
+            if(!passedStyles.marginBottom && !passedStyles.margin) {
+                passedStyles.marginBottom = 6;
+            }
         break
         case 'subheadline':
             passedStyles.fontSize = subheadlineFontSize;
             textStyle = styles.subheadline
             passedStyles.color = localDataStyle.body_headline_color
-            //if(!passedStyles.marginBottom && !passedStyles.margin) {
-            //    passedStyles.marginBottom = 10;
-            //}
+            if(!passedStyles.marginBottom && !passedStyles.margin) {
+                passedStyles.marginBottom = 6;
+            }
         break
         case 'text':
         default:
