@@ -8,6 +8,7 @@ import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Header from "../../shared/Header";
 import TextSnippet from "../../shared/TextSnippets";
 import { textFontFamily, textFontSize } from "../../../../data/CustomerConstants";
+import { widthPixel, heightPixel, fontPixel, pixelSizeVertical, pixelSizeHorizontal } from "../../shared/SizeNormalizer";
 
 function KontaktScreen({ route }) {
     const ref = useRef(null);
@@ -122,14 +123,14 @@ function KontaktScreen({ route }) {
                     <TextSnippet call="more-contact-top" />
                 </View>
   
-                <Text style={{paddingLeft: 12, fontSize: textFontSize, fontWeight: 'bold', color: primary}}>Ihr Name</Text>
+                <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihr Name</Text>
                 <Input 
                     key="senderName" 
                     value={formValues.senderName} 
                     onChangeText={ (text) => { handleChange(text, "senderName") }} 
                 />
 
-                <Text style={{paddingLeft: 12, fontSize: textFontSize, fontWeight: 'bold', color: primary}}>Ihre E-Mail Adresse</Text>
+                <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihre E-Mail Adresse</Text>
                 <Input
                     key="senderEmail"
                     value={formValues.senderEmail}
@@ -140,7 +141,7 @@ function KontaktScreen({ route }) {
                     autoCompleteType="email"
                 />
                 
-                <Text style={{paddingLeft: 12, fontSize: textFontSize, fontWeight: 'bold', color: primary}}>Ihre Telefonnummer</Text>
+                <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihre Telefonnummer</Text>
                 <Input 
                     key="senderPhone" 
                     keyboardType="numeric" 
@@ -149,13 +150,13 @@ function KontaktScreen({ route }) {
                     placeholder="" 
                 />
 
-                <Text style={{paddingLeft: 12, fontSize: textFontSize, fontWeight: 'bold', color: primary}}>Wem möchten Sie die Nachricht schicken?</Text>
+                <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Wem möchten Sie die Nachricht schicken?</Text>
                 <Dropdown 
                     inside
                     ref={ref}
                     style={styles.dropdown}
-                    placeholderStyle={{fontSize: textFontSize, color: "#c1c1c1"}}
-                    selectedTextStyle={{fontSize: textFontSize, color: primary}}
+                    placeholderStyle={{fontSize: fontPixel(textFontSize), color: "#c1c1c1"}}
+                    selectedTextStyle={{fontSize: fontPixel(textFontSize), color: primary}}
                     inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
                     backgroundColor={'rgba(0,0,0,0.2)'}
@@ -175,7 +176,7 @@ function KontaktScreen({ route }) {
                     selectedStyle={styles.selectedStyle}
                 />
 
-                <Text style={{paddingLeft: 12, marginTop: 12, fontSize: textFontSize, fontWeight: 'bold', color: primary}}>Ihre Nachricht an uns</Text>
+                <Text style={{paddingLeft: 12, marginTop: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihre Nachricht an uns</Text>
                 <Input
                     key="message"
                     value={formValues.message}

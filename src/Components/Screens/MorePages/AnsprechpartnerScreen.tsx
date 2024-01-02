@@ -10,6 +10,7 @@ import Modal from "react-native-modal";
 import CustomText from "../../shared/CustomText";
 import { textFontFamily, textFontSize } from "../../../../data/CustomerConstants";
 import Contacts from "react-native-contacts";
+import { widthPixel, heightPixel, fontPixel, pixelSizeVertical, pixelSizeHorizontal } from "../../shared/SizeNormalizer";
 
 function AnsprechpartnerScreen() {
     const { background } = useSelector((state) => state.colorReducer);
@@ -176,14 +177,14 @@ function AnsprechpartnerScreen() {
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="envelope"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                     allowFontScaling
                                                     type="font-awesome"
                                                 />
                                                 
                                                 <TouchableOpacity style={styles.detailModalViewRowText} onPress={() => Linking.openURL(`mailto:${person.person_email}`)}>
-                                                    <CustomText style={{fontSize: textFontSize}}>{person.person_email}</CustomText>
+                                                    <CustomText style={{fontSize: fontPixel(textFontSize)}}>{person.person_email}</CustomText>
                                                 </TouchableOpacity>
                                             </View>
                                         }
@@ -191,14 +192,14 @@ function AnsprechpartnerScreen() {
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="phone"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                     allowFontScaling
                                                     type="font-awesome"
                                                 />
                                                 
                                                 <TouchableOpacity style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`tel:${person.person_phone.dial}`)}>
-                                                    <CustomText style={{fontSize: textFontSize}}>{person.person_phone.display}</CustomText>
+                                                    <CustomText style={{fontSize: fontPixel(textFontSize)}}>{person.person_phone.display}</CustomText>
                                                 </TouchableOpacity>
                                             </View>
                                         }
@@ -206,19 +207,19 @@ function AnsprechpartnerScreen() {
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="fax"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                     allowFontScaling
                                                     type="font-awesome"
                                                 />
-                                                <CustomText style={[styles.detailModalViewRowText, {fontSize: textFontSize}]}>{person.person_fax.display}</CustomText>
+                                                <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{person.person_fax.display}</CustomText>
                                             </View>
                                         }
                                         {person.person_cell.dial && person.person_show.cell && 
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="mobile"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]}
                                                     allowFontScaling
                                                     type="font-awesome"
@@ -234,14 +235,14 @@ function AnsprechpartnerScreen() {
                                             <View style={ styles.detailModalViewRow }>
                                                 <Icon
                                                     name="home"
-                                                    size={textFontSize}
+                                                    size={fontPixel(textFontSize)}
                                                     style={[styles.detailModalViewRowIcon, { aspectRatio: 1 }]} 
                                                     color="#ffffff"
                                                     allowFontScaling
                                                     type="font-awesome"
                                                 />
                                                 <View style={ styles.detailModalViewCol }>
-                                                    <CustomText style={[styles.detailModalViewColText, {fontSize: textFontSize}]}>
+                                                    <CustomText style={[styles.detailModalViewColText, {fontSize: fontPixel(textFontSize)}]}>
                                                         {person.location.location_display_name}
                                                         {"\n"}
                                                         {person.location.location_address}

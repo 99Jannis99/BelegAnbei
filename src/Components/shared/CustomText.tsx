@@ -8,6 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { textFontFamily, textFontSize, headlineFontFamily, headlineFontSize, subHeadlineFontFamily, subheadlineFontSize } from "../../../data/CustomerConstants";
 
+import { fontPixel } from "../shared/SizeNormalizer";
+
 type CustomTextProps = {
     children?: any
     style?: TextStyle | TextStyle[]
@@ -49,7 +51,7 @@ const CustomText: FunctionComponent<CustomTextProps> = ({ children, fontType, te
 
     switch (textType) {
         case 'headline':
-            passedStyles.fontSize = headlineFontSize;
+            passedStyles.fontSize = fontPixel(headlineFontSize);
             textStyle = styles.headline
             passedStyles.color = localDataStyle.body_headline_color
             if(!passedStyles.marginBottom && !passedStyles.margin) {
@@ -57,7 +59,7 @@ const CustomText: FunctionComponent<CustomTextProps> = ({ children, fontType, te
             }
         break
         case 'subheadline':
-            passedStyles.fontSize = subheadlineFontSize;
+            passedStyles.fontSize = fontPixel(subheadlineFontSize);
             textStyle = styles.subheadline
             passedStyles.color = localDataStyle.body_headline_color
             if(!passedStyles.marginBottom && !passedStyles.margin) {
@@ -68,7 +70,7 @@ const CustomText: FunctionComponent<CustomTextProps> = ({ children, fontType, te
         default:
             passedStyles.color = localDataStyle.body_font_color
             if(!passedStyles.fontSize) {
-                passedStyles.fontSize = textFontSize;
+                passedStyles.fontSize = fontPixel(textFontSize);
             }
         break
     }
