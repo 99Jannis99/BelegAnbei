@@ -226,12 +226,38 @@ function StandardSettings() {
           onPress={() => chooseIdentity(identities, dispatch, index)}
         >
           <View style={styles.collapsedTextView}>
-            <Text style={styles.collapsedText}>
-              {identity.formData.name || "Neue Identität"}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: width - 100,
+              }}
+            >
+              <Text style={styles.collapsedText}>
+                {identity.formData.name || "Neue Identität"}
+              </Text>
+              {identity.choosed && (
+                <>
+                  <Text style={styles.collapsedText}>
+                    {"#" + identity.formData.manno || "Mandantennummer"}
+                  </Text>
+                </>
+              )}
+            </View>
             <Text style={styles.collapsedText}>
               {identity.formData.email || "Email"}
             </Text>
+            {identity.choosed && (
+              <>
+                <Text style={styles.collapsedText}>
+                  {identity.formData.phone || "Telefonnummer"}
+                </Text>
+                <Text style={styles.collapsedText}>
+                  {persons.find((p) => p.person_id === identity.selectedPerson)
+                    ?.person_name || "Sachbearbeiter"}
+                </Text>
+              </>
+            )}
           </View>
           <SimpleLineIcons
             name="pencil"
@@ -538,7 +564,7 @@ function StandardSettings() {
       <ScrollView
         style={{ backgroundColor: localDataStyle.body_background_color }}
       >
-                <TextSnippet call="app-settings-top" />
+        <TextSnippet call="app-settings-top" />
 
         {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
         {Array.isArray(localTextsnippets) && (
@@ -773,7 +799,6 @@ const styles = StyleSheet.create({
   collapsedContainer: {
     padding: 10,
     borderRadius: 15,
-    height: 60,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
