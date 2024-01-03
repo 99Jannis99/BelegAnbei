@@ -215,14 +215,20 @@ function StandardSettings() {
 
   const renderSettingsFields = (identity, index) => {
     const backgroundColor = identity.choosed
-      ? localDataStyle.bottom_toolbar_background_active_color
+      ? localDataStyle.bottom_toolbar_background_color
       : "transparent"; // oder eine andere Standardfarbe
 
     if (index !== activeIndex) {
       return (
         <TouchableOpacity
           key={index}
-          style={[styles.collapsedContainer, { backgroundColor }]}
+          style={[
+            styles.collapsedContainer,
+            {
+              backgroundColor,
+              borderColor: localDataStyle.bottom_toolbar_background_color,
+            },
+          ]}
           onPress={() => chooseIdentity(identities, dispatch, index)}
         >
           <View style={styles.collapsedTextView}>
@@ -233,29 +239,97 @@ function StandardSettings() {
                 width: width - 100,
               }}
             >
-              <Text style={styles.collapsedText}>
+              <Text
+                style={[
+                  styles.collapsedText,
+                  {
+                    color: identity.choosed && localDataStyle.body_font_color,
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  },
+                ]}
+              >
                 {identity.formData.name || "Neue Identität"}
               </Text>
               {identity.choosed && (
                 <>
-                  <Text style={styles.collapsedText}>
+                  <Text
+                    style={[
+                      styles.collapsedText,
+                      {
+                        color:
+                          identity.choosed && localDataStyle.body_font_color,
+                        backgroundColor:
+                          identity.choosed &&
+                          localDataStyle.body_background_color,
+                        borderRadius: 15,
+                        paddingHorizontal: 10,
+                        alignSelf: "center",
+                      },
+                    ]}
+                  >
                     {"#" + identity.formData.manno || "Mandantennummer"}
                   </Text>
                 </>
               )}
             </View>
-            <Text style={styles.collapsedText}>
+            <Text
+              style={[
+                styles.collapsedText,
+                {
+                  color: identity.choosed && localDataStyle.body_font_color,
+                  borderBottomWidth: identity.choosed ? 1 : 0,
+                  marginBottom: identity.choosed ? 5 : 0,
+                  paddingBottom: identity.choosed ? 5 : 0,
+                },
+              ]}
+            >
               {identity.formData.email || "Email"}
             </Text>
             {identity.choosed && (
               <>
-                <Text style={styles.collapsedText}>
+                <Text
+                  style={[
+                    styles.collapsedText,
+                    {
+                      color: identity.choosed && localDataStyle.body_font_color,
+                    },
+                  ]}
+                >
                   {identity.formData.phone || "Telefonnummer"}
                 </Text>
-                <Text style={styles.collapsedText}>
-                  {persons.find((p) => p.person_id === identity.selectedPerson)
-                    ?.person_name || "Sachbearbeiter"}
-                </Text>
+                <View
+                  style={{
+                    marginTop: 5,
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.collapsedText,
+                      {
+                        color:
+                          identity.choosed && localDataStyle.body_font_color,
+                      },
+                    ]}
+                  >
+                    {locations.find(
+                      (p) => p.location_id === identity.selectedLocation
+                    )?.location_name || "Sachbearbeiter"}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.collapsedText,
+                      {
+                        color:
+                          identity.choosed && localDataStyle.body_font_color,
+                      },
+                    ]}
+                  >
+                    {persons.find(
+                      (p) => p.person_id === identity.selectedPerson
+                    )?.person_name || "Sachbearbeiter"}
+                  </Text>
+                </View>
               </>
             )}
           </View>
@@ -564,10 +638,11 @@ function StandardSettings() {
       <ScrollView
         style={{ backgroundColor: localDataStyle.body_background_color }}
       >
-        <TextSnippet call="app-settings-top" />
-
+        <View style={{ flex: 1, padding: 10 }}>
+          <TextSnippet call="app-settings-top" />
+        </View>
         {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
-        {Array.isArray(localTextsnippets) && (
+        {/* {Array.isArray(localTextsnippets) && (
           <View style={{ flex: 1, padding: 10 }}>
             <RenderHtml
               contentWidth={Dimensions.get("window").width}
@@ -575,7 +650,7 @@ function StandardSettings() {
               tagsStyles={tagStyles}
             />
           </View>
-        )}
+        )} */}
 
         {/* <View style={styles.gridContainer}>{createGrid(50, 20)}</View> */}
         {settings && locations && persons && (
@@ -699,7 +774,7 @@ function StandardSettings() {
                         {
                           backgroundColor:
                             settings.default_camera_mode == "standard"
-                              ? localDataStyle.bottom_toolbar_background_active_color
+                              ? localDataStyle.bottom_toolbar_background_color
                               : localDataStyle.bottom_toolbar_icon_color,
                         },
                       ]}
@@ -720,7 +795,7 @@ function StandardSettings() {
                         {
                           backgroundColor:
                             settings.default_camera_mode == "docscan"
-                              ? localDataStyle.bottom_toolbar_background_active_color
+                              ? localDataStyle.bottom_toolbar_background_color
                               : localDataStyle.bottom_toolbar_icon_color,
                         },
                       ]}
@@ -799,6 +874,7 @@ const styles = StyleSheet.create({
   collapsedContainer: {
     padding: 10,
     borderRadius: 15,
+    borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
