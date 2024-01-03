@@ -18,10 +18,10 @@ import com.dimento.beleganbei.DATEVPackage;
 import com.dimento.beleganbei.DATEVDUOPackage;
 import com.dimento.beleganbei.DATEVDMSPackage;
 import com.dimento.beleganbei.SpinnerPackage;
+import com.dimento.beleganbei.PDFViewerPackage;
 //import com.dimento.beleganbei.BelegeStorePackage;
 //import com.dimento.beleganbei.SendMailPackage;
 //import com.dimento.beleganbei.MakeSignaturePackage;
-//import com.dimento.beleganbei.PDFViewerPackage;
 //import com.dimento.beleganbei.PDFPickerPackage;
 //import com.dimento.beleganbei.ImagePickerPackage;
 //import com.dimento.beleganbei.FormularePackage;
@@ -63,11 +63,11 @@ public class MainApplication extends Application implements ReactApplication {
                     // Spinner
                     packages.add(new SpinnerPackage());
 
+                    // PDFViewer
+                    packages.add(new PDFViewerPackage());
+
                     // MakeSignature
                     //packages.add(new MakeSignaturePackage());
-
-                    // PDFViewer
-                    //packages.add(new PDFViewerPackage());
 
                     // PDFPicker
                     //packages.add(new PDFPickerPackage());
