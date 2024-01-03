@@ -18,7 +18,6 @@ import {
   toggleActiveIndex,
   collapseAllIdentities,
 } from "../../../Functions/StandardSettings/IdentityManagement";
-
 import TextSnippet from "../../shared/TextSnippets";
 
 function StandardSettings() {

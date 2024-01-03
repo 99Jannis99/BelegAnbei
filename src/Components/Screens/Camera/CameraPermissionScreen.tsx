@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import RenderHtml from "react-native-render-html";
 import { useSelector } from "react-redux";
+import TextSnippet from "../../shared/TextSnippets";
 
 const CameraPermissionScreen = ({ navigation }) => {
   const { dataMorePages } = useSelector((state) => state.dataReducer);
@@ -70,7 +71,8 @@ const CameraPermissionScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-        {renderSections()}
+        {/* {renderSections()} */}
+        <TextSnippet call="privacy-overlay" />
         <Button title="Annehmen" onPress={handleAccept} />
       </View>
     </ScrollView>
