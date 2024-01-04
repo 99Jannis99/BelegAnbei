@@ -19,6 +19,7 @@ import {
   collapseAllIdentities,
 } from "../../../Functions/StandardSettings/IdentityManagement";
 import TextSnippet from "../../shared/TextSnippets";
+import Toast from "react-native-toast-message";
 
 function StandardSettings() {
   // Zustandsvariablen für ausgewählte Werte
@@ -81,11 +82,35 @@ function StandardSettings() {
           .filter(
             (loc) => loc.location_has_people || loc.location_has_only_people
           )
-          .map((loc) => ({
-            label: loc.location_display_name,
-            value: loc.location_id,
-          }))
+          .map((loc) => {
+            // Direkte Überprüfung, ob eine Person für diesen Standort existiert
+            const locationHasPerson = newPersons.some(
+              (person) => person.location_id === loc.location_id
+            );
+
+            // Auslösen eines console.log, wenn keine Person gefunden wurde
+            if (!locationHasPerson) {
+              console.log(
+                `Keine Person gefunden für Standort: ${loc.location_display_name}...${loc.location_id} -> ${selectedLocation}`
+              );
+              loc.location_id == selectedLocation
+                ? Toast.show({
+                    type: "error",
+                    text1: "Meldung",
+                    text2: `Keine Person gefunden für Standort: ${loc.location_display_name} 👋`,
+                    topOffset: 10,
+                  })
+                : null;
+            }
+
+            return {
+              label: loc.location_display_name,
+              value: loc.location_id,
+            };
+          })
       : [];
+
+    // console.log("newPersons: ", newPersons, "\n\nnewLocations: ", newLocations);
     setLocationData(newLocationData);
 
     const newPersonData = Array.isArray(newPersons)
@@ -634,197 +659,188 @@ function StandardSettings() {
 
   return (
     localDataStyle && (
-      <ScrollView
-        style={{ backgroundColor: localDataStyle.body_background_color }}
-      >
-        <View style={{ flex: 1, padding: 10 }}>
-          <TextSnippet call="app-settings-top" />
-        </View>
-        {/* Überprüfen, ob die erforderlichen Daten geladen sind, bevor die Komponenten gerendert werden */}
-        {/* {Array.isArray(localTextsnippets) && (
+      <>
+        <ScrollView
+          style={{ backgroundColor: localDataStyle.body_background_color }}
+        >
           <View style={{ flex: 1, padding: 10 }}>
-            <RenderHtml
-              contentWidth={Dimensions.get("window").width}
-              source={htmlSource}
-              tagsStyles={tagStyles}
-            />
+            <TextSnippet call="app-settings-top" />
           </View>
-        )} */}
-
-        {/* <View style={styles.gridContainer}>{createGrid(50, 20)}</View> */}
-        {settings && locations && persons && (
-          <>
-            {identities.map((identity, index) => (
-              <View key={index} style={styles.container}>
-                {renderSettingsFields(identity, index)}
-                {multiple_locations.enabled &&
-                  renderDropdown(
-                    "location",
-                    locationData,
-                    identity.selectedLocation,
-                    (location) =>
-                      setSelectedLocationForIdentity(index, location),
-                    styles.dropdownFirst,
-                    index
-                  )}
-
-                {(!multiple_locations.enabled || identity.selectedLocation) &&
-                  renderDropdown(
-                    "person",
-                    personData,
-                    identity.selectedPerson,
-                    (person) => setSelectedPersonForIdentity(index, person),
-                    styles.dropdown,
-                    index
-                  )}
-              </View>
-            ))}
+          {settings && locations && persons && (
             <>
-              {activeIndex !== null && (
-                <>
-                  <Button
-                    buttonStyle={{
-                      backgroundColor:
-                        localDataStyle.bottom_toolbar_background_color,
-                      borderRadius: 10,
-                    }}
-                    containerStyle={{
-                      margin: 10,
-                    }}
-                    titleStyle={{
-                      color: localDataStyle.bottom_toolbar_icon_color,
-                    }}
-                    disabled={!areAllFieldsValid()}
-                    title="Sichern (einklappen)"
-                    onPress={() => {
-                      collapseAllIdentities(
-                        identities,
-                        setActiveIndex,
-                        dispatch,
-                        true
-                      );
-                    }}
-                  />
-                  {identities.length > 1 && (
+              {identities.map((identity, index) => (
+                <View key={index} style={styles.container}>
+                  {renderSettingsFields(identity, index)}
+                  {multiple_locations.enabled &&
+                    renderDropdown(
+                      "location",
+                      locationData,
+                      identity.selectedLocation,
+                      (location) =>
+                        setSelectedLocationForIdentity(index, location),
+                      styles.dropdownFirst,
+                      index
+                    )}
+
+                  {(!multiple_locations.enabled || identity.selectedLocation) &&
+                    renderDropdown(
+                      "person",
+                      personData,
+                      identity.selectedPerson,
+                      (person) => setSelectedPersonForIdentity(index, person),
+                      styles.dropdown,
+                      index
+                    )}
+                </View>
+              ))}
+              <>
+                {activeIndex !== null && (
+                  <>
                     <Button
                       buttonStyle={{
-                        backgroundColor: "red", // oder eine andere auffällige Farbe
+                        backgroundColor:
+                          localDataStyle.bottom_toolbar_background_color,
                         borderRadius: 10,
                       }}
                       containerStyle={{
                         margin: 10,
                       }}
                       titleStyle={{
-                        color: "white", // Farbe für den Text im Button
+                        color: localDataStyle.bottom_toolbar_icon_color,
                       }}
-                      title="Abbrechen (löschen)"
-                      onPress={deleteActiveIdentity}
+                      disabled={!areAllFieldsValid()}
+                      title="Sichern (einklappen)"
+                      onPress={() => {
+                        collapseAllIdentities(
+                          identities,
+                          setActiveIndex,
+                          dispatch,
+                          true
+                        );
+                      }}
                     />
-                  )}
-                </>
-              )}
-              {multiple_persons.enabled ? (
-                <Button
-                  buttonStyle={{
-                    backgroundColor:
-                      localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
-                    borderRadius: 10, // Eckenradius des Buttons
-                  }}
-                  containerStyle={{
-                    margin: 10, // Abstand um den Button herum
-                  }}
-                  titleStyle={{
-                    color: localDataStyle.bottom_toolbar_icon_color,
-                  }}
-                  title="Weitere Identität hinzufügen"
-                  onPress={() =>
-                    addIdentity(identities, setActiveIndex, setIdentities)
-                  }
-                />
-              ) : null}
-              <View style={styles.cameraTypeContainer}>
-                <SimpleLineIcons
-                  style={[
-                    styles.cameraTypeIcon,
-                    { backgroundColor: localDataStyle.body_background_color },
-                  ]}
-                  name="camera"
-                  size={20}
-                  color="black"
-                />
-                <View
-                  style={[
-                    styles.cameraTypeContent,
-                    { backgroundColor: localDataStyle.body_background_color },
-                  ]}
-                >
-                  <Text
+                    {identities.length > 1 && (
+                      <Button
+                        buttonStyle={{
+                          backgroundColor: "red", // oder eine andere auffällige Farbe
+                          borderRadius: 10,
+                        }}
+                        containerStyle={{
+                          margin: 10,
+                        }}
+                        titleStyle={{
+                          color: "white", // Farbe für den Text im Button
+                        }}
+                        title="Abbrechen (löschen)"
+                        onPress={deleteActiveIdentity}
+                      />
+                    )}
+                  </>
+                )}
+                {multiple_persons.enabled ? (
+                  <Button
+                    buttonStyle={{
+                      backgroundColor:
+                        localDataStyle.bottom_toolbar_background_color, // Hintergrundfarbe des Buttons
+                      borderRadius: 10, // Eckenradius des Buttons
+                    }}
+                    containerStyle={{
+                      margin: 10, // Abstand um den Button herum
+                    }}
+                    titleStyle={{
+                      color: localDataStyle.bottom_toolbar_icon_color,
+                    }}
+                    title="Weitere Identität hinzufügen"
+                    onPress={() =>
+                      addIdentity(identities, setActiveIndex, setIdentities)
+                    }
+                  />
+                ) : null}
+                <View style={styles.cameraTypeContainer}>
+                  <SimpleLineIcons
                     style={[
-                      styles.cameraTypeHeader,
-                      { color: localDataStyle.body_font_color },
+                      styles.cameraTypeIcon,
+                      { backgroundColor: localDataStyle.body_background_color },
+                    ]}
+                    name="camera"
+                    size={20}
+                    color="black"
+                  />
+                  <View
+                    style={[
+                      styles.cameraTypeContent,
+                      { backgroundColor: localDataStyle.body_background_color },
                     ]}
                   >
-                    Kamera Typ
-                  </Text>
-                  <View style={styles.cameraTypeButtonContainer}>
-                    <TouchableOpacity
+                    <Text
                       style={[
-                        styles.cameraTypeButton,
-                        {
-                          backgroundColor:
-                            settings.default_camera_mode == "standard"
-                              ? localDataStyle.bottom_toolbar_background_color
-                              : localDataStyle.bottom_toolbar_icon_color,
-                        },
+                        styles.cameraTypeHeader,
+                        { color: localDataStyle.body_font_color },
                       ]}
-                      onPress={handleStandardCameraSelect}
                     >
-                      <Text
+                      Kamera Typ
+                    </Text>
+                    <View style={styles.cameraTypeButtonContainer}>
+                      <TouchableOpacity
                         style={[
-                          styles.cameraTypeButtonText,
-                          { color: localDataStyle.body_font_color },
+                          styles.cameraTypeButton,
+                          {
+                            backgroundColor:
+                              settings.default_camera_mode == "standard"
+                                ? localDataStyle.bottom_toolbar_background_color
+                                : localDataStyle.bottom_toolbar_icon_color,
+                          },
                         ]}
+                        onPress={handleStandardCameraSelect}
                       >
-                        Standard Kamera
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                        <Text
+                          style={[
+                            styles.cameraTypeButtonText,
+                            { color: localDataStyle.body_font_color },
+                          ]}
+                        >
+                          Standard Kamera
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.cameraTypeButton,
+                          {
+                            backgroundColor:
+                              settings.default_camera_mode == "docscan"
+                                ? localDataStyle.bottom_toolbar_background_color
+                                : localDataStyle.bottom_toolbar_icon_color,
+                          },
+                        ]}
+                        onPress={handleDocscanCameraSelect}
+                      >
+                        <Text
+                          style={[
+                            styles.cameraTypeButtonText,
+                            { color: localDataStyle.body_font_color },
+                          ]}
+                        >
+                          Beleg Kamera
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text
                       style={[
-                        styles.cameraTypeButton,
-                        {
-                          backgroundColor:
-                            settings.default_camera_mode == "docscan"
-                              ? localDataStyle.bottom_toolbar_background_color
-                              : localDataStyle.bottom_toolbar_icon_color,
-                        },
+                        styles.cameraTypeText,
+                        { color: localDataStyle.body_font_color },
                       ]}
-                      onPress={handleDocscanCameraSelect}
                     >
-                      <Text
-                        style={[
-                          styles.cameraTypeButtonText,
-                          { color: localDataStyle.body_font_color },
-                        ]}
-                      >
-                        Beleg Kamera
-                      </Text>
-                    </TouchableOpacity>
+                      Die "Belege Kamera" unterstützt Sie beim Fotografieren
+                      Ihrer Belege. Mehr Informationen erhalten Sie unter Hilfe
+                    </Text>
                   </View>
-                  <Text
-                    style={[
-                      styles.cameraTypeText,
-                      { color: localDataStyle.body_font_color },
-                    ]}
-                  >
-                    Die "Belege Kamera" unterstützt Sie beim Fotografieren Ihrer
-                    Belege. Mehr Informationen erhalten Sie unter Hilfe
-                  </Text>
                 </View>
-              </View>
+              </>
             </>
-          </>
-        )}
-      </ScrollView>
+          )}
+        </ScrollView>
+        <Toast />
+      </>
     )
   );
 }
