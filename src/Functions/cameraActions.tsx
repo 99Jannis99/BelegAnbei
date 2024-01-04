@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Camera } from "react-native-camera-kit";
-import DocumentScanner from "react-native-document-scanner-plugin";
+//import DocumentScanner from "react-native-document-scanner-plugin";
 import RNFileSystem from "react-native-fs";
 import { useDispatch, useSelector } from "react-redux";
 import uuid from "react-native-uuid"; // Für die Generierung von zufälligen IDs

@@ -30,7 +30,6 @@
         "react-native-camera-kit": "^13.0.0",
         "react-native-contacts": "^7.0.8",
         "react-native-device-info": "^10.12.0",
-        "react-native-document-scanner-plugin": "^0.9.1",
         "react-native-eject": "^0.2.0",
         "react-native-element-dropdown": "^2.10.1",
         "react-native-fs": "^2.20.0",

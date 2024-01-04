@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableHighlight } from "react-native";
+import { View, StyleSheet, TouchableHighlight, SafeAreaView } from "react-native";
 import { FontAwesome5 } from "../../helpers/icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSelector } from "react-redux";
@@ -91,7 +91,7 @@ const BottomTaps = () => {
   };
 
   return (
-    <View style={styles.Container}>
+    <SafeAreaView style={styles.Container}>
       <Header />
 
       <Tab.Navigator
@@ -108,7 +108,7 @@ const BottomTaps = () => {
         <Tab.Screen name="Camera" component={CameraStackNavigation} />
         <Tab.Screen name="Documents" component={DocumentsTopTaps} />
       </Tab.Navigator>
-    </View>
+    </SafeAreaView>
   );
 };
 
