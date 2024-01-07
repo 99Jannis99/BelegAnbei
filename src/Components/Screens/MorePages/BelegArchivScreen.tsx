@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -9,20 +9,38 @@ import TextSnippet from "../../shared/TextSnippets";
 
 function BelegArchivScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
-    console.log('route', route.params)
+
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
             <Header></Header>
-            <ScrollView style={styles.content}>
+            <ScrollView style={[styles.content, { backgroundColor: background }]}>
                 <TextSnippet call="more-archive-top" />
-               
+
                 <CustomText fontType="bold" style={{textAlign: "center", fontSize: 96}}>ToDo</CustomText>
-                
+
                 {/* Bottom Spacer */}
                 <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 

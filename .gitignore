@@ -99,3 +99,6 @@ android/app/src/main/assets/fonts/Poppins-Light.ttf
 android/app/src/main/assets/fonts/Poppins-Medium.ttf
 android/app/src/main/assets/fonts/Poppins-Regular.ttf
 Gemfile.lock
+ios/Podfile.lock
+*.lock
+ios/Podfile.lock

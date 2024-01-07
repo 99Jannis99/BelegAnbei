@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -9,27 +9,42 @@ import TextSnippet from "../../shared/TextSnippets";
 
 function TEMPLATEScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
-    console.log('route', route.params)
+
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
-            <Header></Header>
-            <ScrollView>
-                
-                <View style={styles.contentView}>
-                    <CustomText textType="headline" style={{}}>HEADLINE</CustomText>
-                    <CustomText textType="subheadline" style={{}}>SUBHEADLINE</CustomText>
-                    <CustomText style={{}}>REGULAR</CustomText>
-                    <CustomText fontType="bold" style={{}}>BOLD</CustomText>
-                    <CustomText fontType="light" style={{}}>LIGHT</CustomText>
-                </View>
-                
-                {/* <Text>{JSON.stringify(downloads, null, 2)}</Text> */}
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.content, { backgroundColor: background }]}>
+              <CustomText textType="headline" style={{}}>HEADLINE</CustomText>
+              <CustomText textType="subheadline" style={{}}>SUBHEADLINE</CustomText>
+              <CustomText style={{}}>REGULAR</CustomText>
+              <CustomText fontType="bold" style={{}}>BOLD</CustomText>
+              <CustomText fontType="light" style={{}}>LIGHT</CustomText>
 
-                {/* Bottom Spacer */}
-                <Text> </Text>
+              {/* <Text>{JSON.stringify(downloads, null, 2)}</Text> */}
+
+              {/* Bottom Spacer */}
+              <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 
@@ -40,6 +55,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     content: {
+        padding: 12
     },
     contentView: {
         padding: 12

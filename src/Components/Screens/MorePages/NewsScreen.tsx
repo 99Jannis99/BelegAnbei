@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { ActivityIndicator, Text, View, SafeAreaView, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { ListItem, Avatar, Icon } from "@rneui/themed";
@@ -16,11 +16,23 @@ import CustomHTML from "../../shared/CustomHTML";
 const {width, height} = Dimensions.get('window');
 
 function NewsScreen({route}) {
+    const { background } = useSelector((state) => state.colorReducer);
+
+    /* iOS SafeArea */
+      const { dataStyle } = useSelector((state) => state.dataReducer);
+      // top
+      //b already in code
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
+
     const width = Dimensions.get('window').width;
 
     const mapRef = useRef(null);
 
-    const { background } = useSelector((state) => state.colorReducer);
     const { dataSettings, dataNews } = useSelector((state) => state.dataReducer);
 
     const [news, setNews] = useState([]);
@@ -40,7 +52,7 @@ function NewsScreen({route}) {
         }, 100)
     }, [dataSettings]);
 
-   
+
     const [selectedDetailNews, setSelectedDetailNews] = useState(0);
     const newsModal = (newsID: React.SetStateAction<number>) => {
         setSelectedDetailNews(newsID)
@@ -62,11 +74,15 @@ function NewsScreen({route}) {
             }
         }
     }, [route]);
-    
+
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
-            <Header></Header>
-            <ScrollView style={styles.content}>
+      <Fragment>
+        {settings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: settings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.content, { backgroundColor: background }]}>
                 <TextSnippet call="news-index" />
                 { news.length == 0 && <ActivityIndicator size={'large'} /> }
 
@@ -81,7 +97,7 @@ function NewsScreen({route}) {
                                     <CustomText fontType="regular" style={{marginBottom: 12}}>{newsItem.news_excerpt}</CustomText>
                                 </View>
                             </TouchableOpacity>
-                            <Modal 
+                            <Modal
                                 isVisible={newsItem.news_id === selectedDetailNews}
                                 onBackButtonPress={toggleModal}
                                 onBackdropPress={toggleModal}
@@ -90,7 +106,7 @@ function NewsScreen({route}) {
                                     <View style={ styles.detailModalView }>
                                         <ScrollView style={ styles.detailModalScrollView }>
                                             <CustomText textType="headline" style={{ marginTop: 24 }}>{newsItem.news_headline}</CustomText>
-                                            {newsItem.news_subheadline && 
+                                            {newsItem.news_subheadline &&
                                                 <CustomText textType="subheadline" style={{}}>{newsItem.news_subheadline}</CustomText>
                                             }
                                             <CustomHTML htmlContent={ newsItem.news_content }></CustomHTML>
@@ -99,8 +115,8 @@ function NewsScreen({route}) {
 
                                         {settings.colors &&
                                         <View style={[styles.detailModalClose, {backgroundColor: settings.colors.background_hex}] }>
-                                            <Image 
-                                            onPress={toggleModal} 
+                                            <Image
+                                            onPress={toggleModal}
                                             style={ {width:36, height: 36} }
                                             source={require("../../../../assets/images/icon_cancel.png")}
                                             />
@@ -113,7 +129,8 @@ function NewsScreen({route}) {
                 }
                 </View>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 
@@ -127,7 +144,8 @@ const styles = StyleSheet.create({
         padding: 12
     },
     detailModal: {
-      position: "relative"
+      position: "relative",
+      marginTop: 50
     },
     detailModalClose: {
       position: "absolute",

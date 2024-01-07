@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Text, SafeAreaView, StyleSheet, View, ScrollView, Image, Linking, Platform, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { Icon } from "@rneui/themed";
@@ -23,7 +23,7 @@ async function getDeviceInfos() {
       systemName: getSystemName()
     };
   }
-  
+
   /* App Version */
   async function getVersionInformation() {
     return {
@@ -32,28 +32,44 @@ async function getDeviceInfos() {
       readable: getReadableVersion()
     };
   }
-  
+
   async function getBundle() {
     return getBundleId();
   }
 
 function AppInfoScreen() {
     const { background } = useSelector((state) => state.colorReducer);
+
+    /* iOS SafeArea */
+      const { dataStyle } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      // handled in useeffect
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
+
     const { dataSettings, dataTextsnippets } = useSelector((state) => state.dataReducer);
-  
+
+
     const [deviceData, setDeviceData] = useState({});
     const [versionData, setVersionData] = useState({});
     const [bundle, setBundle] = useState("");
-    
+
     const [sendMethods, setSendMethods] = useState([]);
-  
+
     useEffect(() => {
         const useSettings = JSON.parse(dataSettings);
         console.log('useSettings', typeof useSettings.sendmethods)
-      
+
+        setLocalSettings(useSettings)
+
         const useSnippets = JSON.parse(dataTextsnippets);
         console.log('useSnippets', typeof useSnippets)
-      
+
         let availableMethods = [];
         for(const methodKey in useSettings.sendmethods) {
           if(useSettings.sendmethods[methodKey].enabled) {
@@ -62,15 +78,15 @@ function AppInfoScreen() {
             textName = (methodKey == 'einkommensteuer' ? 'einkommenssteuer' : textName);
             textName = (methodKey == 'unternehmenonline' ? 'dcal' : textName);
             textName = (methodKey == 'meinesteuern' ? 'mytax' : textName);
-      
+
             let headlineSnippet = useSnippets.filter((snippet) => {
               return snippet.callname === `modul-${textName}-name`
             })[0];
-      
+
             let textSnippet = useSnippets.filter((snippet) => {
               return snippet.callname === `modul-${textName}-text`
             })[0];
-      
+
             availableMethods.push({
               'method'  : methodKey,
               'textName': textName,
@@ -83,18 +99,18 @@ function AppInfoScreen() {
           }
         }
     }, [dataSettings, dataTextsnippets]);
-  
+
     useEffect(() => {
       getDeviceInfos().then((result) => {
         console.log('getDeviceInfos', result)
         setDeviceData(result)
       })
-      
+
       getVersionInformation().then((result) => {
         console.log('getVersionInformation', result)
         setVersionData(result)
       })
-  
+
       getBundle().then((result) => {
         console.log('getBundle', result)
         setBundle(result)
@@ -106,43 +122,47 @@ function AppInfoScreen() {
             Linking.openURL('app-settings:');
         } else {
             Linking.openSettings();
-        }  
+        }
     }
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
             <Header></Header>
-            <ScrollView style={styles.content}>
+            <ScrollView style={[styles.content, { backgroundColor: background }]}>
 
                 <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
-                    <Image 
+                    <Image
                     style={{ width: 100, height: 100, borderRadius:18 }}
                     source={require("../../../../assets/images/AppIcon.png")}
                     />
-                    
+
                     <View style={{ flex: 1, marginLeft:12 }}>
                         <CustomText fontType="bold" style={{ fontSize: 22 }}>{deviceData.name}</CustomText>
                         <CustomText fontType="light" style={{ fontSize: 12 }}>{bundle}</CustomText>
-                    </View>       
-                </View>       
-               
+                    </View>
+                </View>
+
                 <CustomText textType="subheadline" style={{ marginTop: 12 }}>App Version</CustomText>
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>Installierte Version</CustomText>
+                    <CustomText fontType="medium" style={{}}>Installierte Version</CustomText>
                     <CustomText fontType="light" style={{}}>{versionData.readable}</CustomText>
-                </View>  
+                </View>
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>Beleg Anbei für {deviceData.systemName}</CustomText>
+                    <CustomText fontType="medium" style={{}}>Beleg Anbei für {deviceData.systemName}</CustomText>
                     <CustomText fontType="light" style={{}}>{appVersion}</CustomText>
-                </View>      
+                </View>
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>Code Basis</CustomText>
+                    <CustomText fontType="medium" style={{}}>Code Basis</CustomText>
                     <CustomText fontType="light" style={{}}>{codeVersion}</CustomText>
-                </View>      
+                </View>
                 <View style={ styles.infoRow }>
-                    <CustomText fontType="bold" style={{}}>UI</CustomText>
+                    <CustomText fontType="medium" style={{}}>UI</CustomText>
                     <CustomText fontType="light" style={{}}>{uiVersion}</CustomText>
-                </View>      
+                </View>
 
                 <CustomText textType="subheadline" style={{ marginTop: 12 }}>Versand Module</CustomText>
                 {
@@ -150,19 +170,19 @@ function AppInfoScreen() {
                         <View key={i} style={{}}>
                             <CustomText fontType="bold" style={{marginBottom: 4}}>{method.name}</CustomText>
                             <CustomText fontType="light" style={{marginBottom: 8}}>{method.desc}</CustomText>
-                        </View>  
+                        </View>
                     ))
                 }
 
                 <CustomText textType="subheadline" style={{ marginTop: 12 }}>Berechtigungen</CustomText>
                 <CustomText fontType="bold" style={{marginBottom: 4}}>Kamera</CustomText>
-                <CustomText style={{marginBottom: 8}}>Wird benötigt, um Ihre Belege und Dokumente zu fotografieren. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen.</CustomText>
-                
+                <CustomText fontType="light" style={{marginBottom: 8}}>Wird benötigt, um Ihre Belege und Dokumente zu fotografieren. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen.</CustomText>
+
                 <CustomText fontType="bold" style={{marginBottom: 4}}>Speicher</CustomText>
-                <CustomText style={{marginBottom: 8}}>Wird benötigt, um Ihre Belege und Dokumente zu sichern. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen, z.B. einen neuen Beleg fotografieren.</CustomText>
-                
+                <CustomText fontType="light" style={{marginBottom: 8}}>Wird benötigt, um Ihre Belege und Dokumente zu sichern. Der Zugriff erfolgt ausschließlich wenn Sie diesen aktiv auslösen, z.B. einen neuen Beleg fotografieren.</CustomText>
+
                 <CustomText fontType="bold" style={{marginBottom: 4}}>Kontakte</CustomText>
-                <CustomText style={{marginBottom: 8}}>Diese Berechtigung wird nur dann aungefordert, wenn Sie einen Ansprechpartner oder Standort zu Ihren Kontakten hinzufügen möchten. Diese Berechtigung ist nicht notwendig für die volle Nutzung der App.</CustomText>
+                <CustomText fontType="light" style={{marginBottom: 8}}>Diese Berechtigung wird nur dann aungefordert, wenn Sie einen Ansprechpartner oder Standort zu Ihren Kontakten hinzufügen möchten. Diese Berechtigung ist nicht notwendig für die volle Nutzung der App.</CustomText>
 
                 <TouchableOpacity activeOpacity={1} style={{marginTop: 8, justifyContent: "center", flexDirection: "row", alignItems: "center"}} onPress={toAppSettings}>
                     <Icon
@@ -181,23 +201,24 @@ function AppInfoScreen() {
                 <View style={ styles.infoRow }>
                     <CustomText fontType="bold" style={{marginBottom: 4}}>Hersteller</CustomText>
                     <CustomText fontType="light" style={{textTransform: 'capitalize', marginBottom: 4}}>{deviceData.brand}</CustomText>
-                </View>    
+                </View>
                 <View style={ styles.infoRow }>
                     <CustomText fontType="bold" style={{marginBottom: 4}}>Modell</CustomText>
                     <CustomText fontType="light" style={{marginBottom: 4}}>{deviceData.model}</CustomText>
-                </View>    
+                </View>
                 <View style={ styles.infoRow }>
                     <CustomText fontType="bold" style={{marginBottom: 4}}>Platform</CustomText>
                     <CustomText fontType="light" style={{marginBottom: 4}}>{deviceData.systemName}</CustomText>
-                </View>    
+                </View>
                 <View style={ styles.infoRow }>
                     <CustomText fontType="bold" style={{marginBottom: 4}}>{deviceData.systemName} Version</CustomText>
                     <CustomText fontType="light" style={{marginBottom: 4}}>{deviceData.systemVersion}</CustomText>
-                </View>      
+                </View>
                 <Text> </Text>
                 <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 
@@ -211,8 +232,8 @@ const styles = StyleSheet.create({
         padding: 12
     },
     infoRow: {
-        justifyContent: "space-between", 
-        alignItems: "center", 
+        justifyContent: "space-between",
+        alignItems: "center",
         flexDirection: "row"
     },
     button: {

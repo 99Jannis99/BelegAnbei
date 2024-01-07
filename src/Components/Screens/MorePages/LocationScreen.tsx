@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { Text, TouchableOpacity, View, SafeAreaView, StyleSheet, ScrollView, Dimensions, Linking, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 import { Icon } from "@rneui/themed";
@@ -15,13 +15,27 @@ import { widthPixel, heightPixel, fontPixel, pixelSizeVertical, pixelSizeHorizon
 
 function LocationScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
+
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
+
     const width = Dimensions.get('window').width;
 
     const mapRef = useRef(null);
 
     const { dataLocations } = useSelector((state) => state.dataReducer);
 
-    const [settings, setSettings] = useState({});
     const [location, setLocation] = useState({});
     const [centerCoords, setCenterCoords] = useState({});
 
@@ -32,7 +46,7 @@ function LocationScreen({ route }) {
                 return location.location_callname == route.params.params.callname
             })[0];
             console.log('useLocation', useLocation)
-        
+
             setLocation(useLocation);
         }, 500)
     }, [dataLocations]);
@@ -49,20 +63,24 @@ function LocationScreen({ route }) {
     }, [location]);
 
     return (
-        <SafeAreaView style={[styles.moreSafeView, { backgroundColor: background }]}>
-            <Header></Header>
-        
-            <View style={styles.moreContent}>
-                <TextSnippet call="more-location-top" />
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.safeView, { backgroundColor: background }]}>
+            <View style={styles.content}>
+              <TextSnippet call="more-location-top" />
             </View>
             { !location.location_display_name && <ActivityIndicator size={'large'} /> }
 
-            { location.location_display_name && 
-                <View style={ styles.detailView }>
+            { location.location_display_name &&
+                <View style={ styles.content }>
                     <CustomText textType="subheadline" style={{textAlign: "center" }}>{location.location_display_name}</CustomText>
                 </View>
             }
-            { location.location_lat && location.location_lon && 
+            { location.location_lat && location.location_lon &&
                 <MapView style={{width: width, height: (width*0.75)}}
                     ref={mapRef}
                     initialRegion={{
@@ -83,10 +101,10 @@ function LocationScreen({ route }) {
                     />
                 </MapView>
             }
-            
+
             { location.location_id &&
             <ScrollView style={ styles.detailModalScrollView }>
-                
+
                 <View style={ styles.detailModalViewCol }>
                     <CustomText style={[styles.detailModalViewColText, {fontSize: fontPixel(textFontSize)}]}>
                         {location.location_address}
@@ -95,7 +113,7 @@ function LocationScreen({ route }) {
                     </CustomText>
                 </View>
 
-                {location.location_email && 
+                {location.location_email &&
                 <View style={ styles.detailModalViewRow }>
                     <Icon
                         name="envelope"
@@ -104,14 +122,14 @@ function LocationScreen({ route }) {
                         allowFontScaling
                         type="font-awesome"
                     />
-                                                
+
                     <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`mailto:${location.location_email}`)}>
                         <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_email}</CustomText>
                     </TouchableOpacity>
                 </View>
                 }
 
-                {location.location_web && 
+                {location.location_web &&
                 <View style={ styles.detailModalViewRow }>
                     <Icon
                         name="link"
@@ -120,14 +138,14 @@ function LocationScreen({ route }) {
                         allowFontScaling
                         type="font-awesome"
                     />
-                                                
+
                     <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`https://${location.location_web}`)}>
                         <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_web}</CustomText>
                     </TouchableOpacity>
                 </View>
                 }
 
-                {location.location_phone.dial && 
+                {location.location_phone.dial &&
                     <View style={ styles.detailModalViewRow }>
                         <Icon
                             name="phone"
@@ -136,13 +154,13 @@ function LocationScreen({ route }) {
                             allowFontScaling
                             type="font-awesome"
                         />
-                                                
+
                         <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`tel:${location.location_phone.dial}`)}>
                             <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_phone.display}</CustomText>
                         </TouchableOpacity>
                     </View>
                 }
-                {location.location_fax.dial && 
+                {location.location_fax.dial &&
                     <View style={ styles.detailModalViewRow }>
                         <Icon
                             name="fax"
@@ -154,7 +172,7 @@ function LocationScreen({ route }) {
                         <CustomText style={[styles.detailModalViewRowText, {fontSize: fontPixel(textFontSize)}]}>{location.location_fax.display}</CustomText>
                     </View>
                 }
-                {location.location_cell.dial && 
+                {location.location_cell.dial &&
                     <View style={ styles.detailModalViewRow }>
                         <Icon
                             name="mobile"
@@ -163,7 +181,7 @@ function LocationScreen({ route }) {
                             allowFontScaling
                             type="font-awesome"
                         />
-                                                
+
                         <TouchableOpacity activeOpacity={1} style={ styles.detailModalViewRowText } onPress={() => Linking.openURL(`tel:${location.location_cell.dial}`)}>
                             <CustomText style={{fontSize: fontPixel(textFontSize)}}>{location.location_cell.display}</CustomText>
                         </TouchableOpacity>
@@ -173,28 +191,26 @@ function LocationScreen({ route }) {
 
             </ScrollView>
             }
+
+          </ScrollView>
         </SafeAreaView>
+      </Fragment>
     );
 }
 
 
 
 const styles = StyleSheet.create({
-    moreSafeView: {
-        flex: 1,
-        backgroundColor: "#FFFFFF"
+    safeView: {
+      flex: 1
     },
-    moreContent: {
-        marginTop: 12,
-        marginBottom: 12,
-        marginLeft: 12,
-        marginRight: 12,
-        textAlign: "center"
+    content: {
+        padding: 12,
     },
     detailModal: {
       position: "relative"
     },
-    
+
     detailModalView: {
         flex: 1,
         backgroundColor: "#FFFFFF",
@@ -219,7 +235,7 @@ const styles = StyleSheet.create({
         marginBottom: 12
     },
     detailModalViewRowIcon: {
-        
+
     },
     detailModalViewRowText: {
         flexGrow: 1,

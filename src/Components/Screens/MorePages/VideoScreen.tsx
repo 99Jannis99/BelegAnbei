@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 import { Vimeo } from 'react-native-vimeo-iframe'
@@ -11,7 +11,20 @@ import TextSnippet from "../../shared/TextSnippets";
 
 function VideoScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
-    console.log('videoID', route.params.params.id)
+
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
 
     const { dataMoreVideos } = useSelector((state) => state.dataReducer);
 
@@ -24,7 +37,7 @@ function VideoScreen({ route }) {
             return video.video_id == route.params.params.id
             })[0];
             console.log('useVideo', useVideo)
-        
+
             setVideo(useVideo);
         }, 500)
     }, [dataMoreVideos]);
@@ -32,7 +45,7 @@ function VideoScreen({ route }) {
     const sourceName = (source: string) => {
         return source.toUpperCase();
     }
-    
+
     const videmoVideoCallbacks = {
         play: (data: any) => console.warn('play: ', data),
         pause: (data: any) => console.warn('pause: ', data),
@@ -42,12 +55,16 @@ function VideoScreen({ route }) {
     }
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
             <Header></Header>
-            <ScrollView>
+            <ScrollView style={[styles.safeView, { backgroundColor: background }]}>
                 { !video.video_id && <ActivityIndicator size={'large'} /> }
-                
-                {video.video_id && 
+
+                {video.video_id &&
                     <View>
                         <View style={styles.contentView}>
                             <CustomText textType="headline" style={{}}>{video.headline}</CustomText>
@@ -55,19 +72,19 @@ function VideoScreen({ route }) {
                                 <CustomText fontType="light" style={{ fontSize:14 }}>Quelle: {sourceName(video.video.source)}</CustomText>
                                 <CustomText fontType="light" style={{ fontSize:14 }}>Dauer: {video.video.data.duration} min.</CustomText>
                             </View>
-                            {video.description && 
+                            {video.description &&
                                 <CustomText fontType="light" style={{}}>{video.description}</CustomText>
                             }
                         </View>
-                        {video.video.source == 'vimeo' && 
+                        {video.video.source == 'vimeo' &&
                             <View style={styles.contentView}>
-                                <Vimeo 
-                                style={{ width:"100%", aspectRatio: '16/9'}} 
-                                videoId={video.video.data.id} 
+                                <Vimeo
+                                style={{ width:"100%", aspectRatio: '16/9'}}
+                                videoId={video.video.data.id}
                                 handlers={videmoVideoCallbacks} />
                             </View>
                         }
-                        {video.video.source == 'youtube' && 
+                        {video.video.source == 'youtube' &&
                             <View style={styles.contentView}>
                                 <YoutubePlayer
                                     height={300}
@@ -77,11 +94,12 @@ function VideoScreen({ route }) {
                         }
                     </View>
                 }
-                
+
                 {/* Bottom Spacer */}
                 <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 

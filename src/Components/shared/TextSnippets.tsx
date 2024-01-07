@@ -11,25 +11,31 @@ const TextSnippet = (props) => {
   const { width } = useWindowDimensions();
   const { container, customTextStyle } = styles
 
-  const useSnippets = JSON.parse(dataTextsnippets);
+  const [useSnippet, setUseSnippet] = useState({});
 
-  let neededSnippet = useSnippets.filter((snippet) => {
-    return snippet.callname === props.call
-  })[0]
-  // console.log('------------------- neededSnippet', neededSnippet)
+  useEffect(() => {
+    const useSnippets = JSON.parse(dataTextsnippets);
+
+    let neededSnippet = useSnippets.filter((snippet) => {
+      return snippet.callname === props.call
+    })[0]
+    //console.log('------------------- neededSnippet', neededSnippet)
+
+    setUseSnippet(neededSnippet)
+  }, []);
 
   return (
     <View>
-      {neededSnippet && 
+      {useSnippet &&
         <View style={ styles.container }>
-          {neededSnippet.headline &&
-            <CustomText textType="headline" style={[customTextStyle, {}]}>{ neededSnippet.headline }</CustomText>
+          {useSnippet.headline &&
+            <CustomText textType="headline" style={[customTextStyle, {}]}>{ useSnippet.headline }</CustomText>
           }
-          {neededSnippet.subheadline &&
-            <CustomText textType="subheadline" style={[customTextStyle, {}]}>{ neededSnippet.subheadline }</CustomText>
+          {useSnippet.subheadline &&
+            <CustomText textType="subheadline" style={[customTextStyle, {}]}>{ useSnippet.subheadline }</CustomText>
           }
-          {neededSnippet.snippet &&
-            <CustomText fontType="light" style={[customTextStyle, { marginLeft: 2, paddingRight: 1, marginBottom: 18 }]}>{neededSnippet.snippet}</CustomText>
+          {useSnippet.snippet &&
+            <CustomText fontType="light" style={[customTextStyle, { marginLeft: 2, paddingRight: 1, marginBottom: 18 }]}>{useSnippet.snippet}</CustomText>
           }
         </View>
     }

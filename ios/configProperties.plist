@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>datev.client_id</key>
+	<string>cc5931ed22db4c86ee67bab3bdffc07d</string>
+	<key>datev.client_secret</key>
+	<string>659c52c961d2e16f1b3ab5b2719b3201</string>
+	<key>datev.scopes</key>
+	<string>openid profile email datev:accounting:clients accounting:clients:read accounting:documents datev:my-tax:documents</string>
+	<key>datev.redirect_uri</key>
+	<string>https://smartlogin.beleganbei.de</string>
+	<key>datev.sandbox</key>
+	<true/>
+	<key>datev.enabled</key>
+	<string>true</string>
+</dict>
+</plist>

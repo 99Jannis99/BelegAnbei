@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { ListItem, Icon } from "@rneui/themed";
@@ -11,9 +11,23 @@ import TextSnippet from "../../shared/TextSnippets";
 function AppointmentsScreen() {
     const { background } = useSelector((state) => state.colorReducer);
 
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
+
     const { dataAppointments } = useSelector((state) => state.dataReducer);
     const [appointments, setAppointments] = useState([]);
-    
+
     useEffect(() => {
         setTimeout(() => {
             let useAppointments = JSON.parse(dataAppointments)
@@ -23,14 +37,18 @@ function AppointmentsScreen() {
     }, [dataAppointments]);
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
-            <Header></Header>
-            <ScrollView>
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.content, { backgroundColor: background }]}>
                 <View style={styles.content}>
                     <TextSnippet call="appointments-index" />
                     { appointments.length == 0 && <ActivityIndicator size={'large'} /> }
                 </View>
-          
+
                 {
                     appointments.map((appointment, i) => (
                         <View key={i} style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-start"}}>
@@ -43,23 +61,24 @@ function AppointmentsScreen() {
                                 type="font-awesome"
                                 />
                                 <View key={i} style={{flex:1, flexDirection: "column", paddingRight: 12}}>
-                                    <CustomText fontType="medium" style={{  }}>{appointment.start}</CustomText>           
-                                    <CustomText fontType="bold" style={{ paddingRight: 24 }}>{appointment.title}</CustomText>           
-                                    {appointment.desc && 
-                                        <CustomText fontType="light" style={{ paddingRight: 24 }}>{appointment.desc}</CustomText> 
-                                    }          
-                                </View>                        
-                            </View>                        
+                                    <CustomText fontType="medium" style={{  }}>{appointment.start}</CustomText>
+                                    <CustomText fontType="bold" style={{ paddingRight: 24 }}>{appointment.title}</CustomText>
+                                    {appointment.desc &&
+                                        <CustomText fontType="light" style={{ paddingRight: 24 }}>{appointment.desc}</CustomText>
+                                    }
+                                </View>
+                            </View>
                         </View>
                     ))
                 }
-                
+
                 {/* <Text>{JSON.stringify(appointments, null, 2)}</Text> */}
 
                 {/* Bottom Spacer */}
                 <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 

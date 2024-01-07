@@ -127,7 +127,7 @@ export const useDownloadImage = () => {
 
   const downloadImage = async (token: string, imageName: string) => {
     try {
-      console.log("ImageURL: ", `http://app-backend.beleganbei.de/api/app-sync/files/${token}/${imageName}`);
+      console.log("ImageURL: ", `https://app-backend.beleganbei.de/api/app-sync/files/${token}/${imageName}`);
 
       // Verwenden Sie RNFetchBlob direkt zum Herunterladen und Speichern der Datei
       const res = await RNFetchBlob.config({
@@ -135,7 +135,7 @@ export const useDownloadImage = () => {
         path: `${RNFetchBlob.fs.dirs.DocumentDir}/${imageName}`,
       }).fetch(
         "GET",
-        `http://app-backend.beleganbei.de/api/app-sync/files/${token}/${imageName}`
+        `https://app-backend.beleganbei.de/api/app-sync/files/${token}/${imageName}`
       );
 
       if (res.info().status === 200) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -9,7 +9,20 @@ import TextSnippet from "../../shared/TextSnippets";
 
 function DownloadsScreen({ route }) {
     const { background } = useSelector((state) => state.colorReducer);
-    console.log('route', route.params)
+
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
 
     const { dataMoreDownloads } = useSelector((state) => state.dataReducer);
 
@@ -45,10 +58,14 @@ function DownloadsScreen({ route }) {
     }
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
-            <Header></Header>
-            <ScrollView>
-        
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.content, { backgroundColor: background }]}>
+
                 <View style={styles.contentView}>
                     <TextSnippet call="more-downloads-top" />
                     { downloads.length == 0 && <ActivityIndicator size={'large'} /> }
@@ -71,9 +88,10 @@ function DownloadsScreen({ route }) {
                     ))
                 }
                 </View>
-        
+
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 

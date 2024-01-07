@@ -6,7 +6,8 @@ import {
   Image,
   StyleSheet,
   useWindowDimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  NativeModules
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { use } from "i18next";
@@ -15,6 +16,8 @@ import { Button } from "react-native";
 import CustomHTML from "../shared/CustomHTML";
 import CustomText from "../shared/CustomText";
 import TextSnippet from "../shared/TextSnippets";
+
+const { ConfigProperties } = NativeModules;
 
 const Welcome = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -53,6 +56,12 @@ const Welcome = ({ navigation }) => {
   }, [dataStyle]);
 
   useEffect(() => {
+    console.log('welcome')
+
+    ConfigProperties.prop('datev.client_id').then((client_id) => {
+      console.log('welcome client_id', client_id);
+    })
+
     setTimeout(() => {
       if(localDataSettings.hasOwnProperty('news')) {
         let news = JSON.parse(dataNews);
@@ -114,7 +123,7 @@ const Welcome = ({ navigation }) => {
         </View>
       )}
 
-      { localDataSettings.news && 
+      { localDataSettings.news &&
         <View style={{}}>
           <View style={{padding: 18, paddingBottom:0}}>
             <TextSnippet call="news-home" />

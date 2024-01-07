@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   Image,
   NativeModules,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  Text
 } from "react-native";
-import { SimpleLineIcons, FontAwesome5 } from "../../helpers/icons";
+import { Feather, MaterialCommunityIcons, MaterialIcons } from "../../helpers/icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
@@ -52,22 +53,54 @@ const Header = () => {
     };
   }, []);
 
+  {/* First Tour */}
+  const [activeElementMeasure, setActiveElementMeasure] = useState({});
+  const getElementPosition = (named, event) => {
+    //console.log('Component named: ',  named)
+    let useElement = null;
+
+    if(named == 'MenuIcon') {
+      useElement = MenuIcon;
+    }
+
+    if(useElement != null) {
+      useElement.measure( (fx, fy, width, height, px, py) => {
+        setActiveElementMeasure({
+          width: width,
+          height: height,
+          x: px,
+          y: py
+        });
+
+        //console.log('Component width is: ' + width)
+        //console.log('Component height is: ' + height)
+        //console.log('X offset to page: ' + px)
+        //console.log('Y offset to page: ' + py)
+      })
+    }
+  }
+  {/* First Tour */}
+
   // Rendering der Header-Komponente
   return (
     <SafeAreaView
       style={[
         styles.container,
-        { backgroundColor: localDataStyle.top_toolbar_background_color},
+        { backgroundColor: localDataStyle.top_toolbar_background_color },
       ]}
     >
       {/* Wir verwenden eine View-Komponente, um das MenuIcon zu umschließen. */}
-      <View style={{ width: iconContainerWidth }}>
+      {/* First Tour */}
+      <View style={{ width: iconContainerWidth }}
+        onLayout={(event) => { getElementPosition('MenuIcon', event) }}
+        ref={view => { MenuIcon = view; }}
+      >
         {/* Das eigentliche Icon, welches beim Drücken das Drawer-Menü öffnet. */}
-        <FontAwesome5
-          name={'bars'}
-          size={26}
+        <MaterialIcons
+          name={'menu-open'}
+          size={34}
           color={localDataStyle.top_toolbar_icon_color}
-          onPress={() => navigation.openDrawer()} 
+          onPress={() => navigation.openDrawer()}
         />
       </View>
 
@@ -95,7 +128,7 @@ const Header = () => {
         {/* Icon für Informationen */}
         {/*<TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
           <FontAwesome5
-            name={'info-circle'} light 
+            name={'info-circle'} light
             size={24}
             //style={{ aspectRatio: 1 }}
             //allowFontScaling
@@ -105,13 +138,17 @@ const Header = () => {
 
         {/* Icon für Telefon, führt openfunc aus beim Drücken */}
         <TouchableOpacity onPress={() => console.log("Info Icon pressed")}>
-          <FontAwesome5
-            name={'phone'}
-            size={24}
+          <MaterialCommunityIcons
+            name={'phone-in-talk'}
+            size={30}
             color={localDataStyle.top_toolbar_icon_color}
           />
         </TouchableOpacity>
       </View>
+
+      {/* First Tour
+      <View style={{position: "absolute", flex:1, alignItems: "center", justifyContent: "center", height:activeElementMeasure.height, left: activeElementMeasure.x, top: activeElementMeasure.y, backgroundColor: "#fa2000", padding: 6}}><Text>HALLOOOOOO</Text></View>
+       First Tour */}
     </SafeAreaView>
   );
 };

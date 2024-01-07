@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text, ActivityIndicator, Platform, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { ListItem, Icon } from "@rneui/themed";
@@ -10,11 +10,25 @@ import CustomText from "../../shared/CustomText";
 function FAQScreen() {
     const { background } = useSelector((state) => state.colorReducer);
 
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
+
     const { dataMoreFAQs } = useSelector((state) => state.dataReducer);
     const [faqs, setFaqs] = useState([]);
 
     const [selectedFAQ, setSelectedFAQ] = useState({});
-    
+
     useEffect(() => {
         let useFAQs = JSON.parse(dataMoreFAQs)
         useFAQs = useFAQs.filter((faq: { for_system: string; }) => {
@@ -35,9 +49,13 @@ function FAQScreen() {
     }
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
-            <Header></Header>
-            <ScrollView style={styles.content}>
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.content, { backgroundColor: background }]}>
                 <TextSnippet call="more-help-top" />
                 { faqs.length == 0 && <ActivityIndicator size={'large'} /> }
 
@@ -53,21 +71,22 @@ function FAQScreen() {
                                 allowFontScaling
                                 type="font-awesome"
                                 />
-                                <CustomText textType="subheadline" style={{ paddingRight: 24 }}>{faq.question}</CustomText>           
+                                <CustomText textType="subheadline" style={{ paddingRight: 24 }}>{faq.question}</CustomText>
                             </View>
-                            {selectedFAQ == faq && 
+                            {selectedFAQ == faq &&
                                 <View style={{ flex: 1, marginBottom: 24 }}>
                                     <CustomText style={{  }}>{faq.answer}</CustomText>
                                 </View>
-                            }                              
+                            }
                         </TouchableOpacity>
                     ))
                 }
                 </View>
-                
+
                 <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 

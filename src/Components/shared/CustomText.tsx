@@ -46,14 +46,17 @@ const CustomText: FunctionComponent<CustomTextProps> = ({ children, fontType, te
             textStyle = styles.regular
         break
     }
-    
+
     const passedStyles = Array.isArray(style) ? Object.assign({}, ...style) : style
 
     switch (textType) {
         case 'headline':
             passedStyles.fontSize = fontPixel(headlineFontSize);
             textStyle = styles.headline
-            passedStyles.color = localDataStyle.body_headline_color
+
+            if(!passedStyles.color) {
+              passedStyles.color = localDataStyle.body_headline_color
+            }
             if(!passedStyles.marginBottom && !passedStyles.margin) {
                 passedStyles.marginBottom = 6;
             }
@@ -61,14 +64,19 @@ const CustomText: FunctionComponent<CustomTextProps> = ({ children, fontType, te
         case 'subheadline':
             passedStyles.fontSize = fontPixel(subheadlineFontSize);
             textStyle = styles.subheadline
-            passedStyles.color = localDataStyle.body_headline_color
+
+            if(!passedStyles.color) {
+              passedStyles.color = localDataStyle.body_headline_color
+            }
             if(!passedStyles.marginBottom && !passedStyles.margin) {
                 passedStyles.marginBottom = 6;
             }
         break
         case 'text':
         default:
-            passedStyles.color = localDataStyle.body_font_color
+            if(!passedStyles.color) {
+              passedStyles.color = localDataStyle.body_headline_color
+            }
             if(!passedStyles.fontSize) {
                 passedStyles.fontSize = fontPixel(textFontSize);
             }

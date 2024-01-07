@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { SafeAreaView, StyleSheet, View, ScrollView, Text, Alert } from "react-native";
 import { useSelector } from "react-redux";
 import { Input, Button } from "@rneui/themed";
@@ -14,6 +14,20 @@ function KontaktScreen({ route }) {
     const ref = useRef(null);
 
     const { background, primary } = useSelector((state) => state.colorReducer);
+
+    /* iOS SafeArea */
+      const { dataStyle, dataSettings } = useSelector((state) => state.dataReducer);
+      // top
+      const [localSettings, setLocalSettings] = useState({});
+      useEffect(() => {
+        setLocalSettings(JSON.parse(dataSettings));
+      }, [dataSettings]);
+      // bottom
+      const [localDataStyle, setLocalDataStyle] = useState({});
+      useEffect(() => {
+        setLocalDataStyle(JSON.parse(dataStyle));
+      }, [dataStyle]);
+    /* iOS SafeArea */
 
     const { dataPersons, dataIdentities } = useSelector((state) => state.dataReducer);
 
@@ -71,37 +85,37 @@ function KontaktScreen({ route }) {
         let sendMailOK = true;
 
         let errorMessages = [];
-    
+
         if (formValues.senderName.trim() === "") {
           console.log('ERR', "Name fehlt")
           sendMailOK = false;
           errorMessages.push('Bitte geben Sie Ihren Namen ein')
         }
-    
+
         if (formValues.senderEmail.trim() === "") {
           console.log('ERR', "E-Mail fehlt.")
           sendMailOK = false;
           errorMessages.push('Bitte geben Sie Ihre E-Mail Adresse ein')
         }
-    
+
         if (formValues.senderPhone.trim() === "") {
           console.log('ERR', "Telefon fehlt.")
           sendMailOK = false;
           errorMessages.push('Bitte geben Sie Ihre Telefonnummer ein')
         }
-    
+
         if (formValues.message.trim() === "") {
           console.log('ERR', "Nachricht fehlt.")
           sendMailOK = false;
           errorMessages.push('Bitte geben Sie eine Nachricht ein')
         }
-    
+
         if (formValues.recipient <= 0 || formValues.recipient == null) {
           console.log('ERR', "Empfänger fehlt.")
           sendMailOK = false;
           errorMessages.push('Bitte wählen Sie einen Empfänger')
         }
-    
+
         if(sendMailOK) {
           Alert.alert('Send Mail', JSON.stringify(formValues), [{
             text: 'OK',
@@ -116,18 +130,22 @@ function KontaktScreen({ route }) {
       };
 
     return (
-        <SafeAreaView style={[styles.safeView, { backgroundColor: background }]}>
-            <Header></Header>
-            <ScrollView style={styles.content}>
+      <Fragment>
+        {localSettings.colors &&
+          <SafeAreaView style={{ flex: 0, backgroundColor: localSettings.colors.statusbar_hex }} />
+        }
+        <SafeAreaView style={[styles.safeView, { backgroundColor: localDataStyle.bottom_toolbar_background_color }]}>
+          <Header></Header>
+          <ScrollView style={[styles.content, { backgroundColor: background }]}>
                 <View style={styles.contentView}>
                     <TextSnippet call="more-contact-top" />
                 </View>
-  
+
                 <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihr Name</Text>
-                <Input 
-                    key="senderName" 
-                    value={formValues.senderName} 
-                    onChangeText={ (text) => { handleChange(text, "senderName") }} 
+                <Input
+                    key="senderName"
+                    value={formValues.senderName}
+                    onChangeText={ (text) => { handleChange(text, "senderName") }}
                 />
 
                 <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihre E-Mail Adresse</Text>
@@ -140,18 +158,18 @@ function KontaktScreen({ route }) {
                     autoCorrect={false}
                     autoCompleteType="email"
                 />
-                
+
                 <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Ihre Telefonnummer</Text>
-                <Input 
-                    key="senderPhone" 
-                    keyboardType="numeric" 
-                    value={formValues.senderPhone} 
-                    onChangeText={ (text) => { handleChange(text, "senderPhone") }} 
-                    placeholder="" 
+                <Input
+                    key="senderPhone"
+                    keyboardType="numeric"
+                    value={formValues.senderPhone}
+                    onChangeText={ (text) => { handleChange(text, "senderPhone") }}
+                    placeholder=""
                 />
 
                 <Text style={{paddingLeft: 12, fontSize: fontPixel(textFontSize), fontWeight: 'bold', color: primary}}>Wem möchten Sie die Nachricht schicken?</Text>
-                <Dropdown 
+                <Dropdown
                     inside
                     ref={ref}
                     style={styles.dropdown}
@@ -181,13 +199,13 @@ function KontaktScreen({ route }) {
                     key="message"
                     value={formValues.message}
                     onChangeText={ (text) => { handleChange(text, "message") }}
-                    placeholderTextColor="#c1c1c1" 
+                    placeholderTextColor="#c1c1c1"
                     multiline={true}
                     numberOfLines={6}
                 />
-                 
+
                 {/* <Text>{JSON.stringify(formValues, null, 2)}</Text> */}
-        
+
                 <View style={styles.contentView}>
                     <Button
                     title="Absenden"
@@ -198,7 +216,8 @@ function KontaktScreen({ route }) {
                 <Text> </Text>
                 <Text> </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </Fragment>
     );
 }
 
@@ -222,14 +241,14 @@ const styles = StyleSheet.create({
     placeholderStyle: {
         fontSize: 20,
         color: "#c1c1c1"
-    
+
     },
     selectedTextStyle: {
         fontSize: 20
-    
+
     },
     iconStyle: {
-    
+
     },
     inputSearchStyle: {
     height: 40,

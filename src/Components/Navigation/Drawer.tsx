@@ -26,7 +26,10 @@ import originalCustomer from "../../../data/customer.json";
 import BottomTaps from "./BottomTaps";
 import { navFontFamily, navFontSize } from "../../../data/CustomerConstants";
 import CustomText from '../shared/CustomText'
+import { getSnippetPart } from "../shared/TextSnippetFunctions";
+
 import { getBuildNumber, getReadableVersion, getApplicationName, getBundleId, isTablet  } from 'react-native-device-info';
+import AppLink from 'react-native-app-link';
 
 import { initStatusBar } from '../shared/StatusBar';
 
@@ -75,7 +78,7 @@ async function getAppInformation() {
 
 async function isTabletDevice() {
   const isTabletDevice:Boolean = await isTablet();
-  console.log('isTabletDevice', isTabletDevice); 
+  console.log('isTabletDevice', isTabletDevice);
   return isTabletDevice;
 }
 
@@ -93,7 +96,7 @@ const DrawerComponent = () => {
     'percent' : 0
   });
 
-  const { dataSettings, dataStyle, dataMoreIndex } = useSelector(
+  const { dataSettings, dataStyle, dataMoreIndex, dataTextsnippets } = useSelector(
     (state) => state.dataReducer
   );
 
@@ -110,7 +113,7 @@ const DrawerComponent = () => {
     setdeviceIsTablet(isTabletDevice)
     console.log('deviceIsTablet', deviceIsTablet)
   }, [deviceIsTablet]);
-  
+
 
   const downloadJSONFile = useDownloadJSON();
   const loadAndStoreData = useLoadAndStoreData();
@@ -150,41 +153,62 @@ const DrawerComponent = () => {
   const [IsDATEVInitialized, setIsDATEVInitialized] = useState(false);
   const [IsDATEVSmartloginAvailable, setIsDATEVSmartloginAvailable] = useState(false);
   const [DATEVUserData, setDATEVUserData] = useState({});
-    
+
+  const openDATEVSmartloginAppStore = () => {
+    console.log('AppLink.openInStore')
+    AppLink.openInStore({
+      appName: 'DATEV SmartLogin',
+      appStoreId: 943870921,
+      appStoreLocale: 'de',
+      playStoreId: 'de.datev.smartlogin',
+    }).then(() => {
+      console.log('AppLink.openInStore OK')
+    })
+    .catch((err) => {
+      console.log('AppLink.openInStore err', err)
+      // handle error
+    });
+  }
+
   async function isDatevEnabled() {
-    let datev_enabled = await ConfigProperties.prop('datev.enabled');
-    console.log('getConfigProperty datev_enabled', typeof datev_enabled, datev_enabled);
-    if(datev_enabled === "true") {
-      console.log("DATEV ENABLED -> INIT")
+    if(localDataSettings.hasOwnProperty('sendmethods')) {
+      if(localDataSettings.sendmethods.unternehmenonline.enabled || localDataSettings.sendmethods.meinesteuern.enabled) {
+        let datev_enabled = await ConfigProperties.prop('datev.enabled');
+        console.log('getConfigProperty datev_enabled', typeof datev_enabled, datev_enabled);
+        if(datev_enabled === "true" && !IsDATEVInitialized) {
+          console.log("DATEV ENABLED -> INIT")
 
-      setIsDATEVAvailable(true);
+          setIsDATEVAvailable(true);
 
-      let client_id = await ConfigProperties.prop('datev.client_id');
-      console.log('DCAL InitializeButton client_id', client_id);
-    
-      let client_secret = await ConfigProperties.prop('datev.client_secret');
-      console.log('DCAL InitializeButton client_secret', client_secret);
-    
-      let scopes = await ConfigProperties.prop('datev.scopes');
-      console.log('DCAL InitializeButton scopes', scopes);
-    
-      let redirect_uri = await ConfigProperties.prop('datev.redirect_uri');
-      console.log('DCAL InitializeButton redirect_uri', redirect_uri);
-    
-      let sandbox = await ConfigProperties.prop('datev.sandbox');
-      if(Platform.OS !== 'ios') {
-          sandbox = (sandbox === "true");
+          let client_id = await ConfigProperties.prop('datev.client_id');
+          console.log('DCAL InitializeButton client_id', client_id);
+
+          let client_secret = await ConfigProperties.prop('datev.client_secret');
+          console.log('DCAL InitializeButton client_secret', client_secret);
+
+          let scopes = await ConfigProperties.prop('datev.scopes');
+          console.log('DCAL InitializeButton scopes', scopes);
+
+          let redirect_uri = await ConfigProperties.prop('datev.redirect_uri');
+          console.log('DCAL InitializeButton redirect_uri', redirect_uri);
+
+          let sandbox = await ConfigProperties.prop('datev.sandbox');
+          if(Platform.OS !== 'ios') {
+              sandbox = (sandbox === "true");
+          }
+
+          console.log('DCAL InitializeButton sandbox', sandbox, typeof sandbox);
+
+          DATEV.initialize(client_id, client_secret, scopes, redirect_uri, sandbox);
+        }
       }
-    
-      console.log('DCAL InitializeButton sandbox', sandbox, typeof sandbox);
-    
-      DATEV.initialize(client_id, client_secret, scopes, redirect_uri, sandbox);
     }
   }
+
   useEffect(() => {
       //setIsDATEVAvailable(true);
       isDatevEnabled()
-  }, []);
+  }, [localDataSettings]);
 
   async function loadDATEVUserData() {
     console.log('loadDATEVUserData');
@@ -201,7 +225,7 @@ const DrawerComponent = () => {
   // DATEV LOGIN
   useEffect(() => {
     Linking.getInitialURL().then((url) => {
-      console.log('DATEV Q Linking.getInitialURL')
+      console.log('DATEV Q Linking.getInitialURL url', url)
       //if(Platform.OS !== 'ios') return;
 
       if (url) {
@@ -218,7 +242,7 @@ const DrawerComponent = () => {
     });
 
     const urlListener = Linking.addEventListener('url', (event) => {
-      console.log('DATEV A Linking.addEventListener')
+      console.log('DATEV A Linking.addEventListener event.url', event.url)
       //if(Platform.OS !== 'ios') return;
 
       Linking.canOpenURL(event.url).then((supported) => {
@@ -284,8 +308,8 @@ const DrawerComponent = () => {
 
       if(e) {
         readDATEVUserData().then((res) => {
-            console.log('RRRRRRRRRRRRRRRES', res)
-            setDATEVUserData(res);
+            //console.log('RRRRRRRRRRRRRRRES', typeof res, res)
+            setDATEVUserData((typeof res != 'object' ? JSON.parse(res) : res));
         })
         //loadDATEVUserData()
       }
@@ -302,7 +326,7 @@ const DrawerComponent = () => {
       if(typeof e != 'boolean') {
         e = (e == "true")
       }
-      
+
       // error so logout to be sure
       setIsDATEVLoggedIn(e);
     });
@@ -323,11 +347,11 @@ const DrawerComponent = () => {
       const value = await AsyncStorage.getItem('DATEV_UserData');
       if (value !== null) {
         // We have data!!
-        console.log('readDATEVUserData value', value);
+        //console.log('readDATEVUserData value', value);
 
         return JSON.parse(value);
       } else {
-        console.log('readDATEVUserData NO VALUE');
+        //console.log('readDATEVUserData NO VALUE');
         loadDATEVUserData();
       }
     } catch (error) {
@@ -453,7 +477,7 @@ console.log('PROCEED FROM UPDATE NEEDED AND DONE')
           if (loadAndStoreSuccess) {
 setDataLoaded(true);
 console.log('PROCEED FROM NO UPDATE NOT NEEDED')
-          } 
+          }
         }
       } catch (error) {
         //console.error("Failed to load data in Drawer.tsx:", error);
@@ -517,9 +541,9 @@ console.log('PROCEED FROM ERROR')
 
             <Image
               //style={{ width: useImageWidth, height: useImageWidth, padding: 12, marginLeft: 0, marginRight: 0, marginTop: 18, marginBottom: 12, padding: 0 }}
-              style={{ 
-                width: 36, 
-                height: 36, 
+              style={{
+                width: 36,
+                height: 36,
                 padding: 18,
                 marginLeft: 6,
                 flexShrink: 1,
@@ -529,9 +553,9 @@ console.log('PROCEED FROM ERROR')
                 uri: `${iconImage}?t=${lastUpdated}`
               }}
             />
-            <CustomText textType="text" style={{ paddingLeft: 18, marginRight: 48, flexGrow: 1, color: "#FFFFFF" }}>{ originalCustomer.customer_name }</CustomText>
+            <CustomText textType="text" style={{ paddingLeft: 18, marginRight: 48, flexGrow: 1, color: localDataStyle.bottom_toolbar_icon_color }}>{ originalCustomer.customer_name }</CustomText>
           </TouchableOpacity>
-          {IsDATEVAvailable && 
+          {IsDATEVAvailable &&
             <View
               style={{
                 //backgroundColor: localDataStyle.top_toolbar_background_color,
@@ -545,12 +569,12 @@ console.log('PROCEED FROM ERROR')
                 borderBottomWidth: 1
               }}
             >
-  
+
               <Image
                 //style={{ width: useImageWidth, height: useImageWidth, padding: 12, marginLeft: 0, marginRight: 0, marginTop: 18, marginBottom: 12, padding: 0 }}
-                style={{ 
-                  width: 36, 
-                  height: 36, 
+                style={{
+                  width: 36,
+                  height: 36,
                   padding: 18,
                   marginLeft: 6,
                   flexShrink: 1,
@@ -559,36 +583,33 @@ console.log('PROCEED FROM ERROR')
                 }}
                 source={require("../../../assets/images/datev_duo.png")}
               />
-              { !IsDATEVInitialized && 
-                <View>
-                  <CustomText fontType="light" style={{}}>DATEV ist nicht initialisiert</CustomText>
-                  <TouchableOpacity onPress={() => { isDatevEnabled() }}>
-                    <CustomText fontType="bold" style={{}}>Jetzt initialisieren</CustomText>
-                  </TouchableOpacity>
-                </View>
+              { !IsDATEVInitialized &&
+                <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => { isDatevEnabled() }}>
+                  <CustomText fontType="light" style={{color: localDataStyle.bottom_toolbar_icon_color}}>DATEV ist nicht initialisiert</CustomText>
+                  <CustomText fontType="bold" style={{color: localDataStyle.bottom_toolbar_icon_color}}>Jetzt initialisieren</CustomText>
+                </TouchableOpacity>
               }
-              { IsDATEVInitialized && IsDATEVSmartloginAvailable && !IsDATEVLoggedIn && 
-                <View>
-                  <CustomText fontType="light" style={{}}>Sie sind nicht angemeldet.</CustomText>
-                  <TouchableOpacity onPress={() => { DATEV.requestLogin() }}>
-                    <CustomText fontType="bold" style={{}}>Jetzt anmelden</CustomText>
-                  </TouchableOpacity>
-                </View>
+              { IsDATEVInitialized && IsDATEVSmartloginAvailable && !IsDATEVLoggedIn &&
+                <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => { DATEV.requestLogin() }}>
+                  <CustomText fontType="light" style={{color: localDataStyle.bottom_toolbar_icon_color}}>Sie sind nicht angemeldet.</CustomText>
+                  <CustomText fontType="bold" style={{color: localDataStyle.bottom_toolbar_icon_color}}>Jetzt anmelden</CustomText>
+                </TouchableOpacity>
               }
-              { IsDATEVInitialized && !IsDATEVSmartloginAvailable && !IsDATEVLoggedIn && 
-                <View>
-                  <CustomText fontType="light" style={{ fontSize: 14 }}>DATEV SMartlogin App ist nicht installiert. Bitte gehen Sie i den AppStore und installieren diese nach, um sich anmelden zu können</CustomText>
-                  <TouchableOpacity onPress={() => { console.log('dl smartlogin') }}>
-                    <CustomText fontType="bold" style={{}}>Zur App</CustomText>
-                  </TouchableOpacity>
-                </View>
+              { IsDATEVInitialized && !IsDATEVSmartloginAvailable && !IsDATEVLoggedIn &&
+                <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => { openDATEVSmartloginAppStore() }}>
+                  <CustomText fontType="light" style={{ fontSize: 14, color: localDataStyle.bottom_toolbar_icon_color }}>{getSnippetPart('snippet', 'app-dcalsettings-smartloginmissing', dataTextsnippets)}</CustomText>
+                  {/*<CustomText fontType="light" style={{ fontSize: 14, color: localDataStyle.bottom_toolbar_icon_color }}>DATEV Smartlogin App ist nicht installiert. Bitte gehen Sie in den AppStore und installieren diese nach, um sich anmelden zu können</CustomText>*/}
+                  <CustomText fontType="bold" style={{color: localDataStyle.bottom_toolbar_icon_color}}>Zur App</CustomText>
+                </TouchableOpacity>
               }
-              { IsDATEVInitialized && IsDATEVSmartloginAvailable && IsDATEVLoggedIn && 
-                <TouchableOpacity activeOpacity={1} onPress={() => props.navigation.navigate("UnternehmenOnlineSettings")}>
+              { IsDATEVInitialized && IsDATEVLoggedIn &&
+                <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => props.navigation.navigate("UnternehmenOnlineSettings")}>
                   <View style={{ flexDirection: "column", flex: 1 }}>
-                    <CustomText fontType="bold" style={{ fontSize: 14 }}>{DATEVUserData.name}{"\n"}<CustomText fontType="light" style={{ fontSize: 14 }}>{DATEVUserData.email}</CustomText></CustomText>
+                    <CustomText fontType="bold" style={{ fontSize: 14, color: localDataStyle.bottom_toolbar_icon_color }}>
+                      {DATEVUserData.name}{"\n"}
+                      <CustomText fontType="light" style={{ fontSize: 14, color: localDataStyle.bottom_toolbar_icon_color }}>{DATEVUserData.email}</CustomText>
+                    </CustomText>
                   </View>
-                  {/* <Text>{JSON.stringify(DATEVUserData, null, 2)}</Text> */}
                 </TouchableOpacity>
               }
             </View>
@@ -695,11 +716,11 @@ console.log('PROCEED FROM ERROR')
 
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center",backgroundColor: localDataStyle.top_toolbar_background_color }}>
-        <Image 
+        <Image
           style={{ width: 200, height: 200, borderRadius:30 }}
           source={require("../../../assets/images/AppIcon.png")}
         />
-        
+
         <CustomText fontType="bold" style={ {marginTop:40} }>{appInformation.name}</CustomText>
         <CustomText fontType="medium" style={{}}>v.{appInformation.readable}</CustomText>
 
@@ -714,7 +735,7 @@ console.log('PROCEED FROM ERROR')
         <View>
           <ProgressBar percent={ updateProgress.percent }></ProgressBar>
         </View>
-        
+
       </View>
     );
   }
@@ -844,7 +865,7 @@ const moreContentSwitcher = (type) => {
     break;
     case 'persons':
       return AnsprechpartnerScreen
-    break; 
+    break;
     case 'locations':
       return LocationsScreen
     break;
